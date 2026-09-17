@@ -32,8 +32,10 @@ class Settings(BaseSettings):
     tts_engine: str = "fake"
     xtts_speaker_wav: str = ""
 
-    llm_provider: Literal["fake", "anthropic"] = "fake"
-    llm_model: str = "claude-opus-5"
+    # LLM (D09, D32). openrouter is production; the model default depends on the provider.
+    llm_provider: Literal["fake", "openrouter", "anthropic"] = "fake"
+    llm_model: str = ""
+    openrouter_api_key: str = ""
     anthropic_api_key: str = ""
 
     @property

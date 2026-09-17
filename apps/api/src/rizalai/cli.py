@@ -21,6 +21,8 @@ from rizalai.corpus.embeddings import embedder_from_settings
 from rizalai.corpus.gutenberg import EDITIONS, fetch_gutenberg_text
 from rizalai.corpus.ingest import ingest_text
 from rizalai.db.session import dispose_engine, get_session_factory
+from rizalai.generation.evals import run_eval, summarize
+from rizalai.generation.llm import build_llm_client
 from rizalai.generation.service import list_reflections, reject_reflection
 
 RAW_DIR = Path("data/raw")
@@ -108,6 +110,55 @@ def _bakeoff(content_dir: Path, out_dir: Path, count: int) -> None:
         print(f"  {i:02d}: {text}")
 
 
+async def _eval_reflection(models: list[str], lesson_slug: str, out_dir: Path) -> None:
+    import json
+    from datetime import UTC, datetime
+
+    from sqlalchemy import select
+
+    from rizalai.content.loader import lesson_id
+    from rizalai.corpus.retrieval import pinned_passages, style_context
+    from rizalai.db.models import Lesson, SourcePassage
+    from rizalai.generation.schema import PassageForPrompt
+
+    settings = get_settings()
+    clients = [build_llm_client(settings, model=m) for m in models]
+    async with get_session_factory()() as session:
+        lesson = await session.scalar(select(Lesson).where(Lesson.id == lesson_id(lesson_slug)))
+        if lesson is None:
+            raise SystemExit(f"lesson {lesson_slug!r} is not seeded")
+        pinned_rows = await pinned_passages(session, lesson.source_passage_ids)
+        chapters = sorted({p.chapter for p in pinned_rows})
+        style_rows = await style_context(
+            session, work="noli", language="tl", chapters=chapters, exclude=[p.id for p in pinned_rows]
+        )
+
+        def to_prompt(p: SourcePassage) -> PassageForPrompt:
+            return PassageForPrompt(
+                id=p.id,
+                language=p.language,
+                chapter=p.chapter,
+                paragraph_index=p.paragraph_index,
+                text=p.text,
+            )
+
+        vignette_en = " ".join(str(b.get("en", "")) for b in lesson.vignette)
+        target = out_dir / datetime.now(UTC).strftime("%Y%m%d-%H%M%S")
+        samples = await run_eval(
+            clients,
+            lesson_title=lesson.title,
+            vignette_en=vignette_en,
+            pinned=[to_prompt(p) for p in pinned_rows],
+            style=[to_prompt(p) for p in style_rows],
+            out_dir=target,
+        )
+    await dispose_engine()
+    print(
+        f"wrote {len(samples)} samples to {target}/samples; grade with evals/reflection/rubric.md into scores.csv"
+    )
+    print(json.dumps({s.sample_id: {"valid": s.valid, "seconds": s.seconds} for s in samples}, indent=2))
+
+
 async def _reflections(action: str, cache_id: str | None) -> None:
     import uuid
 
@@ -152,6 +203,14 @@ def main() -> None:
     bake.add_argument("--lines", type=int, default=3)
     bake.add_argument("--content-dir", type=Path, default=None)
 
+    ev = sub.add_parser("eval-reflection", help="blind eval of the reflection across models (D09, D32)")
+    ev.add_argument("--models", required=True, help="comma separated OpenRouter model ids")
+    ev.add_argument("--lesson", default="noli-ibarra-arrival")
+    ev.add_argument("--out", type=Path, default=Path("../../evals/reflection/results"))
+
+    evs = sub.add_parser("eval-summary", help="join scores.csv with key.json for one eval run")
+    evs.add_argument("run_dir", type=Path)
+
     reflections = sub.add_parser("reflections", help="list or reject cached reflections")
     reflections.add_argument("action", choices=["list", "reject"])
     reflections.add_argument("cache_id", nargs="?", default=None)
@@ -166,6 +225,14 @@ def main() -> None:
         asyncio.run(_ingest(args.edition, args.file, embed=not args.no_embed))
     elif args.command == "reflections":
         asyncio.run(_reflections(args.action, args.cache_id))
+    elif args.command == "eval-reflection":
+        asyncio.run(
+            _eval_reflection([m.strip() for m in args.models.split(",") if m.strip()], args.lesson, args.out)
+        )
+    elif args.command == "eval-summary":
+        import json
+
+        print(json.dumps(summarize(args.run_dir), indent=2))
     elif args.command == "render-audio":
         asyncio.run(
             _render_audio(
