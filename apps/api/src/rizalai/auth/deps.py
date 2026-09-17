@@ -9,7 +9,7 @@ import uuid
 from functools import lru_cache
 from typing import Annotated
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, Header, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -18,6 +18,7 @@ from rizalai.auth.jwt import InvalidTokenError, JwtVerifier, http_jwks_fetcher
 from rizalai.config import get_settings
 from rizalai.db.models import User
 from rizalai.db.session import get_session
+from rizalai.progress.rules import is_valid_timezone
 
 bearer = HTTPBearer(auto_error=False)
 
@@ -52,6 +53,7 @@ async def current_user(
     credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(bearer)],
     session: Annotated[AsyncSession, Depends(get_session)],
     verifier: Annotated[JwtVerifier, Depends(get_verifier)],
+    x_timezone: Annotated[str | None, Header()] = None,
 ) -> User:
     if credentials is None or credentials.scheme.lower() != "bearer":
         raise _unauthorized("missing bearer token")
@@ -59,7 +61,12 @@ async def current_user(
         claims = verifier.verify(credentials.credentials)
     except InvalidTokenError as exc:
         raise _unauthorized("invalid token") from exc
-    return await get_or_create_user(session, claims.user_id)
+    user = await get_or_create_user(session, claims.user_id)
+    # The browser reports its IANA zone so streak days are local days (D17).
+    if x_timezone and x_timezone != user.timezone and is_valid_timezone(x_timezone):
+        user.timezone = x_timezone
+        await session.commit()
+    return user
 
 
 CurrentUser = Annotated[User, Depends(current_user)]

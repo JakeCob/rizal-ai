@@ -1,0 +1,184 @@
+# Lesson 1: Ibarra arrives at Capitan Tiago's dinner.
+#
+# Scene: Rizal closes Chapter 1 with two figures entering the sala and opens
+# Chapter 2 with Capitan Tiago presenting Don Crisostomo Ibarra, Padre
+# Damaso refusing his hand, the lieutenant asking whether he is Don Rafael's
+# son and praising the father, and Capitan Tinong inviting him to dinner.
+#
+# The vignette below is our own modern Tagalog adaptation (DECISIONS.md
+# D01). It is not Rizal's text and never carries his byline. The originals,
+# in Spanish, Poblete's 1909 Tagalog, and Derbyshire's English, are pinned
+# under source_passages and shown verbatim on the "In Rizal's voice" card.
+# Refs sharing a group are the same passage in three editions, aligned by
+# content (English paragraph numbers differ because Derbyshire merges
+# paragraphs).
+
+slug: noli-ibarra-arrival
+title: "Ibarra arrives at the dinner"
+published: true
+estimated_minutes: 6
+
+grammar_focus:
+  - personal-markers-si-ni-kay
+  - question-particle-ba
+  - politeness-po-opo
+  - ay-inversion
+
+target_vocab:
+  - { tl: pumasok, en: entered, pos: verb, note: "root: pasok" }
+  - { tl: binata, en: young man, pos: noun }
+  - { tl: ipinakikilala, en: is introducing, pos: verb, note: "root: kilala" }
+  - { tl: anak, en: "child, son", pos: noun }
+  - { tl: yumao, en: "late, deceased", pos: adjective }
+  - { tl: kaibigan, en: friend, pos: noun }
+  - { tl: kararating, en: just arrived, pos: verb, note: "recent-past form of dating" }
+  - { tl: kamay, en: hand, pos: noun }
+  - { tl: pari, en: priest, pos: noun }
+  - { tl: papuri, en: praise, pos: noun }
+  - { tl: ama, en: father, pos: noun }
+  - { tl: bukas, en: tomorrow, pos: adverb }
+  - { tl: aalis, en: will leave, pos: verb, note: "root: alis" }
+  - { tl: kumain, en: to eat, pos: verb }
+
+source_passages:
+  # Chapter 1 closes: two figures enter the sala (no matching Tagalog paragraph; Poblete's chapter ends in translator notes)
+  - { work: noli, language: es, chapter: 1, paragraph_index: 89, group: arrival }
+  - { work: noli, language: en, chapter: 1, paragraph_index: 79, group: arrival }
+  # Capitan Tiago presents Don Crisostomo Ibarra
+  - { work: noli, language: es, chapter: 2, paragraph_index: 3, group: intro }
+  - { work: noli, language: tl, chapter: 2, paragraph_index: 3, group: intro }
+  - { work: noli, language: en, chapter: 2, paragraph_index: 3, group: intro }
+  # Ibarra withdraws the hand Padre Damaso would not take
+  - { work: noli, language: es, chapter: 2, paragraph_index: 9, group: damaso }
+  - { work: noli, language: tl, chapter: 2, paragraph_index: 9, group: damaso }
+  - { work: noli, language: en, chapter: 2, paragraph_index: 9, group: damaso }
+  # The lieutenant asks whether he is Don Rafael's son
+  - { work: noli, language: es, chapter: 2, paragraph_index: 10, group: question }
+  - { work: noli, language: tl, chapter: 2, paragraph_index: 10, group: question }
+  - { work: noli, language: en, chapter: 2, paragraph_index: 10, group: question }
+  # The lieutenant welcomes him and praises his father
+  - { work: noli, language: es, chapter: 2, paragraph_index: 13, group: welcome }
+  - { work: noli, language: tl, chapter: 2, paragraph_index: 13, group: welcome }
+  - { work: noli, language: en, chapter: 2, paragraph_index: 12, group: welcome }
+  # Ibarra's reply
+  - { work: noli, language: es, chapter: 2, paragraph_index: 14, group: reply }
+  - { work: noli, language: tl, chapter: 2, paragraph_index: 14, group: reply }
+  - { work: noli, language: en, chapter: 2, paragraph_index: 13, group: reply }
+  # Capitan Tinong's invitation
+  - { work: noli, language: es, chapter: 2, paragraph_index: 28, group: tinong }
+  - { work: noli, language: tl, chapter: 2, paragraph_index: 28, group: tinong }
+  - { work: noli, language: en, chapter: 2, paragraph_index: 24, group: tinong }
+  # Ibarra leaves for San Diego tomorrow
+  - { work: noli, language: es, chapter: 2, paragraph_index: 30, group: sandiego }
+  - { work: noli, language: tl, chapter: 2, paragraph_index: 30, group: sandiego }
+  - { work: noli, language: en, chapter: 2, paragraph_index: 25, group: sandiego }
+
+vignette:
+  - line_id: b1
+    speaker: null
+    tl: "Pumasok sa sala si Kapitan Tiago kasama ang isang binata."
+    en: "Capitan Tiago came into the sala with a young man."
+  - line_id: b2
+    speaker: "Kapitan Tiago"
+    tl: "Ipinakikilala ko sa inyo si Don Crisostomo Ibarra, ang anak ng yumao kong kaibigan."
+    en: "I present to you Don Crisostomo Ibarra, the son of my late friend."
+    exercise_after: ex1
+  - line_id: b3
+    speaker: "Kapitan Tiago"
+    tl: "Kararating pa lang niya mula sa Europa."
+    en: "He has only just arrived from Europe."
+    exercise_after: ex2
+  - line_id: b4
+    speaker: null
+    tl: "Iniabot ni Ibarra ang kanyang kamay kay Padre Damaso, pero hindi ito tinanggap ng pari."
+    en: "Ibarra held out his hand to Padre Damaso, but the priest did not take it."
+    exercise_after: ex3
+  - line_id: b5
+    speaker: "Tenyente"
+    tl: "Binata, ikaw ba ang anak ni Don Rafael Ibarra?"
+    en: "Young man, are you the son of Don Rafael Ibarra?"
+    exercise_after: ex4
+  - line_id: b6
+    speaker: "Ibarra"
+    tl: "Opo. Salamat po sa inyong papuri sa aking ama."
+    en: "Yes, sir. Thank you for your praise of my father."
+    exercise_after: ex5
+  - line_id: b7
+    speaker: "Kapitan Tinong"
+    tl: "Ginoong Ibarra, kumain kayo sa amin bukas!"
+    en: "Señor Ibarra, come and eat with us tomorrow!"
+    exercise_after: ex6
+  - line_id: b8
+    speaker: "Ibarra"
+    tl: "Salamat po, pero bukas ay aalis ako patungong San Diego."
+    en: "Thank you, but tomorrow I leave for San Diego."
+    exercise_after: ex7
+
+exercises:
+  - type: comprehension_mc
+    key: ex1
+    question: "Who does Capitan Tiago introduce to the guests?"
+    options: ["Padre Damaso", "Crisostomo Ibarra", "Capitan Tinong", "Don Rafael"]
+    correct_index: 1
+    explanation: "Ipinakikilala ko sa inyo si Don Crisostomo Ibarra: I present to you Don Crisostomo Ibarra."
+
+  - type: translate_line
+    key: ex2
+    direction: tl_to_en
+    prompt: "Kararating pa lang niya mula sa Europa."
+    answer_tokens: [He, has, only, just, arrived, from, Europe]
+    bank: [He, has, only, just, arrived, from, Europe, left, Spain, yesterday]
+
+  - type: comprehension_mc
+    key: ex3
+    question: "What did Padre Damaso do when Ibarra held out his hand?"
+    options: ["He shook it warmly", "He did not take it", "He left the room"]
+    correct_index: 1
+    explanation: "hindi ito tinanggap ng pari: the priest did not accept it."
+
+  - type: sentence_assembly
+    key: ex4
+    prompt_en: "Are you the son of Don Rafael Ibarra?"
+    answer_tokens: [Ikaw, ba, ang, anak, ni, Don, Rafael, Ibarra]
+    bank: [Ikaw, ba, ang, anak, ni, Don, Rafael, Ibarra, siya, ng, kay]
+
+  - type: listen_tap
+    key: ex5
+    audio_url: null
+    transcript_tl: "Salamat po sa inyong papuri sa aking ama."
+    answer_tokens: [Salamat, po, sa, inyong, papuri, sa, aking, ama]
+    bank: [Salamat, po, sa, inyong, papuri, sa, aking, ama, ina, iyong]
+
+  - type: translate_line
+    key: ex6
+    direction: en_to_tl
+    prompt: "Come and eat with us tomorrow."
+    answer_tokens: [Kumain, kayo, sa, amin, bukas]
+    bank: [Kumain, kayo, sa, amin, bukas, kahapon, ako, ngayon]
+
+  - type: sentence_assembly
+    key: ex7
+    prompt_en: "Tomorrow I leave for San Diego."
+    answer_tokens: [Bukas, ay, aalis, ako, patungong, San, Diego]
+    bank: [Bukas, ay, aalis, ako, patungong, San, Diego, dumating, kami]
+
+  - type: comprehension_mc
+    key: ex8
+    question: "Where has Ibarra just arrived from?"
+    options: ["Europe", "San Diego", "Tondo", "Binondo"]
+    correct_index: 0
+    explanation: "Kararating pa lang niya mula sa Europa."
+
+  - type: listen_tap
+    key: ex9
+    audio_url: null
+    transcript_tl: "Ipinakikilala ko sa inyo si Don Crisostomo Ibarra."
+    answer_tokens: [Ipinakikilala, ko, sa, inyo, si, Don, Crisostomo, Ibarra]
+    bank: [Ipinakikilala, ko, sa, inyo, si, Don, Crisostomo, Ibarra, ni, kay, ka]
+
+  - type: translate_line
+    key: ex10
+    direction: tl_to_en
+    prompt: "Hindi tinanggap ng pari ang kanyang kamay."
+    answer_tokens: [The, priest, did, not, take, his, hand]
+    bank: [The, priest, did, not, take, his, hand, took, friend, her]

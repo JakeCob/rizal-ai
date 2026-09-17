@@ -15,7 +15,7 @@ from sqlalchemy import delete, select, update
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from rizalai.content.loader import content_hash, exercise_id, lesson_id, load_content, unit_id
+from rizalai.content.loader import NAMESPACE, content_hash, exercise_id, lesson_id, load_content, unit_id
 from rizalai.contracts.lesson import LessonContent, PassageRef
 from rizalai.db.models import Exercise, Lesson, SourcePassage, Unit
 
@@ -57,12 +57,39 @@ async def resolve_passage_ids(session: AsyncSession, refs: list[PassageRef]) -> 
     return ids, unresolved
 
 
+def _locator_clause(ref: PassageRef) -> list[Any]:
+    return [
+        SourcePassage.work == ref.work,
+        SourcePassage.language == ref.language,
+        SourcePassage.chapter == ref.chapter,
+        SourcePassage.paragraph_index == ref.paragraph_index,
+    ]
+
+
+async def align_passage_groups(session: AsyncSession, lesson_slug: str, refs: list[PassageRef]) -> int:
+    """Stamp passage_group_id on refs that share a group. The id derives from
+    the lesson slug and group name, so re-seeding is stable. Returns the
+    number of rows updated. Alignment is by content, recorded by the author,
+    never inferred from chapter numbers."""
+    updated = 0
+    for ref in refs:
+        if ref.group is None:
+            continue
+        group_id = uuid.uuid5(NAMESPACE, f"group:{lesson_slug}:{ref.group}")
+        result: Any = await session.execute(
+            update(SourcePassage).where(*_locator_clause(ref)).values(passage_group_id=group_id)
+        )
+        updated += int(result.rowcount or 0)
+    return updated
+
+
 async def _seed_lesson(
     session: AsyncSession, unit_uuid: uuid.UUID, order_index: int, lesson: LessonContent, report: SeedReport
 ) -> None:
     lid = lesson_id(lesson.slug)
     passage_ids, unresolved = await resolve_passage_ids(session, lesson.source_passages)
     report.unresolved_passages += unresolved
+    await align_passage_groups(session, lesson.slug, lesson.source_passages)
 
     values = {
         "id": lid,
@@ -127,6 +154,13 @@ async def seed_content(session: AsyncSession, content_dir: Path) -> SeedReport:
         )
         await session.execute(stmt)
         report.units += 1
+        # Lessons dropped from unit.yaml leave the spine. Park the order of
+        # the survivors so reordering cannot collide on (unit_id, order_index).
+        keep = [lesson_id(lesson.slug) for lesson in unit.lessons]
+        await session.execute(delete(Lesson).where(Lesson.unit_id == uid, Lesson.id.not_in(keep)))
+        await session.execute(
+            update(Lesson).where(Lesson.unit_id == uid).values(order_index=-Lesson.order_index - 1)
+        )
         for order, lesson in enumerate(unit.lessons):
             await _seed_lesson(session, uid, order, lesson, report)
     await session.commit()

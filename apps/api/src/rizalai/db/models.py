@@ -182,7 +182,8 @@ class ReviewQueue(Base):
     last_review: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     reps: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     lapses: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
-    state: Mapped[str] = mapped_column(String(12), nullable=False)  # new|learning|review|relearning
+    state: Mapped[str] = mapped_column(String(12), nullable=False)  # learning|review|relearning
+    step: Mapped[int | None] = mapped_column(Integer)  # FSRS learning step within a state
 
     __table_args__ = (
         UniqueConstraint("user_id", "exercise_id", name="uq_review_user_exercise"),
