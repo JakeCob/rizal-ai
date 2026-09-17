@@ -9,6 +9,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from rizalai.db.session import dispose_engine, get_session
+from rizalai.lessons.router import router as lessons_router
 from rizalai.users.router import router as users_router
 
 
@@ -27,6 +28,7 @@ def create_app() -> FastAPI:
         return {"status": "ok", "db": "ok"}
 
     app.include_router(users_router)
+    app.include_router(lessons_router)
     return app
 
 

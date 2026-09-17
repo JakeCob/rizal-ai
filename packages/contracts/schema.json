@@ -1,0 +1,640 @@
+{
+  "$defs": {
+    "Beat": {
+      "additionalProperties": false,
+      "properties": {
+        "audio_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Audio Url"
+        },
+        "en": {
+          "minLength": 1,
+          "title": "En",
+          "type": "string"
+        },
+        "exercise_after": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Exercise key to run after this beat",
+          "title": "Exercise After"
+        },
+        "line_id": {
+          "maxLength": 20,
+          "minLength": 1,
+          "title": "Line Id",
+          "type": "string"
+        },
+        "speaker": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Speaker"
+        },
+        "tl": {
+          "minLength": 1,
+          "title": "Tl",
+          "type": "string"
+        }
+      },
+      "required": [
+        "line_id",
+        "tl",
+        "en"
+      ],
+      "title": "Beat",
+      "type": "object"
+    },
+    "ComprehensionMC": {
+      "additionalProperties": false,
+      "description": "Multiple choice about the passage.",
+      "properties": {
+        "correct_index": {
+          "minimum": 0,
+          "title": "Correct Index",
+          "type": "integer"
+        },
+        "explanation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Explanation"
+        },
+        "key": {
+          "description": "Stable key within the lesson",
+          "maxLength": 20,
+          "minLength": 1,
+          "title": "Key",
+          "type": "string"
+        },
+        "options": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 4,
+          "minItems": 2,
+          "title": "Options",
+          "type": "array"
+        },
+        "question": {
+          "minLength": 1,
+          "title": "Question",
+          "type": "string"
+        },
+        "type": {
+          "const": "comprehension_mc",
+          "title": "Type",
+          "type": "string"
+        },
+        "xp": {
+          "default": 10,
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Xp",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "key",
+        "type",
+        "question",
+        "options",
+        "correct_index"
+      ],
+      "title": "ComprehensionMC",
+      "type": "object"
+    },
+    "ExerciseOut": {
+      "properties": {
+        "exercise": {
+          "discriminator": {
+            "mapping": {
+              "comprehension_mc": "#/$defs/ComprehensionMC",
+              "listen_tap": "#/$defs/ListenTap",
+              "sentence_assembly": "#/$defs/SentenceAssembly",
+              "translate_line": "#/$defs/TranslateLine"
+            },
+            "propertyName": "type"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/SentenceAssembly"
+            },
+            {
+              "$ref": "#/$defs/TranslateLine"
+            },
+            {
+              "$ref": "#/$defs/ListenTap"
+            },
+            {
+              "$ref": "#/$defs/ComprehensionMC"
+            }
+          ],
+          "title": "Exercise"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "order_index": {
+          "title": "Order Index",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "order_index",
+        "exercise"
+      ],
+      "title": "ExerciseOut",
+      "type": "object"
+    },
+    "LessonOut": {
+      "properties": {
+        "estimated_minutes": {
+          "title": "Estimated Minutes",
+          "type": "integer"
+        },
+        "exercises": {
+          "items": {
+            "$ref": "#/$defs/ExerciseOut"
+          },
+          "title": "Exercises",
+          "type": "array"
+        },
+        "grammar_focus": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Grammar Focus",
+          "type": "array"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "slug": {
+          "title": "Slug",
+          "type": "string"
+        },
+        "source_passage_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Source Passage Ids",
+          "type": "array"
+        },
+        "target_vocab": {
+          "items": {
+            "$ref": "#/$defs/VocabItem"
+          },
+          "title": "Target Vocab",
+          "type": "array"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "unit_id": {
+          "format": "uuid",
+          "title": "Unit Id",
+          "type": "string"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        },
+        "vignette": {
+          "items": {
+            "$ref": "#/$defs/Beat"
+          },
+          "title": "Vignette",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "unit_id",
+        "slug",
+        "title",
+        "version",
+        "estimated_minutes",
+        "grammar_focus",
+        "target_vocab",
+        "source_passage_ids",
+        "vignette",
+        "exercises"
+      ],
+      "title": "LessonOut",
+      "type": "object"
+    },
+    "ListenTap": {
+      "additionalProperties": false,
+      "description": "Hear a Tagalog line, tap the words heard.",
+      "properties": {
+        "answer_tokens": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Answer Tokens",
+          "type": "array"
+        },
+        "audio_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Audio Url"
+        },
+        "bank": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Bank",
+          "type": "array"
+        },
+        "key": {
+          "description": "Stable key within the lesson",
+          "maxLength": 20,
+          "minLength": 1,
+          "title": "Key",
+          "type": "string"
+        },
+        "transcript_tl": {
+          "minLength": 1,
+          "title": "Transcript Tl",
+          "type": "string"
+        },
+        "type": {
+          "const": "listen_tap",
+          "title": "Type",
+          "type": "string"
+        },
+        "xp": {
+          "default": 10,
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Xp",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "key",
+        "type",
+        "transcript_tl",
+        "answer_tokens",
+        "bank"
+      ],
+      "title": "ListenTap",
+      "type": "object"
+    },
+    "SentenceAssembly": {
+      "additionalProperties": false,
+      "description": "Build the Tagalog line from a word bank, given the English.",
+      "properties": {
+        "answer_tokens": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Answer Tokens",
+          "type": "array"
+        },
+        "bank": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Bank",
+          "type": "array"
+        },
+        "key": {
+          "description": "Stable key within the lesson",
+          "maxLength": 20,
+          "minLength": 1,
+          "title": "Key",
+          "type": "string"
+        },
+        "prompt_en": {
+          "minLength": 1,
+          "title": "Prompt En",
+          "type": "string"
+        },
+        "type": {
+          "const": "sentence_assembly",
+          "title": "Type",
+          "type": "string"
+        },
+        "xp": {
+          "default": 10,
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Xp",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "key",
+        "type",
+        "prompt_en",
+        "answer_tokens",
+        "bank"
+      ],
+      "title": "SentenceAssembly",
+      "type": "object"
+    },
+    "TranslateLine": {
+      "additionalProperties": false,
+      "description": "Translate a line in either direction from a word bank.",
+      "properties": {
+        "answer_tokens": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Answer Tokens",
+          "type": "array"
+        },
+        "bank": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Bank",
+          "type": "array"
+        },
+        "direction": {
+          "enum": [
+            "tl_to_en",
+            "en_to_tl"
+          ],
+          "title": "Direction",
+          "type": "string"
+        },
+        "key": {
+          "description": "Stable key within the lesson",
+          "maxLength": 20,
+          "minLength": 1,
+          "title": "Key",
+          "type": "string"
+        },
+        "prompt": {
+          "minLength": 1,
+          "title": "Prompt",
+          "type": "string"
+        },
+        "type": {
+          "const": "translate_line",
+          "title": "Type",
+          "type": "string"
+        },
+        "xp": {
+          "default": 10,
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Xp",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "key",
+        "type",
+        "direction",
+        "prompt",
+        "answer_tokens",
+        "bank"
+      ],
+      "title": "TranslateLine",
+      "type": "object"
+    },
+    "Tree": {
+      "properties": {
+        "units": {
+          "items": {
+            "$ref": "#/$defs/TreeUnit"
+          },
+          "title": "Units",
+          "type": "array"
+        }
+      },
+      "required": [
+        "units"
+      ],
+      "title": "Tree",
+      "type": "object"
+    },
+    "TreeLesson": {
+      "properties": {
+        "estimated_minutes": {
+          "title": "Estimated Minutes",
+          "type": "integer"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "order_index": {
+          "title": "Order Index",
+          "type": "integer"
+        },
+        "slug": {
+          "title": "Slug",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "locked",
+            "active",
+            "done"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "xp_reward": {
+          "title": "Xp Reward",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "slug",
+        "title",
+        "order_index",
+        "status",
+        "xp_reward",
+        "estimated_minutes"
+      ],
+      "title": "TreeLesson",
+      "type": "object"
+    },
+    "TreeUnit": {
+      "properties": {
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "lessons": {
+          "items": {
+            "$ref": "#/$defs/TreeLesson"
+          },
+          "title": "Lessons",
+          "type": "array"
+        },
+        "order_index": {
+          "title": "Order Index",
+          "type": "integer"
+        },
+        "slug": {
+          "title": "Slug",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "slug",
+        "title",
+        "order_index",
+        "lessons"
+      ],
+      "title": "TreeUnit",
+      "type": "object"
+    },
+    "UserOut": {
+      "properties": {
+        "hearts": {
+          "title": "Hearts",
+          "type": "integer"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "last_activity_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Last Activity Date"
+        },
+        "streak_count": {
+          "title": "Streak Count",
+          "type": "integer"
+        },
+        "timezone": {
+          "title": "Timezone",
+          "type": "string"
+        },
+        "total_xp": {
+          "title": "Total Xp",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "timezone",
+        "total_xp",
+        "streak_count",
+        "hearts",
+        "last_activity_date"
+      ],
+      "title": "UserOut",
+      "type": "object"
+    },
+    "VocabItem": {
+      "additionalProperties": false,
+      "properties": {
+        "en": {
+          "title": "En",
+          "type": "string"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "pos": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pos"
+        },
+        "tl": {
+          "title": "Tl",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tl",
+        "en"
+      ],
+      "title": "VocabItem",
+      "type": "object"
+    }
+  },
+  "title": "RizalAI API contracts"
+}
