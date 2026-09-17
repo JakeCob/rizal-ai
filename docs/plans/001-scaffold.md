@@ -1,6 +1,6 @@
 # Plan 001: Scaffold
 
-Workflow phases 0 to 2 for the scaffold. Status: in progress. Date: 2026-09-17.
+Workflow phases 0 to 5 for the scaffold. Status: complete, awaiting owner review. Date: 2026-09-17.
 
 Scope, fixed by the owner: FastAPI backend with health check, database connection, and GET /lessons/{id} returning a placeholder lesson. Next.js frontend with the skill tree screen and the exercise runner shell. Ingestion script for Noli into source_passages with embeddings. Nothing else. The authored Chapter 1 lesson and the reflection endpoint are plan 002.
 
@@ -102,35 +102,74 @@ Coverage gates: pytest-cov 80 percent on src/rizalai, Vitest 80 percent on compo
 
 ### Checklist
 
-- [ ] 1.1 uv project, ruff, mypy, pytest config
-- [ ] 1.2 Settings from env with a .env.example
-- [ ] 1.3 Async engine and session, test harness with transaction rollback
-- [ ] 1.4 SQLAlchemy models for all nine tables
-- [ ] 1.5 Alembic initial migration, plus RLS migration guarded on auth schema
-- [ ] 1.6 GET /health with db check, test red then green
-- [ ] 2.1 JWT verification for HS256 and JWKS, tests with minted tokens
-- [ ] 2.2 current_user dependency that upserts users
-- [ ] 3.1 Pydantic contracts: Beat, four exercise payloads, Exercise union, Lesson, TreeUnit, TreeLesson, Tree
-- [ ] 3.2 Export script to schema.json and TypeScript, idempotent test
-- [ ] 4.1 YAML loader with validation and content hash
-- [ ] 4.2 Placeholder lesson YAML, labeled
-- [ ] 4.3 Seed command, idempotent test
-- [ ] 4.4 GET /lessons/{id} 200, 401, 404 tests
-- [ ] 4.5 GET /tree with status computation
-- [ ] 5.1 Next.js app, Tailwind tokens from D28, shadcn init
-- [ ] 5.2 Supabase browser client, anonymous sign-in bootstrap
-- [ ] 5.3 API client with typed responses, TanStack Query provider
-- [ ] 6.1 Tree page with unit bands, nodes, popover, tests
-- [ ] 7.1 Runner reducer and grading, tests
-- [ ] 7.2 Vignette player
-- [ ] 7.3 Four exercise components
-- [ ] 7.4 Feedback sheet and completion screen
-- [ ] 8.1 Playwright smoke at 375px
-- [ ] 9.1 Gutenberg parser with fixture and offset round-trip test
-- [ ] 9.2 Ingest command, idempotent test
-- [ ] 9.3 Embedder protocol, fake, bge-m3 adapter with recorded fixture
-- [ ] 10.1 GitHub Actions: api, web, e2e jobs
-- [ ] 10.2 PWA manifest and icons
-- [ ] 10.3 READMEs
-- [ ] Scope check against this file
-- [ ] Self review, security scan (ruff S rules, pnpm audit), perf check (runner transition timing in Playwright)
+- [x] 1.1 uv project, ruff, mypy, pytest config
+- [x] 1.2 Settings from env with a .env.example
+- [x] 1.3 Async engine and session, test harness with transaction rollback
+- [x] 1.4 SQLAlchemy models for all nine tables
+- [x] 1.5 Alembic initial migration, plus RLS migration guarded on auth schema
+- [x] 1.6 GET /health with db check, test red then green
+- [x] 2.1 JWT verification for HS256 and JWKS, tests with minted tokens
+- [x] 2.2 current_user dependency that upserts users
+- [x] 3.1 Pydantic contracts: Beat, four exercise payloads, Exercise union, Lesson, TreeUnit, TreeLesson, Tree
+- [x] 3.2 Export script to schema.json and TypeScript, idempotent test
+- [x] 4.1 YAML loader with validation and content hash
+- [x] 4.2 Placeholder lesson YAML, labeled
+- [x] 4.3 Seed command, idempotent test
+- [x] 4.4 GET /lessons/{id} 200, 401, 404 tests
+- [x] 4.5 GET /tree with status computation
+- [x] 5.1 Next.js app, Tailwind tokens from D28, shadcn init
+- [x] 5.2 Supabase browser client, anonymous sign-in bootstrap
+- [x] 5.3 API client with typed responses, TanStack Query provider
+- [x] 6.1 Tree page with unit bands, nodes, popover, tests
+- [x] 7.1 Runner reducer and grading, tests
+- [x] 7.2 Vignette player
+- [x] 7.3 Four exercise components
+- [x] 7.4 Feedback sheet and completion screen
+- [x] 8.1 Playwright smoke at 375px
+- [x] 9.1 Gutenberg parser with fixture and offset round-trip test
+- [x] 9.2 Ingest command, idempotent test
+- [x] 9.3 Embedder protocol, fake, bge-m3 adapter with recorded fixture
+- [x] 10.1 GitHub Actions: api, web, e2e jobs
+- [~] 10.2 PWA manifest and icons: manifest, SVG icon, and service worker done; PNG icons at 192 and 512 not generated
+- [x] 10.3 READMEs
+- [x] Scope check against this file: everything listed under Scope was built; nothing outside it (no attempts endpoint, no completion endpoint, no LLM, no audio)
+- [x] Self review, security scan (ruff S rules clean; pnpm audit found four postcss advisories pinned by Next 15.5, fixed with a pnpm override), perf check (Playwright asserts the Check to feedback transition under 200ms)
+
+## Phase 3 record
+
+Red before green was shown for: health, auth, contracts, content loader and seed, lesson and tree endpoints, embedder, parser, ingest. On the web side the first Vitest run before implementation failed at collection (missing modules crash the transform, so Vitest reported no tests rather than red tests); the tests were written before the components regardless.
+
+Results at the end of the plan:
+
+| Suite | Result | Coverage |
+|---|---|---|
+| API pytest | 60 passed | 91.7 percent |
+| Web Vitest | 31 passed | 84 percent lines |
+| Web Playwright, iPhone 13 on Chromium | 2 passed | n/a |
+| ruff, mypy strict, eslint, tsc | clean | |
+
+Ingest against the dev database: Spanish 4217 passages, Tagalog 4368, English 3529, chapters 1 to 63 each, embedded with the fake embedder because no embeddings key exists. The placeholder lesson's two passage refs resolve after ingest.
+
+## Phase 4: Review
+
+- Docs updated: docs/architecture.md unchanged (no drift), DECISIONS.md gained D29 (corpus availability corrected) and D30 (dev environment), docs/tech-debt.md items 1 to 10, docs/rollback.md.
+- Feature flag: none needed; nothing ships to learners yet.
+- Knowledge share: AGENTS.md and CLAUDE.md for agents, README per app with the frontend decisions explained in plain terms.
+- Open for the owner: push access (the gh CLI is logged in as a different account), credentials for Supabase, Anthropic, and DeepInfra, and approval of the D28 design direction.
+
+## Phase 5: Retrospective
+
+What worked:
+- Contracts first. The Pydantic union drove the YAML, the seed, the API, the generated TypeScript, and four React components without a single shape mismatch.
+- The pure runner reducer. Ten unit tests caught the flow logic before any component existed, and the component stayed thin.
+- Real-text fixtures for the parser. Synthetic fixtures would have missed the Tagalog = markers and the variable blank lines.
+
+What did not:
+- Two environment assumptions cost time: docker was blocked, and Node 20 broke both pnpm 11 and jsdom. Checking the toolchain in Phase 0 would have surfaced both earlier.
+- The grilling session asserted that the Spanish Noli and Tagalog Fili were not on Gutenberg without checking. Both are. Claims about source availability should be verified with a search before they become decisions.
+- The Playwright device profile silently required WebKit; pinning the browser in the config should be the default.
+
+Change for plan 002:
+- Start with a one-command environment check (postgres, node, pnpm, browsers, keys present or absent).
+- Author the Chapter 1 lesson against the real ingested passages, and pin passage ids by locator in the YAML as designed.
+- Add POST /attempts and POST /lessons/{id}/complete before the reflection endpoint, per the owner's order.
