@@ -1,10 +1,9 @@
 """Verify Supabase access tokens.
 
-Supabase projects sign tokens one of two ways. Legacy projects use a shared
-HS256 secret. Projects created since 2025 use asymmetric keys published at
-{SUPABASE_URL}/auth/v1/.well-known/jwks.json. The verifier supports both:
-an HS256 token is checked against the secret, an ES256 or RS256 token is
-checked against the JWKS key whose kid matches the token header.
+The API issues its own HS256 tokens (rizalai.auth.session). A future
+identity provider publishes asymmetric keys at a JWKS URL. The verifier
+supports both: an HS256 token is checked against the secret, an ES256 or
+RS256 token is checked against the JWKS key whose kid matches the header.
 """
 
 import time
@@ -34,8 +33,8 @@ class TokenClaims:
     raw: dict[str, Any]
 
 
-def http_jwks_fetcher(supabase_url: str) -> JwksFetcher:
-    url = f"{supabase_url.rstrip('/')}/auth/v1/.well-known/jwks.json"
+def http_jwks_fetcher(jwks_url: str) -> JwksFetcher:
+    url = jwks_url
 
     def fetch() -> dict[str, Any]:
         response = httpx.get(url, timeout=5.0)

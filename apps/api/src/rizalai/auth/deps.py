@@ -26,8 +26,9 @@ bearer = HTTPBearer(auto_error=False)
 @lru_cache
 def get_verifier() -> JwtVerifier:
     settings = get_settings()
-    fetcher = http_jwks_fetcher(settings.supabase_url) if settings.supabase_url else None
-    return JwtVerifier(secret=settings.supabase_jwt_secret, jwks_fetcher=fetcher)
+    fetcher = http_jwks_fetcher(settings.auth_jwks_url) if settings.auth_jwks_url else None
+    secret = settings.session_jwt_secret or settings.supabase_jwt_secret
+    return JwtVerifier(secret=secret, jwks_fetcher=fetcher)
 
 
 def _unauthorized(detail: str) -> HTTPException:

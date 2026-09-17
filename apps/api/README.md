@@ -14,7 +14,7 @@ uv run rizalai seed
 uv run uvicorn rizalai.main:app --reload
 ```
 
-Then `GET http://localhost:8000/health`. Authed endpoints need a Supabase access token as a Bearer header. Without a Supabase project, set `SUPABASE_JWT_SECRET` in `.env` and mint a token with the helper in `tests/helpers.py`.
+Then `GET http://localhost:8000/health`. Set `SESSION_JWT_SECRET` in `.env` (any long random string locally), then `POST /session/anonymous` returns a token to send as a Bearer header on the authed endpoints.
 
 ## Test
 
@@ -30,7 +30,7 @@ uv run mypy
 src/rizalai/
   main.py        app factory, /health
   config.py      settings from env
-  auth/          Supabase JWT verification, current_user dependency
+  auth/          session issuing, JWT verification, current_user dependency
   contracts/     Pydantic contracts, JSON Schema export
   content/       YAML loader, hashing, stable ids, seed
   lessons/       GET /lessons/{id}, GET /tree
@@ -45,7 +45,8 @@ tests/           unit (no db), integration (real db, rolled back per test)
 | Method | Path | Auth | Notes |
 |---|---|---|---|
 | GET | /health | no | db check |
-| GET | /me | yes | creates the users row on first call, regenerates hearts, reads X-Timezone |
+| POST | /session/anonymous | no | issues a year-long anonymous token and creates the learner |
+| GET | /me | yes | regenerates hearts, reads X-Timezone |
 | GET | /tree | yes | units and lessons with locked, active, done status |
 | GET | /lessons/{id} | yes | whole lesson including answers, for local grading |
 | GET | /lessons/{id}/reflection | yes | passage layers plus the cached or freshly generated reflection |
@@ -53,7 +54,7 @@ tests/           unit (no db), integration (real db, rolled back per test)
 | POST | /lessons/{id}/complete | yes | re-grades attempts since the last completion, awards XP, streak, FSRS |
 | GET | /review/due | yes | up to ten due review items |
 | POST | /review/answer | yes | reschedules through FSRS, refills hearts every ten answers |
-| GET | /audio/{file} | no | pre-rendered audio when AUDIO_STORE=local |
+| GET | /audio/{key} | no | pre-rendered audio from the local or S3 store, cached for a year |
 
 ## Commands
 
@@ -72,4 +73,4 @@ uv run rizalai eval-reflection --models anthropic/claude-opus-5,qwen/qwen3.8-max
 uv run rizalai eval-summary ../../evals/reflection/results/<run>   # after filling scores.csv
 ```
 
-Provider switches, all defaulting to fakes so a fresh checkout runs with no keys: LLM_PROVIDER (fake, openrouter, anthropic; OpenRouter is production, D32), EMBEDDINGS_PROVIDER (fake, deepinfra), TTS_ENGINE (fake, mms, xtts, google), AUDIO_STORE (local, supabase).
+Provider switches, all defaulting to fakes so a fresh checkout runs with no keys: LLM_PROVIDER (fake, openrouter, anthropic; OpenRouter is production, D32), EMBEDDINGS_PROVIDER (fake, deepinfra), TTS_ENGINE (fake, mms, xtts, google), AUDIO_STORE (local, s3 for a Railway bucket).

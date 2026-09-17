@@ -31,7 +31,7 @@ In scope:
 - Lesson structure: 4 to 8 line vignette, then 6 to 12 exercises across four types: sentence_assembly, translate_line, listen_tap, comprehension_mc.
 - XP per exercise, daily streak, hearts, spaced repetition review queue.
 - "In Rizal's voice" card: original passage in Spanish, 1909 Tagalog, and English, plus a bilingual generated reflection with cited quotes.
-- Anonymous auth with persistent progress.
+- Anonymous sessions issued by the API with persistent progress.
 - Corpus: Noli Me Tangere in three languages.
 
 Out of scope for MVP: voice input and output, Ilokano, social features, multiplayer, fine-tuning, word_picture exercises, offline lessons, streak freezes, account linking UI, personalized reflections.
@@ -57,7 +57,7 @@ Written as Given, When, Then. These are the acceptance criteria for the first de
 
 ### 6.1 Identity and progress
 
-- Given a first-time visitor, when they open the app, then an anonymous session is created and the skill tree renders without a sign-up form.
+- Given a first-time visitor, when they open the app, then the API issues an anonymous session token, the browser keeps it, and the skill tree renders without a sign-up form.
 - Given a learner with progress, when they reload the page, then XP, streak, hearts, and lesson completion are unchanged.
 
 ### 6.2 Skill tree
@@ -118,6 +118,7 @@ See docs/architecture.md section 3. Tables: users, units, lessons, exercises, so
 ## 8. Interfaces
 
 - GET /health
+- POST /session/anonymous
 - GET /tree
 - GET /lessons/{id}
 - GET /lessons/{id}/reflection
@@ -126,8 +127,9 @@ See docs/architecture.md section 3. Tables: users, units, lessons, exercises, so
 - GET /review/due
 - POST /review/answer
 - GET /me
+- GET /audio/{key}
 
-All endpoints except /health require a Supabase JWT.
+All endpoints except /health, /session/anonymous, and /audio require the session token as a Bearer header.
 
 ## 9. Non-functional requirements
 

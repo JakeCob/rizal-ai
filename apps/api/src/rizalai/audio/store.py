@@ -1,16 +1,29 @@
-"""Where rendered audio lives. Local for development (served by the API at
-/audio), Supabase Storage in production (public bucket, CDN URLs)."""
+"""Where rendered audio lives: a local directory for development, an
+S3-compatible bucket (Railway buckets) in production. Either way the web
+app fetches audio from the API at /audio/{key}, so URLs never depend on the
+store and the bucket needs no public access (DECISIONS.md D33)."""
 
+import mimetypes
 from pathlib import Path
-from typing import Protocol
-
-import httpx
+from typing import Any, Protocol
 
 
 class AudioStore(Protocol):
     def exists(self, key: str) -> bool: ...
     def put(self, key: str, data: bytes, content_type: str) -> None: ...
+    def get(self, key: str) -> tuple[bytes, str] | None: ...
     def url(self, key: str) -> str: ...
+
+
+CONTENT_TYPES = {".wav": "audio/wav", ".mp3": "audio/mpeg"}
+
+
+def _content_type(key: str) -> str:
+    for ext, content_type in CONTENT_TYPES.items():
+        if key.endswith(ext):
+            return content_type
+    guessed, _ = mimetypes.guess_type(key)
+    return guessed or "application/octet-stream"
 
 
 class LocalAudioStore:
@@ -25,37 +38,65 @@ class LocalAudioStore:
     def put(self, key: str, data: bytes, content_type: str) -> None:
         (self._dir / key).write_bytes(data)
 
+    def get(self, key: str) -> tuple[bytes, str] | None:
+        path = self._dir / key
+        if not path.is_file():
+            return None
+        return path.read_bytes(), _content_type(key)
+
     def url(self, key: str) -> str:
         return f"{self._base}/{key}"
 
 
-class SupabaseAudioStore:
-    """Supabase Storage through its REST API. The bucket must be public so
-    the web app can play files by URL without a token."""
+class S3AudioStore:
+    """Any S3-compatible bucket through boto3. Railway buckets expose an S3
+    endpoint plus access keys; the same adapter works for R2 or AWS."""
 
-    def __init__(
-        self,
-        supabase_url: str,
-        service_role_key: str,
-        bucket: str = "audio",
-        client: httpx.Client | None = None,
-    ) -> None:
-        self._base = supabase_url.rstrip("/")
+    def __init__(self, client: Any, bucket: str, base_url: str) -> None:
+        self._s3 = client
         self._bucket = bucket
-        self._client = client or httpx.Client(timeout=60.0)
-        self._headers = {"Authorization": f"Bearer {service_role_key}", "apikey": service_role_key}
+        self._base = base_url.rstrip("/")
 
     def exists(self, key: str) -> bool:
-        response = self._client.head(self.url(key))
-        return response.status_code == 200
+        from botocore.exceptions import ClientError
+
+        try:
+            self._s3.head_object(Bucket=self._bucket, Key=key)
+        except ClientError as exc:
+            if exc.response.get("Error", {}).get("Code") in ("404", "NoSuchKey", "NotFound"):
+                return False
+            raise
+        return True
 
     def put(self, key: str, data: bytes, content_type: str) -> None:
-        response = self._client.post(
-            f"{self._base}/storage/v1/object/{self._bucket}/{key}",
-            headers={**self._headers, "Content-Type": content_type, "x-upsert": "true"},
-            content=data,
-        )
-        response.raise_for_status()
+        self._s3.put_object(Bucket=self._bucket, Key=key, Body=data, ContentType=content_type)
+
+    def get(self, key: str) -> tuple[bytes, str] | None:
+        from botocore.exceptions import ClientError
+
+        try:
+            obj = self._s3.get_object(Bucket=self._bucket, Key=key)
+        except ClientError as exc:
+            if exc.response.get("Error", {}).get("Code") in ("404", "NoSuchKey", "NotFound"):
+                return None
+            raise
+        body: bytes = obj["Body"].read()
+        return body, str(obj.get("ContentType") or _content_type(key))
 
     def url(self, key: str) -> str:
-        return f"{self._base}/storage/v1/object/public/{self._bucket}/{key}"
+        return f"{self._base}/{key}"
+
+
+def s3_store_from_settings(
+    *, endpoint_url: str, bucket: str, access_key_id: str, secret_access_key: str, region: str, base_url: str
+) -> S3AudioStore:
+    import boto3
+
+    client = boto3.client(
+        "s3",
+        endpoint_url=endpoint_url,
+        aws_access_key_id=access_key_id,
+        aws_secret_access_key=secret_access_key,
+        region_name=region,
+    )
+    return S3AudioStore(client=client, bucket=bucket, base_url=base_url)

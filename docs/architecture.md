@@ -16,7 +16,7 @@ rizal-ai/
         main.py             app factory, health, routers
         config.py           pydantic-settings, all env vars
         db/                 SQLAlchemy models, async session, Alembic
-        auth/               Supabase JWT verification
+        auth/               session issuing and JWT verification
         lessons/            lesson read model, seed loader
         progress/           attempts, completion transaction, hearts, streak
         srs/                FSRS scheduling over review_queue
@@ -27,7 +27,7 @@ rizal-ai/
       scripts/
         ingest_noli.py      Gutenberg text to source_passages
         seed_content.py     content/ YAML to units/lessons/exercises
-        render_audio.py     vignette lines to Supabase Storage
+        render_audio.py     vignette lines to the audio store (local or Railway bucket)
         tts_bakeoff.py      3 lines x 3 engines to samples/
         llm_eval.py         5 passages x N models, blind grading sheet
       alembic/
@@ -42,7 +42,7 @@ rizal-ai/
         tree/
       lib/
         api.ts              typed fetch client over FastAPI
-        supabase.ts         auth only, plus Storage audio URLs
+        session.ts          anonymous session from the API
         types.generated.ts  from packages/contracts, do not edit
       e2e/                  Playwright, iPhone viewport
       public/manifest.json
@@ -78,13 +78,13 @@ Which Tagalog learners drill: our own modern adaptation of each scene. Poblete's
 
 ## 3. Data model
 
-All ids are uuid unless noted. Timestamps are timestamptz. auth.users is Supabase's table; we reference it and never write to it.
+All ids are uuid unless noted. Timestamps are timestamptz. Learner ids are minted by the API when an anonymous session is created (D33).
 
 ### Identity and state
 
 ```
 users
-  id                 uuid pk, = auth.users.id
+  id                 uuid pk, minted at POST /session/anonymous
   timezone           text            IANA, captured from browser on first session
   total_xp           int             default 0
   streak_count       int             default 0
@@ -191,6 +191,8 @@ generated_content_cache
 
 ## 4. Request flows
 
+Session: the browser calls POST /session/anonymous on first visit, keeps the token in localStorage, and sends it as a Bearer header on every call. Account linking is a later feature.
+
 Lesson start: GET /lessons/{id} returns the whole lesson, exercises with answers, audio URLs, and the pinned passages. The client fires GET /lessons/{id}/reflection in parallel so the card is ready before the last exercise. Every exercise transition is local state.
 
 Per answer: POST /attempts, fire and forget, optimistic UI. Grading is local against the shipped answer key.
@@ -207,15 +209,15 @@ Hearts at zero: runner exits to a practice screen that plays due review_queue it
 2. Reflection is bilingual, Tagalog written first, one structured call, cached per lesson version, prefetched at lesson start.
 3. Byline attaches to spans; each span must be a verbatim substring of a source_passages row.
 4. Corpus MVP is Noli only in es, tl (Poblete), en (Derbyshire). Fili, essays, and letters wait on a per-work licensing check; Tagalog translations of the latter are likely still under copyright.
-5. Supabase Auth with anonymous sign-in from day one; email or Google linking later keeps progress.
+5. Superseded by D33: the API issues anonymous session tokens; a provider for account linking comes later.
 6. Authored spine is YAML in the repo, seeded to Postgres. lesson_version is a content hash.
 7. Monorepo with apps/api, apps/web, content/, packages/contracts.
 8. LLM default is Claude Opus 5 via the Anthropic Python SDK behind an LLMClient protocol. An eval harness compares Claude, SEA-LION v3, and Qwen 3 on 5 Noli passages, graded blind. Provider is a config value.
 9. Embeddings are bge-m3 via a hosted inference API, dense in pgvector and sparse in jsonb, model name stored per row.
-10. Web on Vercel, API on Railway, Postgres on Supabase.
-11. TTS is pre-rendered at seed time into Supabase Storage keyed by content hash. A bake-off script renders 3 lines with MMS-TTS Tagalog, XTTS v2, and Google fil-PH; the engine is chosen by ear on a phone.
+10. Web on Vercel; API, Postgres, and the audio bucket in one Railway project (D33).
+11. TTS is pre-rendered at seed time into a Railway bucket keyed by content hash, served by the API at /audio/{key}. A bake-off script renders 3 lines with MMS-TTS Tagalog, XTTS v2, and Google fil-PH; the engine is chosen by ear on a phone.
 12. Exercise types at MVP: sentence_assembly, translate_line, listen_tap, comprehension_mc. word_picture deferred until there is an illustration pipeline.
-13. Thin client: browser calls FastAPI with the Supabase JWT, whole lesson fetched at start, TanStack Query.
+13. Thin client: browser calls FastAPI with the session token, whole lesson fetched at start, TanStack Query.
 14. Server-authoritative progress: per-attempt events, transactional completion, local grading re-checked on the server.
 15. Hearts: 5, minus 1 per wrong answer, lazy regen 1 per 4 hours, zero ends the lesson into a practice-to-refill flow.
 16. Streak: learner timezone on profile, extends on first completion of the local day.
@@ -223,7 +225,7 @@ Hearts at zero: runner exits to a practice screen that plays due review_queue it
 18. Passage alignment: one row per language paragraph, optional passage_group_id, manual alignment for pinned passages only.
 19. Character tags: LLM-tagged at ingest against a fixed character list, tag_source recorded, hand-corrected for pinned passages.
 20. Quality gate: citation validator (hard), judge score (threshold), one-command reject.
-21. FastAPI uses the service role with explicit user_id scoping in every query. RLS stays on for the browser's Supabase client, which is used only for auth and Storage.
+21. FastAPI scopes every learner query by user_id in code. The browser never talks to the database, only to the API (D22 as amended by D33).
 22. Tests: pytest against a Postgres service container, Vitest for the runner, one Playwright play-through at 375px against a mock API. GitHub Actions on every PR, 80 percent coverage gate, LLM and TTS mocked in CI, nightly real eval.
 23. Migrations: Alembic, run on Railway deploy before uvicorn.
 24. PWA at MVP: manifest, icons, app-shell service worker. No offline lessons.

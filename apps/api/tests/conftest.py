@@ -14,7 +14,7 @@ from collections.abc import AsyncIterator
 from pathlib import Path
 
 os.environ["ENV"] = "test"
-os.environ["SUPABASE_JWT_SECRET"] = "test-secret-do-not-use-in-production"
+os.environ["SESSION_JWT_SECRET"] = "test-secret-do-not-use-in-production"
 
 import pytest
 from httpx import ASGITransport, AsyncClient

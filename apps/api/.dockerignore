@@ -1,0 +1,10 @@
+.venv
+.pytest_cache
+.mypy_cache
+.ruff_cache
+htmlcov
+data/raw
+data/audio
+samples
+tests
+.env
