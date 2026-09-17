@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# Node
+node_modules/
+.next/
+out/
+coverage/
+playwright-report/
+test-results/
+*.tsbuildinfo
+next-env.d.ts
+
+# Env and secrets
+.env
+.env.*
+!.env.example
+
+# Data
+apps/api/data/raw/
+samples/
+*.mp3
+*.wav
+
+# OS and editors
+.DS_Store
+.idea/
+.vscode/
