@@ -18,6 +18,7 @@ from rizalai.corpus.embeddings import embedder_from_settings
 from rizalai.corpus.gutenberg import EDITIONS, fetch_gutenberg_text
 from rizalai.corpus.ingest import ingest_text
 from rizalai.db.session import dispose_engine, get_session_factory
+from rizalai.generation.service import list_reflections, reject_reflection
 
 RAW_DIR = Path("data/raw")
 
@@ -57,6 +58,23 @@ async def _ingest(key: str, file: Path | None, embed: bool) -> None:
     )
 
 
+async def _reflections(action: str, cache_id: str | None) -> None:
+    import uuid
+
+    async with get_session_factory()() as session:
+        if action == "list":
+            for row in await list_reflections(session):
+                created = f"{row.created_at:%Y-%m-%d %H:%M}"
+                print(
+                    f"{row.id}  {row.status:<9} valid={row.citations_valid!s:<5} model={row.model} "
+                    f"prompt={row.prompt_version} judge={row.judge_score} created={created}"
+                )
+        elif action == "reject" and cache_id:
+            ok = await reject_reflection(session, uuid.UUID(cache_id))
+            print("rejected" if ok else "not found")
+    await dispose_engine()
+
+
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
     parser = argparse.ArgumentParser(prog="rizalai")
@@ -73,6 +91,10 @@ def main() -> None:
     ingest.add_argument("--file", type=Path, default=None, help="local text file; downloaded if absent")
     ingest.add_argument("--no-embed", action="store_true", help="skip the embedding step")
 
+    reflections = sub.add_parser("reflections", help="list or reject cached reflections")
+    reflections.add_argument("action", choices=["list", "reject"])
+    reflections.add_argument("cache_id", nargs="?", default=None)
+
     args = parser.parse_args()
     if args.command == "seed":
         asyncio.run(_seed(args.content_dir or get_settings().content_dir))
@@ -81,3 +103,5 @@ def main() -> None:
         print(f"wrote {args.path}")
     elif args.command == "ingest":
         asyncio.run(_ingest(args.edition, args.file, embed=not args.no_embed))
+    elif args.command == "reflections":
+        asyncio.run(_reflections(args.action, args.cache_id))

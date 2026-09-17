@@ -149,6 +149,7 @@ class ExerciseAttempt(Base):
     correct: Mapped[bool] = mapped_column(Boolean, nullable=False)
     response: Mapped[dict[str, object]] = mapped_column(JSONB, nullable=False)
     duration_ms: Mapped[int] = mapped_column(Integer, nullable=False)
+    kind: Mapped[str] = mapped_column(String(10), server_default="lesson", nullable=False)  # lesson|review
     created_at: Mapped[datetime] = _created_at()
 
     __table_args__ = (Index("ix_attempts_user_lesson_time", "user_id", "lesson_id", "created_at"),)

@@ -12,8 +12,9 @@ target_vocab:
   - { tl: hapunan, en: dinner, pos: noun }
   - { tl: bisita, en: guest, pos: noun }
 source_passages:
-  - { work: noli, language: es, chapter: 1, paragraph_index: 1 }
-  - { work: noli, language: tl, chapter: 1, paragraph_index: 1 }
+  - { work: noli, language: es, chapter: 1, paragraph_index: 1, group: opening }
+  - { work: noli, language: tl, chapter: 1, paragraph_index: 1, group: opening }
+  - { work: noli, language: en, chapter: 1, paragraph_index: 1, group: opening }
 vignette:
   - line_id: b1
     speaker: null
