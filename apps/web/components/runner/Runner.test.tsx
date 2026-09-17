@@ -12,7 +12,22 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Runner } from "./Runner";
+import type { ApiClient } from "@/lib/api/client";
 import { MOCK_LESSON } from "@/lib/api/fixtures";
+
+/** An API whose calls never resolve: proves the runner never waits on the
+ * network between exercises. */
+const pending = () => new Promise<never>(() => {});
+const stalledApi: ApiClient = {
+  getTree: pending,
+  getLesson: pending,
+  getMe: pending,
+  getReflection: pending,
+  postAttempt: pending,
+  completeLesson: pending,
+  getReviewDue: pending,
+  postReviewAnswer: pending,
+};
 
 const fetchSpy = vi.fn();
 
@@ -24,6 +39,10 @@ afterEach(() => {
   fetchSpy.mockReset();
 });
 
+/** The Tagalog line is split into tappable words, so match the paragraph. */
+const line = (text: string) => (_: string, el: Element | null) =>
+  el?.tagName.toLowerCase() === "p" && el.textContent === text;
+
 async function tapTokens(user: ReturnType<typeof userEvent.setup>, tokens: string[]) {
   const bank = screen.getByRole("group", { name: /word bank/i });
   for (const t of tokens) {
@@ -34,12 +53,12 @@ async function tapTokens(user: ReturnType<typeof userEvent.setup>, tokens: strin
 describe("Runner", () => {
   it("plays the vignette line by line", async () => {
     const user = userEvent.setup();
-    render(<Runner lesson={MOCK_LESSON} hearts={5} />);
-    expect(screen.getByText("May hapunan sa bahay ni Kapitan Tiago.")).toBeInTheDocument();
-    expect(screen.queryByText("Marami ang bisita ngayong gabi.")).not.toBeInTheDocument();
+    render(<Runner lesson={MOCK_LESSON} hearts={5} api={stalledApi} />);
+    expect(screen.getByText(line("May hapunan sa bahay ni Kapitan Tiago."))).toBeInTheDocument();
+    expect(screen.queryByText(line("Marami ang bisita ngayong gabi."))).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /continue/i }));
-    expect(screen.getByText("Marami ang bisita ngayong gabi.")).toBeInTheDocument();
-    expect(screen.getByText("May hapunan sa bahay ni Kapitan Tiago.").closest("[data-dimmed]")).toHaveAttribute(
+    expect(screen.getByText(line("Marami ang bisita ngayong gabi."))).toBeInTheDocument();
+    expect(screen.getByText(line("May hapunan sa bahay ni Kapitan Tiago.")).closest("[data-dimmed]")).toHaveAttribute(
       "data-dimmed",
       "true",
     );
@@ -47,7 +66,7 @@ describe("Runner", () => {
 
   it("runs the attached exercise and grades a correct answer green", async () => {
     const user = userEvent.setup();
-    render(<Runner lesson={MOCK_LESSON} hearts={5} />);
+    render(<Runner lesson={MOCK_LESSON} hearts={5} api={stalledApi} />);
     await user.click(screen.getByRole("button", { name: /continue/i }));
     await user.click(screen.getByRole("button", { name: /continue/i }));
     expect(screen.getByText("There are many guests tonight.")).toBeInTheDocument();
@@ -60,7 +79,7 @@ describe("Runner", () => {
 
   it("shows the correct answer and spends a heart on a wrong answer", async () => {
     const user = userEvent.setup();
-    render(<Runner lesson={MOCK_LESSON} hearts={5} />);
+    render(<Runner lesson={MOCK_LESSON} hearts={5} api={stalledApi} />);
     await user.click(screen.getByRole("button", { name: /continue/i }));
     await user.click(screen.getByRole("button", { name: /continue/i }));
     await tapTokens(user, ["gabi"]);
@@ -71,9 +90,9 @@ describe("Runner", () => {
     expect(screen.getByLabelText(/hearts/i)).toHaveTextContent("4");
   });
 
-  it("plays through every exercise type to the completion screen without fetching", async () => {
+  it("plays through every exercise type to the completion screen without waiting on the network", async () => {
     const user = userEvent.setup();
-    render(<Runner lesson={MOCK_LESSON} hearts={5} />);
+    render(<Runner lesson={MOCK_LESSON} hearts={5} api={stalledApi} />);
     const cont = () => user.click(screen.getByRole("button", { name: /continue/i }));
     const check = () => user.click(screen.getByRole("button", { name: /^check$/i }));
 
@@ -104,6 +123,6 @@ describe("Runner", () => {
 
     expect(screen.getByRole("heading", { name: /lesson complete/i })).toBeInTheDocument();
     expect(screen.getByText(/60 XP/)).toBeInTheDocument();
-    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(fetchSpy).not.toHaveBeenCalled(); // every call went through the injected api, none through fetch
   });
 });
