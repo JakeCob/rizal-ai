@@ -280,6 +280,16 @@ Status: accepted, 2026-09-17
 
 Docker is unavailable on the dev machine and pnpm 11 refuses Node 20. Postgres 16 with pgvector 0.8.6 was installed through apt and runs on localhost:5432. Node 22 LTS is installed under /opt/node22 and linked into /usr/local/bin; pnpm 9.15 is activated through corepack. CI uses a pgvector service container and Node 22, so local and CI match.
 
+## D32. LLM calls go through OpenRouter
+
+Status: accepted, 2026-09-17, amends D09
+
+Context: the owner chose OpenRouter as the gateway. Its live catalog (checked 2026-09-17) serves anthropic/claude-opus-5 with structured outputs at the same per-token price as the direct API, plus the Qwen 3.x family. It does not list SEA-LION and it has no embedding models.
+
+Decision: LLM_PROVIDER=openrouter is the production setting, with LLM_MODEL defaulting to anthropic/claude-opus-5. The adapter is OpenAI-compatible chat completions over httpx with a strict JSON schema response_format built from the Pydantic model, so the same client runs any model for the blind eval by changing one string. The direct Anthropic adapter stays as an alternative. Embeddings stay on DeepInfra (D10). SEA-LION drops out of the eval unless a host for it appears; the first eval compares Claude and Qwen.
+
+Consequences: one key for every LLM call. Prompt caching and refusal fallbacks of the direct API are not used; if reflection cost ever matters, the cache in generated_content_cache already makes each lesson version a one-time call.
+
 ## D31. Review sessions and the practice-to-refill rule
 
 Status: accepted, 2026-09-17

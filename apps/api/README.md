@@ -67,4 +67,9 @@ uv run rizalai reflections list                       # cached reflections with 
 uv run rizalai reflections reject <cache id>          # bust one so the next request regenerates
 ```
 
-Provider switches, all defaulting to fakes so a fresh checkout runs with no keys: LLM_PROVIDER (fake, anthropic), EMBEDDINGS_PROVIDER (fake, deepinfra), TTS_ENGINE (fake, mms, xtts, google), AUDIO_STORE (local, supabase).
+```
+uv run rizalai eval-reflection --models anthropic/claude-opus-5,qwen/qwen3.8-max-0902
+uv run rizalai eval-summary ../../evals/reflection/results/<run>   # after filling scores.csv
+```
+
+Provider switches, all defaulting to fakes so a fresh checkout runs with no keys: LLM_PROVIDER (fake, openrouter, anthropic; OpenRouter is production, D32), EMBEDDINGS_PROVIDER (fake, deepinfra), TTS_ENGINE (fake, mms, xtts, google), AUDIO_STORE (local, supabase).
