@@ -11,6 +11,9 @@ import asyncio
 import logging
 from pathlib import Path
 
+from rizalai.audio.engines import available_engines, engine_by_name
+from rizalai.audio.render import bakeoff, render_lines
+from rizalai.audio.store import AudioStore, LocalAudioStore, SupabaseAudioStore
 from rizalai.config import get_settings
 from rizalai.content.seed import seed_content
 from rizalai.contracts.export import export_schema
@@ -58,6 +61,53 @@ async def _ingest(key: str, file: Path | None, embed: bool) -> None:
     )
 
 
+def _store() -> AudioStore:
+    settings = get_settings()
+    if settings.audio_store == "supabase":
+        if not settings.supabase_url or not settings.supabase_service_role_key:
+            raise SystemExit(
+                "SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required for the supabase audio store"
+            )
+        return SupabaseAudioStore(
+            settings.supabase_url, settings.supabase_service_role_key, settings.audio_bucket
+        )
+    return LocalAudioStore(settings.audio_local_dir, settings.audio_base_url)
+
+
+def _content_lines(content_dir: Path) -> list[str]:
+    from rizalai.content.loader import load_content
+
+    lines: list[str] = []
+    for unit in load_content(content_dir):
+        for lesson in unit.lessons:
+            lines += [b.tl for b in lesson.vignette]
+            lines += [e.transcript_tl for e in lesson.exercises if e.type == "listen_tap"]
+    return lines
+
+
+async def _render_audio(engine_name: str, content_dir: Path) -> None:
+    settings = get_settings()
+    engine = engine_by_name(engine_name, settings)
+    store = _store()
+    report = render_lines(_content_lines(content_dir), engine, store)
+    print(f"{engine.name}: rendered {report.rendered}, skipped {report.skipped}")
+    async with get_session_factory()() as session:
+        seeded = await seed_content(session, content_dir, audio=(store, engine))
+    await dispose_engine()
+    print(f"re-seeded {seeded.lessons} lessons with audio urls")
+
+
+def _bakeoff(content_dir: Path, out_dir: Path, count: int) -> None:
+    settings = get_settings()
+    engines = available_engines(settings)
+    lines = _content_lines(content_dir)[:count]
+    written = bakeoff(lines, engines, out_dir)
+    print(f"engines: {[e.name for e in engines]}")
+    print(f"wrote {len(written)} samples to {out_dir}; listen on a phone and pick by ear")
+    for i, text in enumerate(lines, start=1):
+        print(f"  {i:02d}: {text}")
+
+
 async def _reflections(action: str, cache_id: str | None) -> None:
     import uuid
 
@@ -91,6 +141,17 @@ def main() -> None:
     ingest.add_argument("--file", type=Path, default=None, help="local text file; downloaded if absent")
     ingest.add_argument("--no-embed", action="store_true", help="skip the embedding step")
 
+    render = sub.add_parser(
+        "render-audio", help="render vignette lines with a TTS engine and re-seed audio urls"
+    )
+    render.add_argument("--engine", default=None, help="fake | mms | xtts | google (default: TTS_ENGINE)")
+    render.add_argument("--content-dir", type=Path, default=None)
+
+    bake = sub.add_parser("tts-bakeoff", help="render sample lines with every available engine")
+    bake.add_argument("--out", type=Path, default=Path("samples/tts"))
+    bake.add_argument("--lines", type=int, default=3)
+    bake.add_argument("--content-dir", type=Path, default=None)
+
     reflections = sub.add_parser("reflections", help="list or reject cached reflections")
     reflections.add_argument("action", choices=["list", "reject"])
     reflections.add_argument("cache_id", nargs="?", default=None)
@@ -105,3 +166,11 @@ def main() -> None:
         asyncio.run(_ingest(args.edition, args.file, embed=not args.no_embed))
     elif args.command == "reflections":
         asyncio.run(_reflections(args.action, args.cache_id))
+    elif args.command == "render-audio":
+        asyncio.run(
+            _render_audio(
+                args.engine or get_settings().tts_engine, args.content_dir or get_settings().content_dir
+            )
+        )
+    elif args.command == "tts-bakeoff":
+        _bakeoff(args.content_dir or get_settings().content_dir, args.out, args.lines)

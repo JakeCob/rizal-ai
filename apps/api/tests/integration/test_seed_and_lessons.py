@@ -141,3 +141,31 @@ async def test_seed_removes_dropped_lessons_and_survives_reorder(db, tmp_path):
         ("scaffold-placeholder", 1),
         ("noli-ch04-placeholder", 2),
     ]
+
+
+async def test_seed_fills_audio_urls_from_store(db, tmp_path):
+    """Behavior: given rendered audio in the store for some vignette lines and
+    a listen_tap transcript, when the seed runs with that store, then those
+    rows get audio_url and the rest stay null."""
+    from rizalai.audio.engines import FakeTTS
+    from rizalai.audio.render import render_lines
+    from rizalai.audio.store import LocalAudioStore
+
+    store = LocalAudioStore(tmp_path, base_url="https://cdn.test/audio")
+    engine = FakeTTS()
+    units = load_content(CONTENT_DIR)
+    placeholder = units[0].lessons[0]
+    first_beat = placeholder.vignette[0].tl
+    listen = next(e for e in placeholder.exercises if e.type == "listen_tap")
+    render_lines([first_beat, listen.transcript_tl], engine, store)
+
+    await seed_content(db, CONTENT_DIR, audio=(store, engine))
+    row = await db.get(Lesson, lesson_id(placeholder.slug))
+    assert row is not None
+    urls = [b["audio_url"] for b in row.vignette]
+    assert urls[0] is not None and urls[0].startswith("https://cdn.test/audio/")
+    assert urls[1] is None
+    ex = await db.scalar(select(Exercise).where(Exercise.lesson_id == row.id, Exercise.type == "listen_tap"))
+    assert ex is not None
+    assert str(ex.payload["audio_url"]).startswith("https://cdn.test/audio/")
+    assert ex.payload["audio_url"] != urls[0]  # a different line, a different file

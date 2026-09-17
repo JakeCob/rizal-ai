@@ -279,3 +279,13 @@ Consequences: a Tagalog Fili lane is possible without a licensing question. Chap
 Status: accepted, 2026-09-17
 
 Docker is unavailable on the dev machine and pnpm 11 refuses Node 20. Postgres 16 with pgvector 0.8.6 was installed through apt and runs on localhost:5432. Node 22 LTS is installed under /opt/node22 and linked into /usr/local/bin; pnpm 9.15 is activated through corepack. CI uses a pgvector service container and Node 22, so local and CI match.
+
+## D31. Review sessions and the practice-to-refill rule
+
+Status: accepted, 2026-09-17
+
+Context: D16 says zero hearts ends the lesson into a practice-to-refill flow, but did not define a session.
+
+Decision: a practice session is the run of review answers within a 30 minute window. Every tenth answer in a session refills hearts to five. Review answers are recorded as exercise_attempts rows with kind = review, which is what the count reads. Completion of a lesson only counts attempts made after the previous completion, so a lesson cannot be re-completed for XP without playing it again.
+
+Consequences: the refill is server-side and cannot be triggered by the client alone. The 30 minute window is a constant in progress/review.py, easy to tune.
