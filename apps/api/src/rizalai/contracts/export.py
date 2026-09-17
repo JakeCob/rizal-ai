@@ -7,6 +7,7 @@ newline.
 
 import json
 from pathlib import Path
+from typing import Any
 
 from pydantic import BaseModel
 from pydantic.json_schema import models_json_schema
@@ -26,13 +27,26 @@ TOP_LEVEL: list[type[BaseModel]] = [
 ]
 
 
-def build_schema() -> dict[str, object]:
+def _mark_all_required(schema: dict[str, Any]) -> None:
+    """The API serializes every field, defaults included, so for the consumer
+    every property is present. Pydantic only lists fields without defaults
+    as required; widen that so the generated TypeScript has no spurious
+    optionals."""
+    for definition in schema.get("$defs", {}).values():
+        props = definition.get("properties")
+        if isinstance(props, dict) and props:
+            definition["required"] = sorted(props.keys())
+
+
+def build_schema() -> dict[str, Any]:
     _, schema = models_json_schema(
         [(model, "serialization") for model in TOP_LEVEL],
         title="RizalAI API contracts",
         ref_template="#/$defs/{model}",
     )
-    return dict(schema)
+    result: dict[str, Any] = dict(schema)
+    _mark_all_required(result)
+    return result
 
 
 def export_schema(path: Path) -> None:

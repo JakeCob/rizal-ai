@@ -58,9 +58,12 @@
         }
       },
       "required": [
+        "audio_url",
+        "en",
+        "exercise_after",
         "line_id",
-        "tl",
-        "en"
+        "speaker",
+        "tl"
       ],
       "title": "Beat",
       "type": "object"
@@ -121,11 +124,13 @@
         }
       },
       "required": [
+        "correct_index",
+        "explanation",
         "key",
-        "type",
-        "question",
         "options",
-        "correct_index"
+        "question",
+        "type",
+        "xp"
       ],
       "title": "ComprehensionMC",
       "type": "object"
@@ -169,9 +174,9 @@
         }
       },
       "required": [
+        "exercise",
         "id",
-        "order_index",
-        "exercise"
+        "order_index"
       ],
       "title": "ExerciseOut",
       "type": "object"
@@ -242,17 +247,17 @@
         }
       },
       "required": [
-        "id",
-        "unit_id",
-        "slug",
-        "title",
-        "version",
         "estimated_minutes",
+        "exercises",
         "grammar_focus",
-        "target_vocab",
+        "id",
+        "slug",
         "source_passage_ids",
-        "vignette",
-        "exercises"
+        "target_vocab",
+        "title",
+        "unit_id",
+        "version",
+        "vignette"
       ],
       "title": "LessonOut",
       "type": "object"
@@ -315,11 +320,13 @@
         }
       },
       "required": [
-        "key",
-        "type",
-        "transcript_tl",
         "answer_tokens",
-        "bank"
+        "audio_url",
+        "bank",
+        "key",
+        "transcript_tl",
+        "type",
+        "xp"
       ],
       "title": "ListenTap",
       "type": "object"
@@ -370,11 +377,12 @@
         }
       },
       "required": [
-        "key",
-        "type",
-        "prompt_en",
         "answer_tokens",
-        "bank"
+        "bank",
+        "key",
+        "prompt_en",
+        "type",
+        "xp"
       ],
       "title": "SentenceAssembly",
       "type": "object"
@@ -433,12 +441,13 @@
         }
       },
       "required": [
-        "key",
-        "type",
-        "direction",
-        "prompt",
         "answer_tokens",
-        "bank"
+        "bank",
+        "direction",
+        "key",
+        "prompt",
+        "type",
+        "xp"
       ],
       "title": "TranslateLine",
       "type": "object"
@@ -497,13 +506,13 @@
         }
       },
       "required": [
+        "estimated_minutes",
         "id",
-        "slug",
-        "title",
         "order_index",
+        "slug",
         "status",
-        "xp_reward",
-        "estimated_minutes"
+        "title",
+        "xp_reward"
       ],
       "title": "TreeLesson",
       "type": "object"
@@ -537,10 +546,10 @@
       },
       "required": [
         "id",
-        "slug",
-        "title",
+        "lessons",
         "order_index",
-        "lessons"
+        "slug",
+        "title"
       ],
       "title": "TreeUnit",
       "type": "object"
@@ -582,12 +591,12 @@
         }
       },
       "required": [
-        "id",
-        "timezone",
-        "total_xp",
-        "streak_count",
         "hearts",
-        "last_activity_date"
+        "id",
+        "last_activity_date",
+        "streak_count",
+        "timezone",
+        "total_xp"
       ],
       "title": "UserOut",
       "type": "object"
@@ -629,8 +638,10 @@
         }
       },
       "required": [
-        "tl",
-        "en"
+        "en",
+        "note",
+        "pos",
+        "tl"
       ],
       "title": "VocabItem",
       "type": "object"
