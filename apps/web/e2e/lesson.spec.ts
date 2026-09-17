@@ -77,7 +77,7 @@ test("plays the placeholder lesson end to end on a phone", async ({ page }) => {
   await expect(page.getByText(/1 day streak/)).toBeVisible();
   const card = page.getByRole("region", { name: "In Rizal's voice" });
   await expect(card).toContainText("Isang hapunan");
-  await expect(card.getByRole("mark")).toHaveText("daba una cena");
+  await expect(card.locator("mark[data-passage-id]")).toHaveText("daba una cena");
   await page.getByRole("tab", { name: "English" }).click();
   await expect(card).toContainText("It was only a dinner");
   await page.getByRole("button", { name: /Spanish/ }).click();
