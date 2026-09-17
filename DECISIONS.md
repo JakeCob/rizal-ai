@@ -263,3 +263,19 @@ Context: the owner asked for a study of Duolingo, LingQ, 80 Days, Brilliant, Bun
 Decision: borrow generic patterns only (progress bar, bottom call to action, feedback sheet, vertical path, line-by-line reveal, tap-word gloss, tile bank). No assets, mascots, brand colors, or commercial fonts. Proposed direction: Nunito for UI, a serif for historical passage layers, deep indigo primary, ochre accent, paper cream card surface.
 
 Consequences: the direction is the working default for the scaffold until the owner approves or changes it.
+
+## D29. Corpus availability corrected: more of Rizal is public domain than D05 assumed
+
+Status: accepted, 2026-09-17, amends D05
+
+Context: during the ingest work, a search of Project Gutenberg found public-domain editions that the grilling session assumed did not exist. Verified ids: Noli in Spanish 47584, Tagalog (Poblete) 20228, English (Derbyshire) 6737. Fili in Spanish 30903, Tagalog 47629, English (Derbyshire, The Reign of Greed) 10676. Essays: Filipinas dentro de cien años in Spanish 14839 and English 35899, The Indolence of the Filipino in English 6885. Letter to the women of Malolos in Tagalog 17116.
+
+Decision: the MVP corpus stays Noli only (the scaffold ingests all three languages), but the licensing check in D05 is already answered for the Fili and those essays: they are public domain on Gutenberg and can be ingested in a later plan by adding EditionSpec entries. Modern Tagalog translations of the essays and letters remain out of scope for copyright reasons.
+
+Consequences: a Tagalog Fili lane is possible without a licensing question. Chapter counts differ between editions (docs/tech-debt.md item 10), so cross-language alignment stays manual for pinned passages.
+
+## D30. Dev environment facts
+
+Status: accepted, 2026-09-17
+
+Docker is unavailable on the dev machine and pnpm 11 refuses Node 20. Postgres 16 with pgvector 0.8.6 was installed through apt and runs on localhost:5432. Node 22 LTS is installed under /opt/node22 and linked into /usr/local/bin; pnpm 9.15 is activated through corepack. CI uses a pgvector service container and Node 22, so local and CI match.
