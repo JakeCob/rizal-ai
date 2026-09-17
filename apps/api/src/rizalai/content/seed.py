@@ -15,6 +15,9 @@ from sqlalchemy import delete, select, update
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from rizalai.audio.engines import TTSEngine
+from rizalai.audio.render import key_for
+from rizalai.audio.store import AudioStore
 from rizalai.content.loader import NAMESPACE, content_hash, exercise_id, lesson_id, load_content, unit_id
 from rizalai.contracts.lesson import LessonContent, PassageRef
 from rizalai.db.models import Exercise, Lesson, SourcePassage, Unit
@@ -83,8 +86,25 @@ async def align_passage_groups(session: AsyncSession, lesson_slug: str, refs: li
     return updated
 
 
+AudioSource = tuple[AudioStore, TTSEngine]
+
+
+def _audio_url(audio: AudioSource | None, text: str) -> str | None:
+    """URL of the pre-rendered file for this line, if the store has it (D12)."""
+    if audio is None:
+        return None
+    store, engine = audio
+    key = key_for(engine, text)
+    return store.url(key) if store.exists(key) else None
+
+
 async def _seed_lesson(
-    session: AsyncSession, unit_uuid: uuid.UUID, order_index: int, lesson: LessonContent, report: SeedReport
+    session: AsyncSession,
+    unit_uuid: uuid.UUID,
+    order_index: int,
+    lesson: LessonContent,
+    report: SeedReport,
+    audio: AudioSource | None = None,
 ) -> None:
     lid = lesson_id(lesson.slug)
     passage_ids, unresolved = await resolve_passage_ids(session, lesson.source_passages)
@@ -100,7 +120,10 @@ async def _seed_lesson(
         "version": content_hash(lesson),
         "published": lesson.published,
         "estimated_minutes": lesson.estimated_minutes,
-        "vignette": [b.model_dump(mode="json") for b in lesson.vignette],
+        "vignette": [
+            {**b.model_dump(mode="json"), "audio_url": b.audio_url or _audio_url(audio, b.tl)}
+            for b in lesson.vignette
+        ],
         "grammar_focus": lesson.grammar_focus,
         "target_vocab": [v.model_dump(mode="json") for v in lesson.target_vocab],
         "source_passage_ids": passage_ids,
@@ -120,6 +143,8 @@ async def _seed_lesson(
     )
     for order, exercise in enumerate(lesson.exercises):
         payload, answer = split_exercise(exercise.model_dump(mode="json"))
+        if exercise.type == "listen_tap" and not payload.get("audio_url"):
+            payload["audio_url"] = _audio_url(audio, exercise.transcript_tl)
         ex_values = {
             "id": exercise_id(lesson.slug, exercise.key),
             "lesson_id": lid,
@@ -137,7 +162,9 @@ async def _seed_lesson(
         report.exercises += 1
 
 
-async def seed_content(session: AsyncSession, content_dir: Path) -> SeedReport:
+async def seed_content(
+    session: AsyncSession, content_dir: Path, audio: AudioSource | None = None
+) -> SeedReport:
     report = SeedReport()
     for unit in load_content(content_dir):
         uid = unit_id(unit.slug)
@@ -162,6 +189,6 @@ async def seed_content(session: AsyncSession, content_dir: Path) -> SeedReport:
             update(Lesson).where(Lesson.unit_id == uid).values(order_index=-Lesson.order_index - 1)
         )
         for order, lesson in enumerate(unit.lessons):
-            await _seed_lesson(session, uid, order, lesson, report)
+            await _seed_lesson(session, uid, order, lesson, report, audio)
     await session.commit()
     return report

@@ -38,4 +38,20 @@ test("capture tree, vignette, exercise, feedback, complete", async ({ page }) =>
   await page.getByRole("button", { name: "Check" }).click();
   await page.getByRole("button", { name: "Continue" }).click();
   await page.screenshot({ path: `${OUT}/05-listen-tap.png` });
+
+  await tap(page, ["Siya", "si", "Crisostomo", "Ibarra"]);
+  await page.getByRole("button", { name: "Check" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByRole("radio", { name: "At Capitan Tiago's house" }).click();
+  await page.getByRole("button", { name: "Check" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
+  await tap(page, ["Dumating", "ang", "isang", "binata"]);
+  await page.getByRole("button", { name: "Check" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByRole("radio", { name: "Kapitan Tiago", exact: true }).click();
+  await page.getByRole("button", { name: "Check" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByRole("region", { name: "In Rizal's voice" }).waitFor();
+  await page.getByRole("button", { name: /Spanish/ }).click();
+  await page.screenshot({ path: `${OUT}/06-complete-card.png`, fullPage: true });
 });

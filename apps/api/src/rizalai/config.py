@@ -24,6 +24,14 @@ class Settings(BaseSettings):
     embeddings_api_key: str = ""
     embeddings_model: str = "BAAI/bge-m3"
 
+    audio_store: Literal["local", "supabase"] = "local"
+    audio_local_dir: Path = Path("data/audio")
+    audio_base_url: str = "http://localhost:8000/audio"
+    audio_bucket: str = "audio"
+    supabase_service_role_key: str = ""
+    tts_engine: str = "fake"
+    xtts_speaker_wav: str = ""
+
     llm_provider: Literal["fake", "anthropic"] = "fake"
     llm_model: str = "claude-opus-5"
     anthropic_api_key: str = ""

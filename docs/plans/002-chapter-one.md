@@ -1,6 +1,6 @@
 # Plan 002: Chapter 1 lesson, progress, and the Rizal's voice card
 
-Workflow phases 0 to 5. Status: in progress. Date: 2026-09-17.
+Workflow phases 0 to 5. Status: complete, awaiting owner review and credentials. Date: 2026-09-17.
 
 Scope, from the owner's brief item 4 and SPEC.md section 5: hand-author the Noli Chapter 1 lesson (Ibarra's arrival and introduction at Capitan Tiago's dinner), persist progress (attempts, completion, XP, streak, hearts, review queue), and wire the "In Rizal's voice" endpoint that grounds a generated reflection in retrieved passages. Audio rendering waits on the TTS bake-off, but the TTS protocol and bake-off script are in scope.
 
@@ -79,26 +79,64 @@ API tests: unit for streak arithmetic, hearts regen, FSRS scheduling wrapper, va
 
 ### Checklist
 
-- [ ] 1.1 Chapter 1 lesson YAML with aligned passage refs
-- [ ] 1.2 Placeholder retired, seed shows 0 unresolved
-- [ ] 2.1 X-Timezone header captured on the user
-- [ ] 2.2 Hearts regen on read
-- [ ] 2.3 POST /attempts
-- [ ] 2.4 POST /lessons/{id}/complete: re-grade, XP, streak, progress, FSRS seed
-- [ ] 2.5 Tree marks done and advances active
-- [ ] 3.1 GET /review/due
-- [ ] 3.2 POST /review/answer with refill
-- [ ] 4.1 Retrieval by pinned ids plus context
-- [ ] 5.1 LLMClient protocol, fake, Anthropic adapter
-- [ ] 5.2 Prompt v1, structured output schema
-- [ ] 5.3 Citation validator
-- [ ] 5.4 Cache and endpoint with regenerate-once and fallback
-- [ ] 5.5 CLI reflections list and reject
-- [ ] 6.1 Attempts and completion wired in the runner
-- [ ] 6.2 Gloss sheet on tap
-- [ ] 6.3 Card with three layers, toggle, quoted spans
-- [ ] 6.4 Out-of-hearts practice flow
-- [ ] 6.5 Playwright extended
-- [ ] 7.1 TTSClient protocol and adapters
-- [ ] 7.2 Bake-off and render scripts
-- [ ] 8.1 Docs, tech debt, decisions, retro
+- [x] 1.1 Chapter 1 lesson YAML with aligned passage refs (23 refs in 8 groups)
+- [x] 1.2 Placeholder retired to a test fixture, seed shows 0 unresolved
+- [x] 2.1 X-Timezone header captured on the user
+- [x] 2.2 Hearts regen on read
+- [x] 2.3 POST /attempts, graded server-side
+- [x] 2.4 POST /lessons/{id}/complete: re-grade, XP, streak, progress, FSRS seed
+- [x] 2.5 Tree marks done (active advances when the next lesson is published)
+- [x] 3.1 GET /review/due
+- [x] 3.2 POST /review/answer with refill every ten answers in a 30 minute session
+- [x] 4.1 Retrieval by pinned ids plus same-chapter Tagalog style context
+- [x] 5.1 LLMClient protocol, fake, Anthropic adapter (structured output)
+- [x] 5.2 Prompt v1, structured output schema
+- [x] 5.3 Citation validator
+- [x] 5.4 Cache and endpoint with regenerate-once and fallback
+- [x] 5.5 CLI reflections list and reject
+- [x] 6.1 Attempts and completion wired in the runner
+- [x] 6.2 Gloss sheet on tap
+- [x] 6.3 Card with three layers, toggle, quoted spans
+- [x] 6.4 Out-of-hearts practice flow (/practice)
+- [x] 6.5 Playwright extended: gloss, card, toggle, layer, XP and done node on the path
+- [x] 7.1 TTS engine protocol with fake, MMS-TTS, XTTS, and Google adapters; local and Supabase stores
+- [x] 7.2 tts-bakeoff and render-audio commands; seed fills audio_url from the store
+- [x] 8.1 Docs, tech debt, decisions, retro
+
+## Phase 3 record
+
+Red before green was shown for every module: content alignment, seed cleanup, progress rules and endpoints, review endpoints, reflection validator, prompt, service and endpoint, TTS engines and render, and on the web side the client methods, runner network edges, card, and gloss sheet.
+
+| Suite | Result |
+|---|---|
+| API pytest | 118 passed, 85.5 percent coverage, ruff and mypy strict clean |
+| Web Vitest | 45 passed, 88 percent statements |
+| Playwright, iPhone 13 on Chromium | 3 passed, including the card and the post-lesson path |
+
+Proved on the dev database: the Chapter 1 lesson seeds with all 23 passage refs resolved, the fake engine rendered 10 lines and every beat and the listen_tap exercise carry an audio URL that the API serves at /audio.
+
+Not proved, for lack of credentials: a real Claude call, a real embedding, a real TTS voice, Supabase auth from the browser, Supabase Storage upload. Each has a fake or a recorded shape test in its place.
+
+## Phase 4: Review
+
+- Docs: DECISIONS.md D31 (review session window and refill), docs/tech-debt.md items 11 to 14, API README endpoint table, root README.
+- Feature flag: LLM_PROVIDER, EMBEDDINGS_PROVIDER, TTS_ENGINE, and AUDIO_STORE are the switches. Every default is the fake, so a fresh checkout works with no keys.
+- Knowledge share: docs/ui-references.md sections 4 and 5 describe what the card and gloss sheet borrow and why.
+- Open for the owner: run the bake-off and pick a voice; add ANTHROPIC_API_KEY and set LLM_PROVIDER=anthropic, then read the first ten reflections with `rizalai reflections list` and set the judge threshold (D21); Supabase project for auth and Storage; DeepInfra key for real embeddings.
+
+## Phase 5: Retrospective
+
+What worked:
+- Aligning passages by content with an explicit group field. The chapter counts differ per edition, and the English paragraph numbers drift from the Spanish and Tagalog within Chapter 2; the group field made that visible and testable instead of a silent mismatch.
+- The pure reducer paid off again: adding three network edges to the runner touched no test of the flow itself.
+- Using one clock per request. The attempts timestamp bug surfaced only because the test harness freezes Postgres now() at transaction start, and the fix is the right design anyway.
+
+What did not:
+- The first seed of the new lesson collided with the retired placeholder on (unit_id, order_index). Idempotent seeding needs deletion and order parking for lessons as well as exercises; that was a known pattern from plan 001 and should have been applied to both from the start.
+- Two flow tests were written with one Continue too many. Counting steps by hand is error-prone; the tests now name each step in a comment.
+- Vitest reported "no tests" instead of red when a test imported a missing module, twice now. A quick `vitest list` before implementing would show collection errors.
+
+Change for plan 003:
+- Ask the owner for the credentials up front and run the real pipelines once each before writing more content.
+- Author lessons 2 to 4 from the same Chapter 2 scene forward, reusing the alignment groups pattern.
+- Add the LLM eval harness under evals/ (D09) before switching the default provider.
