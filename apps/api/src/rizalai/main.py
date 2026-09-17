@@ -9,7 +9,9 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from rizalai.db.session import dispose_engine, get_session
+from rizalai.generation.router import router as reflection_router
 from rizalai.lessons.router import router as lessons_router
+from rizalai.progress.review import router as review_router
 from rizalai.progress.router import router as progress_router
 from rizalai.users.router import router as users_router
 
@@ -31,6 +33,8 @@ def create_app() -> FastAPI:
     app.include_router(users_router)
     app.include_router(lessons_router)
     app.include_router(progress_router)
+    app.include_router(review_router)
+    app.include_router(reflection_router)
     return app
 
 

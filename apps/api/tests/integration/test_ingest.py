@@ -69,7 +69,7 @@ async def test_embed_step_fills_vectors(db):
 
 
 async def test_seed_resolves_passage_refs_after_ingest(db):
-    for key in ("noli_es", "noli_tl"):
+    for key in ("noli_es", "noli_tl", "noli_en"):
         await ingest_text(
             db, EDITIONS[key], (FIXTURES / f"{key}.txt").read_text(encoding="utf-8"), embedder=None
         )
@@ -77,7 +77,7 @@ async def test_seed_resolves_passage_refs_after_ingest(db):
     assert report.unresolved_passages == 0
     lesson = await db.get(Lesson, lesson_id("scaffold-placeholder"))
     assert lesson is not None
-    assert len(lesson.source_passage_ids) == 2
+    assert len(lesson.source_passage_ids) == 3
 
 
 async def test_seed_aligns_grouped_passage_refs(db):

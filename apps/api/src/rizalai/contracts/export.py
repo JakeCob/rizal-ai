@@ -13,8 +13,11 @@ from pydantic import BaseModel
 from pydantic.json_schema import models_json_schema
 
 from rizalai.contracts.lesson import ComprehensionMC, LessonOut, ListenTap, SentenceAssembly, TranslateLine
+from rizalai.contracts.reflection import ReflectionOut
 from rizalai.contracts.tree import Tree
 from rizalai.contracts.user import UserOut
+from rizalai.progress.review import ReviewAnswerIn, ReviewAnswerOut, ReviewDueOut
+from rizalai.progress.router import AttemptIn, AttemptOut, CompleteOut
 
 TOP_LEVEL: list[type[BaseModel]] = [
     LessonOut,
@@ -24,6 +27,13 @@ TOP_LEVEL: list[type[BaseModel]] = [
     TranslateLine,
     ListenTap,
     ComprehensionMC,
+    ReflectionOut,
+    AttemptIn,
+    AttemptOut,
+    CompleteOut,
+    ReviewDueOut,
+    ReviewAnswerIn,
+    ReviewAnswerOut,
 ]
 
 
