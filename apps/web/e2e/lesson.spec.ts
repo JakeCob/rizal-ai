@@ -1,10 +1,11 @@
 /**
  * The first deliverable, made executable: on a phone viewport, open the
- * path, start the unlocked lesson, play the vignette and every exercise, and
- * reach the completion screen with the XP total. Runs against the mock API
- * (NEXT_PUBLIC_API_MODE=mock set by playwright.config.ts).
+ * path, start the unlocked lesson, play the vignette and every exercise,
+ * reach the completion screen with the XP total and the "In Rizal's voice"
+ * card, and see the XP and streak on the path afterwards. Runs against the
+ * mock API (NEXT_PUBLIC_API_MODE=mock set by playwright.config.ts).
  *
- * Also asserts the two non-functional requirements the scaffold can already
+ * Also asserts the two non-functional requirements the app can already
  * prove: no horizontal scroll at 375px, and exercise transitions well under
  * the 200ms budget.
  */
@@ -31,8 +32,13 @@ test("plays the placeholder lesson end to end on a phone", async ({ page }) => {
   await expect(page.getByRole("dialog")).toContainText("60 XP");
   await page.getByRole("link", { name: "Start" }).click();
 
-  // Vignette, line by line.
+  // Vignette, line by line, with a gloss on a vocabulary word.
   await expect(page.getByText("May hapunan sa bahay ni Kapitan Tiago.")).toBeVisible();
+  await page.getByRole("button", { name: "hapunan", exact: true }).click();
+  await expect(page.getByRole("dialog")).toContainText("dinner");
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toBeHidden();
+
   const cont = () => page.getByRole("button", { name: "Continue" }).click();
   const check = () => page.getByRole("button", { name: "Check" }).click();
 
@@ -65,8 +71,23 @@ test("plays the placeholder lesson end to end on a phone", async ({ page }) => {
   await check();
   await cont();
 
+  // Completion: server XP, streak, and the card with three layers and the toggle.
   await expect(page.getByRole("heading", { name: "Lesson complete" })).toBeVisible();
   await expect(page.getByText("60 XP")).toBeVisible();
+  await expect(page.getByText(/1 day streak/)).toBeVisible();
+  const card = page.getByRole("region", { name: "In Rizal's voice" });
+  await expect(card).toContainText("Isang hapunan");
+  await expect(card.getByRole("mark")).toHaveText("daba una cena");
+  await page.getByRole("tab", { name: "English" }).click();
+  await expect(card).toContainText("It was only a dinner");
+  await page.getByRole("button", { name: /Spanish/ }).click();
+  await expect(page.getByText(/daba una cena\.$/)).toBeVisible();
+
+  // Back on the path the lesson is done and the header shows the XP and streak.
+  await page.getByRole("link", { name: "Back to the path" }).click();
+  await expect(page.getByLabel("Total XP")).toHaveText(/60/);
+  await expect(page.getByLabel("Streak")).toHaveText(/1/);
+  await expect(page.getByRole("button", { name: /Placeholder: the dinner.*done/ })).toBeVisible();
 });
 
 test("a wrong answer spends a heart and shows the correct answer", async ({ page }) => {

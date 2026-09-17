@@ -1,15 +1,21 @@
 "use client";
 
+import { useCallback } from "react";
 import { useParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Runner } from "@/components/runner/Runner";
 import { getApiClient } from "@/lib/api";
 
 export default function LessonPage() {
   const { id } = useParams<{ id: string }>();
   const api = getApiClient();
+  const queryClient = useQueryClient();
   const lesson = useQuery({ queryKey: ["lesson", id], queryFn: () => api.getLesson(id) });
   const me = useQuery({ queryKey: ["me"], queryFn: () => api.getMe() });
+  const onCompleted = useCallback(() => {
+    void queryClient.invalidateQueries({ queryKey: ["me"] });
+    void queryClient.invalidateQueries({ queryKey: ["tree"] });
+  }, [queryClient]);
 
   if (lesson.isError) {
     return (
@@ -27,5 +33,5 @@ export default function LessonPage() {
       </div>
     );
   }
-  return <Runner lesson={lesson.data} hearts={me.data.hearts} />;
+  return <Runner lesson={lesson.data} hearts={me.data.hearts} api={api} onCompleted={onCompleted} />;
 }
