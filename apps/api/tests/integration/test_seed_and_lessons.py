@@ -25,7 +25,8 @@ from tests.helpers import mint_token
 
 pytestmark = pytest.mark.anyio
 
-CONTENT_DIR = Path(__file__).resolve().parents[3].parent / "content"
+CONTENT_DIR = Path(__file__).resolve().parents[1] / "fixtures" / "content"
+REAL_CONTENT_DIR = Path(__file__).resolve().parents[3].parent / "content"
 
 
 async def _counts(db) -> tuple[int, int, int]:
@@ -104,3 +105,39 @@ async def test_tree_marks_first_published_active_and_stubs_locked(client, db):
         ("noli-ch04-placeholder", "locked"),
     ]
     assert tree.units[0].lessons[0].xp_reward == 60
+
+
+async def test_seed_removes_dropped_lessons_and_survives_reorder(db, tmp_path):
+    """Behavior: given a lesson removed from unit.yaml and the remaining
+    lessons reordered, when the seed runs again, then the dropped lesson is
+    gone, no unique constraint on (unit_id, order_index) fires, and the
+    remaining lessons carry their new order."""
+    import shutil
+
+    import yaml
+
+    from rizalai.db.models import Unit
+
+    work = tmp_path / "content"
+    shutil.copytree(CONTENT_DIR, work)
+    await seed_content(db, work)
+    assert (await _counts(db))[1] == 4
+
+    unit_file = work / "units" / "01-test-unit" / "unit.yaml"
+    unit = yaml.safe_load(unit_file.read_text())
+    unit["lessons"] = ["03-placeholder.yaml", "01-scaffold-placeholder.yaml", "04-placeholder.yaml"]
+    unit_file.write_text(yaml.safe_dump(unit))
+
+    report = await seed_content(db, work)
+    assert report.lessons == 3
+    assert (await _counts(db))[1] == 3
+    assert await db.get(Lesson, lesson_id("noli-ch02-placeholder")) is None
+    unit_row = await db.scalar(select(Unit).where(Unit.slug == "test-unit"))
+    rows = (
+        await db.scalars(select(Lesson).where(Lesson.unit_id == unit_row.id).order_by(Lesson.order_index))
+    ).all()
+    assert [(r.slug, r.order_index) for r in rows] == [
+        ("noli-ch03-placeholder", 0),
+        ("scaffold-placeholder", 1),
+        ("noli-ch04-placeholder", 2),
+    ]

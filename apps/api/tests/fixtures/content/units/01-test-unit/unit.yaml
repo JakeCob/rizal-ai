@@ -1,10 +1,10 @@
 # Unit 1. Lessons are listed in play order. Each entry is a lesson file in this folder.
-slug: noli-arrival
-title: "Noli Me Tangere: Ibarra's return"
+slug: test-unit
+title: "Test unit"
 order_index: 1
 published: true
 lessons:
-  - 01-ibarra-arrival.yaml
+  - 01-scaffold-placeholder.yaml
   - 02-placeholder.yaml
   - 03-placeholder.yaml
   - 04-placeholder.yaml

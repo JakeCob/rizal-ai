@@ -45,6 +45,11 @@ class PassageRef(StrictModel):
     language: Literal["es", "tl", "en"]
     chapter: int = Field(ge=0)
     paragraph_index: int = Field(ge=0)
+    group: str | None = Field(
+        default=None,
+        max_length=40,
+        description="Refs sharing a group within a lesson are the same passage in different languages",
+    )
 
 
 class ExerciseBase(StrictModel):

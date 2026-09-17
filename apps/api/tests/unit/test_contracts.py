@@ -130,3 +130,18 @@ def test_export_is_deterministic_and_names_api_types(tmp_path):
     schema = json.loads(first)
     for name in ("LessonOut", "Tree", "UserOut", "SentenceAssembly", "ComprehensionMC"):
         assert name in schema["$defs"], name
+
+
+def test_passage_ref_accepts_optional_alignment_group():
+    from rizalai.contracts.lesson import PassageRef
+
+    ref = PassageRef.model_validate(
+        {"work": "noli", "language": "es", "chapter": 2, "paragraph_index": 3, "group": "intro"}
+    )
+    assert ref.group == "intro"
+    assert (
+        PassageRef.model_validate(
+            {"work": "noli", "language": "tl", "chapter": 2, "paragraph_index": 3}
+        ).group
+        is None
+    )

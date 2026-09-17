@@ -4,13 +4,14 @@ version = "0.1.0"
 description = "RizalAI API: FastAPI backend for the Tagalog and Rizal learning app"
 readme = "README.md"
 authors = [
-    { name = "jacob-agileandco", email = "developer@agileandco.com" }
+    { name = "JakeCob", email = "developer@agileandco.com" }
 ]
 requires-python = ">=3.12"
 dependencies = [
     "alembic>=1.20.0",
     "asyncpg>=0.31.0",
     "fastapi>=0.115",
+    "fsrs>=6.3.2",
     "httpx>=0.28.1",
     "pgvector>=0.5.0",
     "pydantic-settings>=2.15.0",

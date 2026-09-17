@@ -22,7 +22,8 @@ from rizalai.db.models import Lesson, SourcePassage
 pytestmark = pytest.mark.anyio
 
 FIXTURES = Path(__file__).resolve().parents[1] / "fixtures" / "gutenberg"
-CONTENT_DIR = Path(__file__).resolve().parents[3].parent / "content"
+CONTENT_DIR = Path(__file__).resolve().parents[1] / "fixtures" / "content"
+REAL_CONTENT_DIR = Path(__file__).resolve().parents[3].parent / "content"
 
 
 async def _count(db, **where) -> int:
@@ -77,3 +78,36 @@ async def test_seed_resolves_passage_refs_after_ingest(db):
     lesson = await db.get(Lesson, lesson_id("scaffold-placeholder"))
     assert lesson is not None
     assert len(lesson.source_passage_ids) == 2
+
+
+async def test_seed_aligns_grouped_passage_refs(db):
+    """Refs that share a group within a lesson get the same passage_group_id,
+    derived from the lesson slug and group name, so alignment is recorded
+    by content and never by chapter number (docs/tech-debt.md item 10)."""
+    from rizalai.content.seed import align_passage_groups
+    from rizalai.contracts.lesson import PassageRef
+
+    for key in ("noli_es", "noli_tl"):
+        await ingest_text(
+            db, EDITIONS[key], (FIXTURES / f"{key}.txt").read_text(encoding="utf-8"), embedder=None
+        )
+    refs = [
+        PassageRef(work="noli", language="es", chapter=1, paragraph_index=1, group="opening"),
+        PassageRef(work="noli", language="tl", chapter=1, paragraph_index=1, group="opening"),
+        PassageRef(work="noli", language="es", chapter=1, paragraph_index=2),
+    ]
+    grouped = await align_passage_groups(db, "some-lesson", refs)
+    assert grouped == 2
+    rows = (
+        await db.scalars(
+            select(SourcePassage).where(SourcePassage.chapter == 1, SourcePassage.paragraph_index == 1)
+        )
+    ).all()
+    ids = {r.passage_group_id for r in rows}
+    assert len(ids) == 1 and None not in ids
+    ungrouped = await db.scalar(
+        select(SourcePassage.passage_group_id).where(
+            SourcePassage.language == "es", SourcePassage.chapter == 1, SourcePassage.paragraph_index == 2
+        )
+    )
+    assert ungrouped is None
