@@ -13,7 +13,8 @@ from pathlib import Path
 
 from rizalai.audio.engines import available_engines, engine_by_name
 from rizalai.audio.render import bakeoff, render_lines
-from rizalai.audio.store import AudioStore, LocalAudioStore, SupabaseAudioStore
+from rizalai.audio.routes import get_audio_store
+from rizalai.audio.store import AudioStore
 from rizalai.config import get_settings
 from rizalai.content.seed import seed_content
 from rizalai.contracts.export import export_schema
@@ -64,16 +65,7 @@ async def _ingest(key: str, file: Path | None, embed: bool) -> None:
 
 
 def _store() -> AudioStore:
-    settings = get_settings()
-    if settings.audio_store == "supabase":
-        if not settings.supabase_url or not settings.supabase_service_role_key:
-            raise SystemExit(
-                "SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required for the supabase audio store"
-            )
-        return SupabaseAudioStore(
-            settings.supabase_url, settings.supabase_service_role_key, settings.audio_bucket
-        )
-    return LocalAudioStore(settings.audio_local_dir, settings.audio_base_url)
+    return get_audio_store()
 
 
 def _content_lines(content_dir: Path) -> list[str]:

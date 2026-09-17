@@ -5,11 +5,11 @@ from contextlib import asynccontextmanager
 from typing import Annotated
 
 from fastapi import Depends, FastAPI
-from fastapi.staticfiles import StaticFiles
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from rizalai.config import get_settings
+from rizalai.audio.routes import router as audio_router
+from rizalai.auth.session import router as session_router
 from rizalai.db.session import dispose_engine, get_session
 from rizalai.generation.router import router as reflection_router
 from rizalai.lessons.router import router as lessons_router
@@ -37,11 +37,8 @@ def create_app() -> FastAPI:
     app.include_router(progress_router)
     app.include_router(review_router)
     app.include_router(reflection_router)
-
-    settings = get_settings()
-    if settings.audio_store == "local":
-        settings.audio_local_dir.mkdir(parents=True, exist_ok=True)
-        app.mount("/audio", StaticFiles(directory=str(settings.audio_local_dir)), name="audio")
+    app.include_router(session_router)
+    app.include_router(audio_router)
     return app
 
 

@@ -15,7 +15,11 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/rizalai"
     test_database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/rizalai_test"
 
-    supabase_url: str = ""
+    # Sessions (D33): the API issues HS256 tokens with this secret. AUTH_JWKS_URL is
+    # the hook for a future identity provider; SUPABASE_JWT_SECRET is honored for
+    # one release so a rollback is an env change.
+    session_jwt_secret: str = ""
+    auth_jwks_url: str = ""
     supabase_jwt_secret: str = ""
 
     content_dir: Path = Path("../../content")
@@ -24,11 +28,15 @@ class Settings(BaseSettings):
     embeddings_api_key: str = ""
     embeddings_model: str = "BAAI/bge-m3"
 
-    audio_store: Literal["local", "supabase"] = "local"
+    # Audio (D12, D33): local directory or an S3-compatible bucket (Railway buckets).
+    audio_store: Literal["local", "s3"] = "local"
     audio_local_dir: Path = Path("data/audio")
     audio_base_url: str = "http://localhost:8000/audio"
-    audio_bucket: str = "audio"
-    supabase_service_role_key: str = ""
+    s3_endpoint_url: str = ""
+    s3_bucket: str = "audio"
+    s3_access_key_id: str = ""
+    s3_secret_access_key: str = ""
+    s3_region: str = "auto"
     tts_engine: str = "fake"
     xtts_speaker_wav: str = ""
 

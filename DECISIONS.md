@@ -280,6 +280,16 @@ Status: accepted, 2026-09-17
 
 Docker is unavailable on the dev machine and pnpm 11 refuses Node 20. Postgres 16 with pgvector 0.8.6 was installed through apt and runs on localhost:5432. Node 22 LTS is installed under /opt/node22 and linked into /usr/local/bin; pnpm 9.15 is activated through corepack. CI uses a pgvector service container and Node 22, so local and CI match.
 
+## D31. Review sessions and the practice-to-refill rule
+
+Status: accepted, 2026-09-17
+
+Context: D16 says zero hearts ends the lesson into a practice-to-refill flow, but did not define a session.
+
+Decision: a practice session is the run of review answers within a 30 minute window. Every tenth answer in a session refills hearts to five. Review answers are recorded as exercise_attempts rows with kind = review, which is what the count reads. Completion of a lesson only counts attempts made after the previous completion, so a lesson cannot be re-completed for XP without playing it again.
+
+Consequences: the refill is server-side and cannot be triggered by the client alone. The 30 minute window is a constant in progress/review.py, easy to tune.
+
 ## D32. LLM calls go through OpenRouter
 
 Status: accepted, 2026-09-17, amends D09
@@ -290,12 +300,12 @@ Decision: LLM_PROVIDER=openrouter is the production setting, with LLM_MODEL defa
 
 Consequences: one key for every LLM call. Prompt caching and refusal fallbacks of the direct API are not used; if reflection cost ever matters, the cache in generated_content_cache already makes each lesson version a one-time call.
 
-## D31. Review sessions and the practice-to-refill rule
+## D33. Railway Postgres, API-issued sessions, bucket audio: Supabase leaves the stack
 
-Status: accepted, 2026-09-17
+Status: accepted, 2026-09-17, supersedes D06 and D11 in part, amends D12 and D22
 
-Context: D16 says zero hearts ends the lesson into a practice-to-refill flow, but did not define a session.
+Context: the owner asked whether a Postgres service in the Railway project is better than Supabase. Reviewing what Supabase was actually doing: pgvector (Railway has it), Row Level Security (unused, the browser never queries tables), anonymous auth (the API already verifies JWTs itself), and Storage (Railway buckets are S3-compatible and the API already serves audio).
 
-Decision: a practice session is the run of review answers within a 30 minute window. Every tenth answer in a session refills hearts to five. Review answers are recorded as exercise_attempts rows with kind = review, which is what the count reads. Completion of a lesson only counts attempts made after the previous completion, so a lesson cannot be re-completed for XP without playing it again.
+Decision: the database is a Postgres service in the Railway project, on the private network with the API. Learner identity is an anonymous session token the API issues at POST /session/anonymous, signed HS256 with SESSION_JWT_SECRET, valid for a year, kept by the browser in localStorage. Rendered audio lives in a Railway bucket through an S3 adapter, and every audio URL points at the API's /audio/{key} so the store can change without touching seeded data. There is no third-party client in the browser. The verifier keeps its JWKS path for a future identity provider when account linking arrives.
 
-Consequences: the refill is server-side and cannot be triggered by the client alone. The 30 minute window is a constant in progress/review.py, easy to tune.
+Consequences: one vendor for backend and data, one dashboard, no cross-provider hop per query. Anonymous tokens cannot be revoked individually; rotating the secret signs everyone out. The RLS migration is a permanent no-op and can be removed. D22's rule becomes: the browser never talks to the database, only to the API.

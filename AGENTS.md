@@ -62,7 +62,7 @@ Local Postgres 16 with pgvector runs on localhost:5432 with databases rizalai an
 
 - Contracts change in apps/api/src/rizalai/contracts first, then export, then regenerate web types. CI fails on drift in either file.
 - Content is YAML under content/units/. Lesson and exercise ids are uuid5 of slugs and keys; never hand-write ids.
-- The browser never queries Supabase tables. All data goes through FastAPI. The Supabase client in the web app is for auth and Storage only.
+- The browser never talks to the database. All data goes through FastAPI. Identity is an anonymous session token from POST /session/anonymous (D33).
 - Every FastAPI query touching learner data filters on the current user's id in code.
 - External clients (LLM, embeddings, TTS) sit behind a protocol with a fake. Tests never call the network.
 - shadcn here is the Base UI flavor: triggers take a render prop, not asChild.

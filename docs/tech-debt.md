@@ -4,8 +4,7 @@ Known shortcuts, each with the plan that introduced it and the condition for pay
 
 | # | Debt | Introduced | Pay off when |
 |---|---|---|---|
-| 1 | users.id has no foreign key to auth.users, because the local Postgres has no auth schema. | Plan 001 | A Supabase project exists. Add the constraint in a migration guarded on the auth schema. |
-| 2 | The RLS policies migration is a no-op when the auth schema is absent, so RLS is untested locally. | Plan 001 | Before first deploy, run the migration against Supabase and add a test that uses the anon key to confirm cross-user reads fail. |
+| 2 | The RLS policies migration (1a2b3c4d5e6f) is a permanent no-op now that no auth schema exists anywhere (D33). | Plan 001 | Remove it in a cleanup migration once the first production database exists. |
 | 3 | The seeded lesson is a labeled placeholder, not authored content. | Plan 001 | Plan 002 replaces it with the Chapter 1 lesson. |
 | 4 | Sparse vectors are stored as jsonb with no index. | Plan 001 | Retrieval for extras is built. Add a GIN index or a dedicated sparse index. |
 | 5 | Runner completion is not persisted; XP shown at the end of a session is client-side only. | Plan 001 | Plan 002 adds POST /attempts and POST /lessons/{id}/complete. |
@@ -18,3 +17,5 @@ Known shortcuts, each with the plan that introduced it and the condition for pay
 | 12 | Repeat completions of the same lesson award full XP each time, provided new attempts exist. There is no reduced practice XP. | Plan 002 | When leagues or leaderboards make XP farming matter. |
 | 13 | The practice session refills hearts every ten answers counted over a 30 minute window, and the practice page grades on the server per answer. Offline or slow networks make practice feel slower than lessons. | Plan 002 | If practice latency shows up in the Playwright timing or in use. |
 | 14 | XTTS has no Tagalog in its language list; the adapter runs it as English so the bake-off can include it. MMS-TTS needs torch and transformers, which are not project dependencies; install them by hand for the bake-off. | Plan 002 | Resolved by the bake-off decision. Remove the losing adapters. |
+| 15 | Anonymous session tokens live a year and cannot be revoked one at a time. Rotating SESSION_JWT_SECRET signs everyone out. | Plan 003 | When account linking or abuse handling needs per-session revocation, add a sessions table. |
+| 16 | SUPABASE_JWT_SECRET is still read as a fallback secret for one release. | Plan 003 | Remove after the first production deploy on Railway. |

@@ -10,7 +10,7 @@ pnpm install
 pnpm dev                       # http://localhost:3000
 ```
 
-Mock mode serves fixtures from `lib/api/fixtures.ts`, so the tree and the lesson play with no backend. To use the real API, clear `NEXT_PUBLIC_API_MODE` and set the Supabase URL and anon key; the first visit signs in anonymously.
+Mock mode serves fixtures from `lib/api/fixtures.ts`, so the tree and the lesson play with no backend. To use the real API, clear `NEXT_PUBLIC_API_MODE` and point `NEXT_PUBLIC_API_URL` at it; the first visit asks the API for an anonymous session and keeps the token in localStorage.
 
 ## Test
 
@@ -42,7 +42,7 @@ components/
   ui/                  shadcn components
 lib/
   api/                 client (http and mock), fixtures
-  auth/                Supabase anonymous session
+  auth/                anonymous session from the API, kept in localStorage
   runner/              reducer and grading, pure and unit tested
 e2e/                   Playwright
 public/                manifest, icon, service worker
