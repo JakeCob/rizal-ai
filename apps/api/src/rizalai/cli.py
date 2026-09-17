@@ -153,9 +153,8 @@ async def _eval_reflection(models: list[str], lesson_slug: str, out_dir: Path) -
             out_dir=target,
         )
     await dispose_engine()
-    print(
-        f"wrote {len(samples)} samples to {target}/samples; grade with evals/reflection/rubric.md into scores.csv"
-    )
+    print(f"wrote {len(samples)} samples to {target}/samples")
+    print("grade them with evals/reflection/rubric.md into scores.csv, then run eval-summary")
     print(json.dumps({s.sample_id: {"valid": s.valid, "seconds": s.seconds} for s in samples}, indent=2))
 
 
