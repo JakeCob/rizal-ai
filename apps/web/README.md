@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RizalAI web
 
-## Getting Started
+Next.js 15 App Router, TypeScript, Tailwind v4, shadcn/ui (Base UI), TanStack Query. Mobile-first: the layout is a phone column at every width. Node 22 and pnpm 9.
 
-First, run the development server:
+## Run
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+cp .env.example .env.local     # mock mode by default
+pnpm install
+pnpm dev                       # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Mock mode serves fixtures from `lib/api/fixtures.ts`, so the tree and the lesson play with no backend. To use the real API, clear `NEXT_PUBLIC_API_MODE` and set the Supabase URL and anon key; the first visit signs in anonymously.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Test
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+pnpm test        # Vitest, jsdom, 80 percent coverage gate on components/ and lib/
+pnpm test:e2e    # Playwright, iPhone 13 viewport, plays the lesson end to end in mock mode
+pnpm typecheck
+pnpm lint
+```
 
-## Learn More
+## Types from the API
 
-To learn more about Next.js, take a look at the following resources:
+`lib/types.generated.ts` is generated from `packages/contracts/schema.json`. Never edit it. After a contract change on the API side:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+pnpm gen:types
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Layout
 
-## Deploy on Vercel
+```
+app/
+  layout.tsx           fonts, providers, phone column, service worker
+  page.tsx             skill tree
+  lesson/[id]/page.tsx runner
+components/
+  tree/                SkillTree, PathNode
+  runner/              Runner (state from lib/runner), VignettePlayer, ExerciseView, TileBank
+  ui/                  shadcn components
+lib/
+  api/                 client (http and mock), fixtures
+  auth/                Supabase anonymous session
+  runner/              reducer and grading, pure and unit tested
+e2e/                   Playwright
+public/                manifest, icon, service worker
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Frontend decisions, explained
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- The runner is a pure reducer in `lib/runner/reducer.ts` and the component only renders state. That is why every exercise transition is local and why the logic is tested without a browser.
+- The API client is the only network path. Pages call it through TanStack Query, which handles loading, caching, and retries.
+- The answer key ships with the lesson. Grading is local for the 200ms budget; the server re-grades at completion (plan 002).
+- shadcn here is the Base UI flavor, so triggers take a `render` prop rather than `asChild`.
