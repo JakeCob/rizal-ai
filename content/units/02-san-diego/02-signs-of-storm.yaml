@@ -1,0 +1,229 @@
+# Lesson 6: Signs of storm.
+#
+# Scene: Chapter 13. A dusty carriage stops at the San Diego cemetery and
+# Ibarra walks in with an old servant. The servant explains that illness
+# kept him away, that he planted flowers and set up a cross he carved
+# himself, behind the big cross. There is no cross anywhere, and the grave
+# looks dug up. The grave-digger asks whether it was a big carved cross tied
+# with rattan, then, yawning, says he burned it on the fat curate's orders,
+# the curate who beats people with a cane. The same curate had him dig up
+# the body and move it to the Chinese cemetery, but it was heavy and the
+# rain was pouring. Seized by Ibarra and frightened, he admits he threw the
+# body into the lake. Ibarra grips his shoulders, stares at him, calls him a
+# wretch, and leaves across the graves like a man beside himself.
+#
+# The grave-digger's comparison about the Chinese cemetery (es and tl 13:38,
+# en 13:28) is never pinned and has no counterpart in the vignette; the lake
+# group pins the exhumation paragraph instead (es and tl 13:35, en 13:26).
+#
+# The vignette below is our own modern Tagalog adaptation (DECISIONS.md
+# D01). It is not Rizal's text and never carries his byline. The originals,
+# in Spanish, Poblete's 1909 Tagalog, and Derbyshire's English, are pinned
+# under source_passages and shown verbatim on the "In Rizal's voice" card.
+# The dug group (es and tl 13:31, en 13:22) is pinned without a beat of its
+# own: the vignette steps around "the dead man is no longer there" to keep
+# clear of the tl 13:31 trap line, and b6 goes straight to the exhumation.
+# Ibarra seizing and shaking the grave-digger (es 13:36 to 37) is implied
+# between b6 and b7, because both beats are the grave-digger speaking; b7's
+# "huwag n'yo po akong saktan" carries it.
+#
+# Refs sharing a group are the same passage in different editions, aligned
+# by content. Spanish and Tagalog run one to one for 13:1 to 13:57.
+# Derbyshire merges often (es 1 and 2 are his 1, es 3 to 5 his 2, es 22 and
+# 23 his 16, es 30 and 31 his 22, es 39 and 40 his 29), so his numbers run
+# well behind. Poblete's rows past tl 13:57 are a caption, a footnote header
+# and a footnote and are never pinned.
+
+slug: noli-signs-of-storm
+title: "Signs of storm"
+published: true
+estimated_minutes: 6
+
+grammar_focus:
+  - politeness-po-opo
+  - ako-ang-focus
+  - completed-aspect-verbs
+  - negative-imperative-huwag
+
+target_vocab:
+  - { tl: libingan, en: cemetery, pos: noun, note: "root: libing, burial" }
+  - { tl: maalikabok, en: dusty, pos: adjective, note: "root: alikabok, dust" }
+  - { tl: karwahe, en: carriage, pos: noun }
+  - { tl: alila, en: servant, pos: noun }
+  - { tl: nagkasakit, en: got sick, pos: verb, note: "root: sakit" }
+  - { tl: umukit, en: carved, pos: verb, note: "root: ukit; ako mismo ang umukit: I carved it myself" }
+  - { tl: likuran, en: back, pos: noun, note: "root: likod; nasa likuran ng: behind" }
+  - { tl: krus, en: cross, pos: noun }
+  - { tl: naghukay, en: dug, pos: verb, note: "root: hukay" }
+  - { tl: yantok, en: rattan, pos: noun }
+  - { tl: nagsunog, en: burned, pos: verb, note: "root: sunog; ako ang nagsunog: I was the one who burned it" }
+  - { tl: kurang, en: curate, pos: noun, note: "root: kura, with the linker ng; kurang mataba: the fat curate" }
+  - { tl: namamalo, en: hits, pos: verb, note: "root: palo" }
+  - { tl: tungkod, en: cane, pos: noun }
+  - { tl: hukayin, en: to dig up, pos: verb, note: "root: hukay" }
+  - { tl: bangkay, en: body, pos: noun }
+  - { tl: saktan, en: to hurt, pos: verb, note: "root: sakit" }
+  - { tl: itinapon, en: threw away, pos: verb, note: "root: tapon" }
+  - { tl: balikat, en: shoulder, pos: noun }
+  - { tl: kwentang, en: worth, pos: noun, note: "root: kwenta, with the linker ng; walang kwentang tao: a worthless man" }
+
+source_passages:
+  # The carriage, Ibarra and the old servant go toward the cemetery (en 1 merges es 1 and 2)
+  - { work: noli, language: es, chapter: 13, paragraph_index: 2, group: arrive }
+  - { work: noli, language: tl, chapter: 13, paragraph_index: 2, group: arrive }
+  - { work: noli, language: en, chapter: 13, paragraph_index: 1, group: arrive }
+  # The servant: my illness kept me away; I planted flowers and a cross I carved; behind the big cross (en 2 merges es 3 to 5)
+  - { work: noli, language: es, chapter: 13, paragraph_index: 3, group: cross }
+  - { work: noli, language: tl, chapter: 13, paragraph_index: 3, group: cross }
+  - { work: noli, language: es, chapter: 13, paragraph_index: 5, group: cross }
+  - { work: noli, language: tl, chapter: 13, paragraph_index: 5, group: cross }
+  - { work: noli, language: en, chapter: 13, paragraph_index: 2, group: cross }
+  # Was it here? The ground has been disturbed
+  - { work: noli, language: es, chapter: 13, paragraph_index: 8, group: missing }
+  - { work: noli, language: tl, chapter: 13, paragraph_index: 8, group: missing }
+  - { work: noli, language: en, chapter: 13, paragraph_index: 4, group: missing }
+  # The grave-digger: a carved cross tied with rattan?
+  - { work: noli, language: es, chapter: 13, paragraph_index: 17, group: ask }
+  - { work: noli, language: tl, chapter: 13, paragraph_index: 17, group: ask }
+  - { work: noli, language: en, chapter: 13, paragraph_index: 11, group: ask }
+  # I burned it; the fat curate ordered it (en 16 merges es 22 and 23)
+  - { work: noli, language: es, chapter: 13, paragraph_index: 23, group: burned }
+  - { work: noli, language: tl, chapter: 13, paragraph_index: 23, group: burned }
+  - { work: noli, language: en, chapter: 13, paragraph_index: 16, group: burned }
+  - { work: noli, language: es, chapter: 13, paragraph_index: 25, group: burned }
+  - { work: noli, language: tl, chapter: 13, paragraph_index: 25, group: burned }
+  - { work: noli, language: en, chapter: 13, paragraph_index: 18, group: burned }
+  # The dead man is no longer there (en 22 merges es 30 and 31)
+  - { work: noli, language: es, chapter: 13, paragraph_index: 31, group: dug }
+  - { work: noli, language: tl, chapter: 13, paragraph_index: 31, group: dug }
+  - { work: noli, language: en, chapter: 13, paragraph_index: 22, group: dug }
+  # Months ago I dug him up; he was heavy and it rained (never es/tl 13:38 or en 13:28)
+  - { work: noli, language: es, chapter: 13, paragraph_index: 35, group: lake }
+  - { work: noli, language: tl, chapter: 13, paragraph_index: 35, group: lake }
+  - { work: noli, language: en, chapter: 13, paragraph_index: 26, group: lake }
+  # Ibarra grips his shoulders, calls him a wretch and leaves across the graves (en 29 merges es 39 and 40)
+  - { work: noli, language: es, chapter: 13, paragraph_index: 39, group: wretch }
+  - { work: noli, language: tl, chapter: 13, paragraph_index: 39, group: wretch }
+  - { work: noli, language: es, chapter: 13, paragraph_index: 40, group: wretch }
+  - { work: noli, language: tl, chapter: 13, paragraph_index: 40, group: wretch }
+  - { work: noli, language: en, chapter: 13, paragraph_index: 29, group: wretch }
+
+vignette:
+  - line_id: b1
+    speaker: null
+    tl: "Huminto ang isang maalikabok na karwahe sa may libingan. Bumaba si Ibarra, kasama ang isang matandang alila."
+    en: "A dusty carriage stopped near the cemetery. Ibarra got out with an old servant."
+    exercise_after: ex1
+  - line_id: b2
+    speaker: "Matandang alila"
+    tl: "Pasensya na po, nagkasakit ako kaya hindi ako nakabalik agad. Nagtanim po ako ng mga bulaklak doon at naglagay ng krus na ako mismo ang umukit. Nasa likuran po iyon ng malaking krus."
+    en: "I'm sorry, sir, I fell ill, so I couldn't come back sooner. I planted flowers there and put up a cross I carved myself. It's behind the big cross."
+    exercise_after: ex2
+  - line_id: b3
+    speaker: null
+    tl: "Pero pagdating nila roon, walang krus kahit saan. Mukhang may naghukay sa puntod."
+    en: "But when they got there, there was no cross anywhere. It looked as if someone had dug up the grave."
+    exercise_after: ex3
+  - line_id: b4
+    speaker: "Tagapaglibing"
+    tl: "Iyon po bang malaking krus na may ukit at nakatali ng yantok? Ay, ako po ang nagsunog no'n. Utos ng kurang mataba."
+    en: "You mean the big carved cross tied with rattan? Oh, I was the one who burned it. The fat curate's orders."
+    exercise_after: ex4
+  - line_id: b5
+    speaker: "Ibarra"
+    tl: "Sinong kura 'yan?"
+    en: "Which curate is that?"
+    exercise_after: ex5
+  - line_id: b6
+    speaker: "Tagapaglibing"
+    tl: "Iyong namamalo po ng tungkod. Siya rin po ang nag-utos na hukayin ko ang bangkay at ilipat sa sementeryo ng mga Tsino. Kaso ang bigat, tapos bumubuhos pa ang ulan."
+    en: "The one who hits people with a cane. He's also the one who told me to dig up the body and move it to the Chinese cemetery. But it was so heavy, and the rain was pouring down."
+    exercise_after: ex6
+  - line_id: b7
+    speaker: "Tagapaglibing"
+    tl: "Teka po, huwag n'yo po akong saktan! Sa lawa ko na lang po itinapon."
+    en: "Wait, please don't hurt me! I just threw it into the lake."
+    exercise_after: ex7
+  - line_id: b8
+    speaker: null
+    tl: 'Hinawakan ni Ibarra sa balikat ang tagapaglibing at matagal niya itong tiningnan. "Wala kang kwentang tao!" Pagkatapos, nagmamadali siyang lumayo, tinatapakan na ang mga puntod, parang wala sa sarili.'
+    en: 'Ibarra took the grave-digger by the shoulders and looked at him for a long time. "You are nothing but a wretch!" Then he hurried away, trampling over the graves, like a man beside himself.'
+    exercise_after: ex8
+
+exercises:
+  - type: comprehension_mc
+    key: ex1
+    question: "Who came with Ibarra to the cemetery?"
+    options: ["An old servant", "Capitan Tiago", "Maria Clara", "The curate"]
+    correct_index: 0
+    explanation: "Bumaba si Ibarra, kasama ang isang matandang alila (Ibarra got out with an old servant)."
+
+  - type: sentence_assembly
+    key: ex2
+    prompt_en: "It's behind the big cross. (politely, to Ibarra)"
+    answer_tokens: [Nasa, likuran, po, iyon, ng, malaking, krus]
+    accepted_orders:
+      - [Nasa, likuran, po, ng, malaking, krus, iyon]
+    bank: [Nasa, likuran, po, iyon, ng, malaking, krus, harap, bahay, maliit]
+
+  - type: listen_tap
+    key: ex3
+    audio_url: null
+    transcript_tl: "Walang krus kahit saan."
+    answer_tokens: [Walang, krus, kahit, saan]
+    bank: [Walang, krus, kahit, saan, may, bulaklak, doon]
+
+  - type: translate_line
+    key: ex4
+    direction: tl_to_en
+    prompt: "Ako po ang nagsunog no'n."
+    answer_tokens: [I, burned, it]
+    bank: [I, burned, it, buried, you, carved]
+
+  - type: comprehension_mc
+    key: ex5
+    question: "Who ordered the grave-digger to burn the cross?"
+    options: ["The fat curate", "Capitan Tiago", "The old servant", "Ibarra"]
+    correct_index: 0
+    explanation: "Utos ng kurang mataba (the fat curate's orders)."
+
+  - type: sentence_assembly
+    key: ex6
+    prompt_en: "The one who hits people with a cane. (politely)"
+    answer_tokens: [Iyong, namamalo, po, ng, tungkod]
+    accepted_orders:
+      - [Iyong, namamalo, ng, tungkod, po]
+    bank: [Iyong, namamalo, po, ng, tungkod, nagsusunog, kahoy, siya]
+
+  - type: translate_line
+    key: ex7
+    direction: en_to_tl
+    prompt: "Please don't hurt me! (politely)"
+    answer_tokens: [Huwag, "n'yo", po, akong, saktan]
+    accepted_orders:
+      - [Huwag, "n'yo", akong, saktan, po]
+      - [Huwag, po, "n'yo", akong, saktan]
+    bank: [Huwag, "n'yo", po, akong, saktan, kayong, sila, tulungan]
+
+  - type: listen_tap
+    key: ex8
+    audio_url: null
+    transcript_tl: "Wala kang kwentang tao!"
+    answer_tokens: [Wala, kang, kwentang, tao]
+    bank: [Wala, kang, kwentang, tao, siyang, may, bata]
+
+  - type: comprehension_mc
+    key: ex9
+    question: "Where did the grave-digger finally throw the body?"
+    options: ["Into the lake", "Into the river", "Into the Chinese cemetery", "Into the sea"]
+    correct_index: 0
+    explanation: "Sa lawa ko na lang po itinapon (I just threw it into the lake)."
+
+  - type: translate_line
+    key: ex10
+    direction: tl_to_en
+    prompt: "Hinukay ng tagapaglibing ang bangkay."
+    answer_tokens: [The, grave-digger, dug, up, the, body]
+    accepted_orders:
+      - [The, grave-digger, dug, the, body, up]
+    bank: [The, grave-digger, dug, up, the, body, buried, servant, cross]

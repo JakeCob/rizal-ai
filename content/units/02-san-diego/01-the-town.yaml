@@ -1,0 +1,204 @@
+# Lesson 5: The town.
+#
+# Scene: Chapter 10. San Diego lies by the lake among fields and rice
+# paddies. Beside the fields is an old wood the whole town respects. Long
+# ago an old Spaniard who spoke Tagalog well bought it, vanished, and was
+# found hanging from a balete. The women threw his jewels into the river and
+# burned his clothes, and nobody went near the tree again; people tell of
+# lights and moans, and of a young man who spent a night there and died of
+# fever. His son walled in the grave and married; their son was Don Rafael,
+# Ibarra's father. Boys picking guavas still run when a stone falls from
+# nowhere, crying that the old man is there.
+#
+# Chapter 10 has no dialogue except the boys' cry, so the lesson is
+# narrator-led: seven beats with speaker null (the lesson 3 precedent) and
+# the boys' cry as the eighth. The hanging is stated plainly in one clause.
+#
+# The vignette below is our own modern Tagalog adaptation (DECISIONS.md
+# D01). It is not Rizal's text and never carries his byline. The originals,
+# in Spanish, Poblete's 1909 Tagalog, and Derbyshire's English, are pinned
+# under source_passages and shown verbatim on the "In Rizal's voice" card.
+# Refs sharing a group are the same passage in different editions, aligned
+# by content. Spanish and Tagalog run one to one for paragraphs 1 to 7.
+# Derbyshire merges es 4 and 5 into his 4, so the legend group carries two
+# Spanish and two Tagalog rows against one English row; from there he runs
+# one behind (es 6 is his 5, the second half of es 7 is his 6). The town
+# group pins es/tl/en 1, which ends with a clause about Chinese merchants;
+# the vignette line stops at the crops. Poblete's rows past tl 10:7 are a
+# footnote header and footnotes and are never pinned.
+
+slug: noli-the-town
+title: "The town"
+published: true
+estimated_minutes: 6
+
+grammar_focus:
+  - time-expressions-noong-mula-hanggang
+  - completed-and-incompleted-aspect
+  - topic-first-narration
+  - linker-na-ng
+
+target_vocab:
+  - { tl: lawa, en: lake, pos: noun }
+  - { tl: napapaligiran, en: surrounded, pos: verb, note: "root: ligid" }
+  - { tl: palayan, en: rice paddies, pos: noun, note: "root: palay, rice in the field" }
+  - { tl: gubat, en: "wood, forest", pos: noun }
+  - { tl: iginagalang, en: respects, pos: verb, note: "root: galang" }
+  - { tl: matandang, en: old, pos: adjective, note: "root: matanda, with the linker ng" }
+  - { tl: bumili, en: bought, pos: verb, note: "root: bili" }
+  - { tl: nawala, en: disappeared, pos: verb, note: "root: wala" }
+  - { tl: matagpuan, en: be found, pos: verb, note: "root: tagpo; nang matagpuan siya: when he was found" }
+  - { tl: nakabigti, en: hanged, pos: verb, note: "root: bigti" }
+  - { tl: balete, en: "balete, a strangler fig", pos: noun }
+  - { tl: inihagis, en: threw, pos: verb, note: "root: hagis" }
+  - { tl: sinunog, en: burned, pos: verb, note: "root: sunog" }
+  - { tl: lumalapit, en: goes near, pos: verb, note: "root: lapit" }
+  - { tl: daing, en: moan, pos: noun }
+  - { tl: lagnat, en: fever, pos: noun }
+  - { tl: pinaderan, en: walled in, pos: verb, note: "root: pader, wall" }
+  - { tl: puntod, en: grave, pos: noun }
+  - { tl: namimitas, en: picking, pos: verb, note: "root: pitas" }
+  - { tl: nagtatakbuhan, en: run off together, pos: verb, note: "root: takbo; many people running" }
+
+source_passages:
+  # San Diego by the lake, its fields and crops
+  - { work: noli, language: es, chapter: 10, paragraph_index: 1, group: town }
+  - { work: noli, language: tl, chapter: 10, paragraph_index: 1, group: town }
+  - { work: noli, language: en, chapter: 10, paragraph_index: 1, group: town }
+  # The old wood among the fields
+  - { work: noli, language: es, chapter: 10, paragraph_index: 3, group: wood }
+  - { work: noli, language: tl, chapter: 10, paragraph_index: 3, group: wood }
+  - { work: noli, language: en, chapter: 10, paragraph_index: 3, group: wood }
+  # The legend: the old Spaniard, the balete, the jewels, the lights, the lover (Derbyshire merges es 4 and 5)
+  - { work: noli, language: es, chapter: 10, paragraph_index: 4, group: legend }
+  - { work: noli, language: es, chapter: 10, paragraph_index: 5, group: legend }
+  - { work: noli, language: tl, chapter: 10, paragraph_index: 4, group: legend }
+  - { work: noli, language: tl, chapter: 10, paragraph_index: 5, group: legend }
+  - { work: noli, language: en, chapter: 10, paragraph_index: 4, group: legend }
+  # The son walls in the grave and marries; their son is Don Rafael
+  - { work: noli, language: es, chapter: 10, paragraph_index: 6, group: family }
+  - { work: noli, language: tl, chapter: 10, paragraph_index: 6, group: family }
+  - { work: noli, language: en, chapter: 10, paragraph_index: 5, group: family }
+  # The boys, the falling stones, the cry, the flight (en 6 is the second half of es/tl 7)
+  - { work: noli, language: es, chapter: 10, paragraph_index: 7, group: boys }
+  - { work: noli, language: tl, chapter: 10, paragraph_index: 7, group: boys }
+  - { work: noli, language: en, chapter: 10, paragraph_index: 6, group: boys }
+
+vignette:
+  - line_id: b1
+    speaker: null
+    tl: "Malapit sa lawa ang bayan ng San Diego, napapaligiran ng mga bukid at palayan. Kilala ito sa asukal, bigas, kape, at prutas."
+    en: "The town of San Diego lies near the lake, surrounded by fields and rice paddies. It is known for sugar, rice, coffee and fruit."
+    exercise_after: ex1
+  - line_id: b2
+    speaker: null
+    tl: "Sa gitna ng mga bukid, may isang lumang gubat. Iginagalang ito ng buong bayan."
+    en: "In the middle of the fields stands an old wood. The whole town respects it."
+    exercise_after: ex2
+  - line_id: b3
+    speaker: null
+    tl: "Noong unang panahon, isang matandang Kastila na magaling mag-Tagalog ang bumili ng gubat. Isang araw, bigla siyang nawala. Nang matagpuan siya, nakabigti na siya sa isang puno ng balete."
+    en: "Long ago, an old Spaniard who spoke Tagalog well bought the wood. One day he suddenly disappeared. When he was found, he had hanged himself from a balete tree."
+    exercise_after: ex3
+  - line_id: b4
+    speaker: null
+    tl: "Ang mga alahas niya, inihagis ng mga babae sa ilog. Ang mga damit niya, sinunog nila. Mula noon, wala nang lumalapit sa puno."
+    en: "The women threw his jewels into the river and burned his clothes. From then on, nobody went near the tree."
+    exercise_after: ex4
+  - line_id: b5
+    speaker: null
+    tl: "Sabi ng iba, may nakikitang ilaw at naririnig na daing doon kapag gabi. May binatang nagpalipas ng isang gabi sa ilalim ng puno, at namatay siya sa lagnat kinabukasan."
+    en: "Some say lights are seen and moans are heard there at night. A young man once spent a night under the tree, and he died of a fever the next day."
+    exercise_after: ex5
+  - line_id: b6
+    speaker: null
+    tl: "Dumating ang anak ng Kastila, at pinaderan niya ang puntod ng kanyang ama. Nang mag-asawa siya, nagkaanak sila: si Don Rafael, ang ama ni Ibarra."
+    en: "The Spaniard's son came and built a wall around his father's grave. When he married, they had a son: Don Rafael, Ibarra's father."
+    exercise_after: ex6
+  - line_id: b7
+    speaker: null
+    tl: "Hanggang ngayon, kapag may batong biglang nahuhulog habang namimitas ng bayabas ang mga bata, nagtatakbuhan sila palabas ng gubat. May namumutla, may umiiyak, at may tumatawa."
+    en: "To this day, when a stone suddenly falls while the boys are picking guavas, they all run out of the wood. Some go pale, some cry, and some laugh."
+    exercise_after: ex7
+  - line_id: b8
+    speaker: "Mga bata"
+    tl: "Nandiyan na ang matanda! Takbo!"
+    en: "The old man is here! Run!"
+    exercise_after: ex8
+
+exercises:
+  - type: comprehension_mc
+    key: ex1
+    question: "Where is the town of San Diego?"
+    options: ["Near the lake", "By the sea", "In the mountains", "In Manila"]
+    correct_index: 0
+    explanation: "Malapit sa lawa ang bayan ng San Diego (the town of San Diego lies near the lake)."
+
+  - type: sentence_assembly
+    key: ex2
+    prompt_en: "The whole town respects it."
+    answer_tokens: [Iginagalang, ito, ng, buong, bayan]
+    accepted_orders:
+      - [Iginagalang, ng, buong, bayan, ito]
+    bank: [Iginagalang, ito, ng, buong, bayan, nila, lawa, gubat]
+
+  - type: listen_tap
+    key: ex3
+    audio_url: null
+    transcript_tl: "Isang araw, bigla siyang nawala."
+    answer_tokens: [Isang, araw, bigla, siyang, nawala]
+    bank: [Isang, araw, bigla, siyang, nawala, gabi, silang, dumating]
+
+  - type: translate_line
+    key: ex4
+    direction: tl_to_en
+    prompt: "Mula noon, wala nang lumalapit sa puno."
+    answer_tokens: [From, then, "on", nobody, went, near, the, tree]
+    accepted_orders:
+      - [nobody, went, near, the, tree, From, then, "on"]
+    bank: [From, then, "on", nobody, went, near, the, tree, everyone, river, sold]
+
+  - type: comprehension_mc
+    key: ex5
+    question: "What happened to the young man who spent a night under the tree?"
+    options: ["He died of a fever the next day", "He found the jewels", "He met the old Spaniard", "He ran away laughing"]
+    correct_index: 0
+    explanation: "May binatang nagpalipas ng isang gabi sa ilalim ng puno, at namatay siya sa lagnat kinabukasan (a young man spent a night under the tree, and he died of a fever the next day)."
+
+  - type: sentence_assembly
+    key: ex6
+    prompt_en: "Don Rafael is Ibarra's father."
+    answer_tokens: [Si, Don, Rafael, ang, ama, ni, Ibarra]
+    accepted_orders:
+      - [ama, ni, Ibarra, Si, Don, Rafael]
+    bank: [Si, Don, Rafael, ang, ama, ni, Ibarra, anak, kay, lolo]
+
+  - type: listen_tap
+    key: ex7
+    audio_url: null
+    transcript_tl: "Nagtatakbuhan sila palabas ng gubat."
+    answer_tokens: [Nagtatakbuhan, sila, palabas, ng, gubat]
+    bank: [Nagtatakbuhan, sila, palabas, ng, gubat, papasok, kami, bahay]
+
+  - type: translate_line
+    key: ex8
+    direction: en_to_tl
+    prompt: "The old man is here!"
+    answer_tokens: [Nandiyan, na, ang, matanda]
+    accepted_orders:
+      - [ang, matanda, Nandiyan, na]
+    bank: [Nandiyan, na, ang, matanda, bayabas, puno, takbo]
+
+  - type: comprehension_mc
+    key: ex9
+    question: "What do some people say is in the wood at night?"
+    options: ["Lights and moans", "The old Spaniard's jewels", "Wild pigs", "Children singing"]
+    correct_index: 0
+    explanation: "Sabi ng iba, may nakikitang ilaw at naririnig na daing doon kapag gabi (some say lights are seen and moans are heard there at night)."
+
+  - type: translate_line
+    key: ex10
+    direction: tl_to_en
+    prompt: "Binili ng matandang Kastila ang gubat."
+    answer_tokens: [The, old, Spaniard, bought, the, wood]
+    bank: [The, old, Spaniard, bought, the, wood, sold, young, river]
