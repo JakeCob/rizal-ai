@@ -4,6 +4,8 @@ Usage:
   uv run rizalai seed
   uv run rizalai export-contracts [path]
   uv run rizalai ingest noli_tl [--file PATH] [--no-embed]
+  uv run rizalai bootstrap [--content-dir DIR] [--raw-dir DIR] [--embed]
+  uv run rizalai smoke --base-url URL --origin ORIGIN [--expect-lessons N]
 """
 
 import argparse
@@ -19,14 +21,19 @@ from rizalai.config import get_settings
 from rizalai.content.seed import seed_content
 from rizalai.contracts.export import export_schema
 from rizalai.corpus.embeddings import embedder_from_settings
-from rizalai.corpus.gutenberg import EDITIONS, fetch_gutenberg_text
-from rizalai.corpus.ingest import ingest_text
+from rizalai.corpus.gutenberg import EDITIONS
+from rizalai.corpus.ingest import (
+    RAW_DIR,
+    RAW_SHA256,
+    CorpusFileError,
+    ingest_text,
+    load_edition_text,
+    raw_path,
+)
 from rizalai.db.session import dispose_engine, get_session_factory
 from rizalai.generation.evals import run_eval, summarize
 from rizalai.generation.llm import build_llm_client
 from rizalai.generation.service import list_reflections, reject_reflection
-
-RAW_DIR = Path("data/raw")
 
 
 async def _seed(content_dir: Path) -> None:
@@ -39,21 +46,12 @@ async def _seed(content_dir: Path) -> None:
     )
 
 
-def _load_edition_text(key: str, file: Path | None) -> str:
+async def _ingest(key: str, file: Path | None, embed: bool, download: bool) -> None:
     spec = EDITIONS[key]
-    path = file or RAW_DIR / f"{key}.txt"
-    if path.exists():
-        return path.read_text(encoding="utf-8", errors="replace")
-    print(f"downloading Gutenberg #{spec.gutenberg_id} to {path}")
-    text = fetch_gutenberg_text(spec.gutenberg_id)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(text, encoding="utf-8")
-    return text
-
-
-async def _ingest(key: str, file: Path | None, embed: bool) -> None:
-    spec = EDITIONS[key]
-    raw = _load_edition_text(key, file)
+    try:
+        raw = load_edition_text(key, file, download=download)
+    except CorpusFileError as err:
+        raise SystemExit(str(err)) from None
     embedder = embedder_from_settings(get_settings()) if embed else None
     async with get_session_factory()() as session:
         report = await ingest_text(session, spec, raw, embedder)
@@ -62,6 +60,40 @@ async def _ingest(key: str, file: Path | None, embed: bool) -> None:
         f"{spec.title}: parsed {report.parsed}, inserted {report.inserted}, "
         f"updated {report.updated}, embedded {report.embedded}"
     )
+
+
+async def _bootstrap(content_dir: Path, raw_dir: Path, embed: bool, dry_run: bool, allow_loss: bool) -> int:
+    from rizalai.db.session import get_engine
+    from rizalai.ops.bootstrap import bootstrap, script_head
+
+    sources = {key: raw_path(key, raw_dir) for key in EDITIONS}
+    embedder = embedder_from_settings(get_settings()) if embed else None
+    async with get_engine().connect() as lock_conn, get_session_factory()() as session:
+        report = await bootstrap(
+            session,
+            content_dir=content_dir,
+            sources=sources,
+            script_head=script_head(Path("alembic.ini")),
+            digests=RAW_SHA256,
+            embedder=embedder,
+            lock_conn=lock_conn,
+            dry_run=dry_run,
+            allow_learner_data_loss=allow_loss,
+        )
+    await dispose_engine()
+    print(report.summary())
+    return 0 if report.ok else 1
+
+
+async def _smoke(base_url: str, origin: str, expect_lessons: int | None) -> int:
+    import httpx
+
+    from rizalai.ops.smoke import format_checks, run_smoke
+
+    async with httpx.AsyncClient(base_url=base_url, timeout=30) as client:
+        checks = await run_smoke(client, origin, expect_lessons)
+    print(format_checks(checks))
+    return 0 if all(c.ok for c in checks) else 1
 
 
 def _store() -> AudioStore:
@@ -235,7 +267,14 @@ def main(argv: list[str] | None = None) -> int:
 
     ingest = sub.add_parser("ingest", help="parse a Gutenberg edition into source_passages")
     ingest.add_argument("edition", choices=sorted(EDITIONS))
-    ingest.add_argument("--file", type=Path, default=None, help="local text file; downloaded if absent")
+    ingest.add_argument(
+        "--file", type=Path, default=None, help="a local text file, read as given (no digest check)"
+    )
+    ingest.add_argument(
+        "--download",
+        action="store_true",
+        help="fetch a fresh Gutenberg copy (saved beside, never over, the pinned file)",
+    )
     ingest.add_argument("--no-embed", action="store_true", help="skip the embedding step")
 
     render = sub.add_parser(
@@ -275,6 +314,24 @@ def main(argv: list[str] | None = None) -> int:
         help="also list listen_tap orders (they grade the transcript)",
     )
 
+    boot = sub.add_parser(
+        "bootstrap", help="ingest the committed corpus and seed content, idempotently (D37)"
+    )
+    boot.add_argument("--content-dir", type=Path, default=None)
+    boot.add_argument("--raw-dir", type=Path, default=RAW_DIR, help="where the pinned corpus texts live")
+    boot.add_argument("--embed", action="store_true", help="also embed passages (off by default)")
+    boot.add_argument("--dry-run", action="store_true", help="print the plan and write nothing")
+    boot.add_argument(
+        "--allow-learner-data-loss",
+        action="store_true",
+        help="seed even when it deletes lessons or exercises that learners have rows for",
+    )
+
+    smoke = sub.add_parser("smoke", help="check a running API the way the web app uses it")
+    smoke.add_argument("--base-url", required=True, help="the API, for example https://api.example")
+    smoke.add_argument("--origin", required=True, help="the web app's origin, for the CORS preflight")
+    smoke.add_argument("--expect-lessons", type=int, default=None, help="lessons the tree should show")
+
     args = parser.parse_args(argv)
     if args.command == "seed":
         asyncio.run(_seed(args.content_dir or get_settings().content_dir))
@@ -282,7 +339,7 @@ def main(argv: list[str] | None = None) -> int:
         export_schema(args.path)
         print(f"wrote {args.path}")
     elif args.command == "ingest":
-        asyncio.run(_ingest(args.edition, args.file, embed=not args.no_embed))
+        asyncio.run(_ingest(args.edition, args.file, embed=not args.no_embed, download=args.download))
     elif args.command == "reflections":
         asyncio.run(_reflections(args.action, args.cache_id))
     elif args.command == "eval-reflection":
@@ -303,4 +360,16 @@ def main(argv: list[str] | None = None) -> int:
         _bakeoff(args.content_dir or get_settings().content_dir, args.out, args.lines)
     elif args.command == "orders":
         _orders(args)
+    elif args.command == "bootstrap":
+        return asyncio.run(
+            _bootstrap(
+                args.content_dir or get_settings().content_dir,
+                args.raw_dir,
+                args.embed,
+                args.dry_run,
+                args.allow_learner_data_loss,
+            )
+        )
+    elif args.command == "smoke":
+        return asyncio.run(_smoke(args.base_url, args.origin, args.expect_lessons))
     return 0

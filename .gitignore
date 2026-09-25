@@ -25,7 +25,12 @@ next-env.d.ts
 !.env.example
 
 # Data
-apps/api/data/raw/
+# The raw corpus is ignored except the three pinned Gutenberg texts (D37).
+apps/api/data/raw/*
+!apps/api/data/raw/README.md
+!apps/api/data/raw/noli_es_rizal_1887.txt
+!apps/api/data/raw/noli_tl_poblete_1909.txt
+!apps/api/data/raw/noli_en_derbyshire_1912.txt
 samples/
 *.mp3
 *.wav

@@ -56,6 +56,30 @@ def test_fixture_content_directory_loads_in_order():
     assert len(lessons) == 4
 
 
+# The canonical hash of tests/fixtures/lesson_example.py (tech debt 23). If
+# this changes, every lesson re-versions on the next seed: change it only on
+# purpose.
+EXAMPLE_HASH = "69ec0b5ff3fdbc4f6cfe3d76e28169455dce533a72d1674e60ba8f1716e12ac0"
+
+
+def test_content_hash_is_pinned():
+    assert content_hash(LessonContent.model_validate(LESSON_EXAMPLE)) == EXAMPLE_HASH
+
+
+def test_a_new_defaulted_field_does_not_change_the_hash():
+    """Keys whose value equals the field default are dropped before hashing,
+    so adding an optional field later does not re-version every lesson."""
+
+    class LessonWithNewField(LessonContent):
+        new_optional: bool = False
+        new_list: list[str] = []
+
+    widened = LessonWithNewField.model_validate(LESSON_EXAMPLE)
+    assert content_hash(widened) == EXAMPLE_HASH
+    changed = LessonWithNewField.model_validate({**LESSON_EXAMPLE, "new_optional": True})
+    assert content_hash(changed) != EXAMPLE_HASH
+
+
 def test_content_hash_is_stable_and_sensitive():
     lesson = LessonContent.model_validate(LESSON_EXAMPLE)
     assert content_hash(lesson) == content_hash(LessonContent.model_validate(LESSON_EXAMPLE))

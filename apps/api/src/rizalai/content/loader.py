@@ -50,8 +50,36 @@ def exercise_id(lesson_slug: str, key: str) -> uuid.UUID:
     return uuid.uuid5(NAMESPACE, f"exercise:{lesson_slug}:{key}")
 
 
+def _canonical(value: Any) -> Any:
+    """The lesson with every optional field that still holds its default
+    dropped, recursively. Adding an optional field to the contract then does
+    not change any existing lesson's hash (tech debt 23)."""
+    if isinstance(value, BaseModel):
+        out: dict[str, Any] = {}
+        for name, info in type(value).model_fields.items():
+            item = getattr(value, name)
+            if not info.is_required() and item == info.get_default(call_default_factory=True):
+                continue
+            out[name] = _canonical(item)
+        return out
+    if isinstance(value, list | tuple):
+        return [_canonical(v) for v in value]
+    if isinstance(value, dict):
+        return {k: _canonical(v) for k, v in value.items()}
+    if isinstance(value, Path):
+        return str(value)
+    return value
+
+
 def content_hash(lesson: LessonContent) -> str:
-    canonical = json.dumps(lesson.model_dump(mode="json"), sort_keys=True, ensure_ascii=False)
+    """sha256 of the canonical lesson (defaults dropped, keys sorted). It
+    became canonical in plan 007, which re-versioned every lesson once. That
+    was acceptable with no learners: user_progress.lesson_version is not read
+    anywhere. Lesson.version is also part of the reflection cache key
+    (generation/prompt.py reflection_cache_key), so after a re-version every
+    cached reflection misses and is regenerated on first view, including
+    ones an operator had rejected: re-review reflections after it."""
+    canonical = json.dumps(_canonical(lesson), sort_keys=True, ensure_ascii=False)
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 

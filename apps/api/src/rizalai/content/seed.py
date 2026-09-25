@@ -1,5 +1,12 @@
 """Seed units, lessons, and exercises from content YAML. Idempotent.
 
+Lessons dropped from a unit.yaml and exercises whose key vanished are
+deleted, and with prune_units so are units no longer in content; learner
+rows referencing them cascade. `rizalai bootstrap` guards that. A null
+audio_url in YAML keeps the URL already in the database for an unchanged
+line (so a plain seed keeps what render-audio set), which also means a
+hand-set URL cannot be cleared by removing it from YAML alone.
+
 Exercises are stored as payload (what the learner sees) and answer (the key)
 in separate columns. The API merges them for the client today (DECISIONS.md
 D15); the split keeps server-only grading possible later.
@@ -98,6 +105,18 @@ def _audio_url(audio: AudioSource | None, text: str) -> str | None:
     return store.url(key) if store.exists(key) else None
 
 
+def _url(value: object) -> str | None:
+    return value if isinstance(value, str) and value else None
+
+
+def _kept(existing: dict[str, tuple[str, str | None]], line_id: str, text: str) -> str | None:
+    """The URL a line already has in the database, if its text is unchanged.
+    A plain seed (no audio source) keeps what render-audio set (D37); a
+    changed line loses its URL because the old file speaks the old text."""
+    found = existing.get(line_id)
+    return found[1] if found and found[0] == text else None
+
+
 async def _seed_lesson(
     session: AsyncSession,
     unit_uuid: uuid.UUID,
@@ -107,6 +126,18 @@ async def _seed_lesson(
     audio: AudioSource | None = None,
 ) -> None:
     lid = lesson_id(lesson.slug)
+    beats_before: dict[str, tuple[str, str | None]] = {}
+    listen_before: dict[str, tuple[str, str | None]] = {}
+    if audio is None:
+        old = await session.get(Lesson, lid)
+        if old is not None:
+            beats_before = {str(b["line_id"]): (str(b["tl"]), _url(b.get("audio_url"))) for b in old.vignette}
+        for row in await session.scalars(select(Exercise).where(Exercise.lesson_id == lid)):
+            if row.type == "listen_tap":
+                listen_before[str(row.payload.get("key"))] = (
+                    str(row.payload.get("transcript_tl")),
+                    _url(row.payload.get("audio_url")),
+                )
     passage_ids, unresolved = await resolve_passage_ids(session, lesson.source_passages)
     report.unresolved_passages += unresolved
     await align_passage_groups(session, lesson.slug, lesson.source_passages)
@@ -121,7 +152,10 @@ async def _seed_lesson(
         "published": lesson.published,
         "estimated_minutes": lesson.estimated_minutes,
         "vignette": [
-            {**b.model_dump(mode="json"), "audio_url": b.audio_url or _audio_url(audio, b.tl)}
+            {
+                **b.model_dump(mode="json"),
+                "audio_url": b.audio_url or _audio_url(audio, b.tl) or _kept(beats_before, b.line_id, b.tl),
+            }
             for b in lesson.vignette
         ],
         "grammar_focus": lesson.grammar_focus,
@@ -144,7 +178,9 @@ async def _seed_lesson(
     for order, exercise in enumerate(lesson.exercises):
         payload, answer = split_exercise(exercise.model_dump(mode="json"))
         if exercise.type == "listen_tap" and not payload.get("audio_url"):
-            payload["audio_url"] = _audio_url(audio, exercise.transcript_tl)
+            payload["audio_url"] = _audio_url(audio, exercise.transcript_tl) or _kept(
+                listen_before, exercise.key, exercise.transcript_tl
+            )
         ex_values = {
             "id": exercise_id(lesson.slug, exercise.key),
             "lesson_id": lid,
@@ -163,10 +199,18 @@ async def _seed_lesson(
 
 
 async def seed_content(
-    session: AsyncSession, content_dir: Path, audio: AudioSource | None = None
+    session: AsyncSession,
+    content_dir: Path,
+    audio: AudioSource | None = None,
+    *,
+    prune_units: bool = False,
+    commit: bool = True,
 ) -> SeedReport:
     report = SeedReport()
-    for unit in load_content(content_dir):
+    units = load_content(content_dir)
+    if prune_units:
+        await session.execute(delete(Unit).where(Unit.id.not_in([unit_id(u.slug) for u in units])))
+    for unit in units:
         uid = unit_id(unit.slug)
         values = {
             "id": uid,
@@ -189,5 +233,6 @@ async def seed_content(
         )
         for order, lesson in enumerate(unit.lessons):
             await _seed_lesson(session, uid, order, lesson, report, audio)
-    await session.commit()
+    if commit:
+        await session.commit()
     return report
