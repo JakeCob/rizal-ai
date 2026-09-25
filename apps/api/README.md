@@ -14,7 +14,7 @@ uv run rizalai seed
 uv run uvicorn rizalai.main:app --reload
 ```
 
-Then `GET http://localhost:8000/health`. Set `SESSION_JWT_SECRET` in `.env` (any long random string locally), then `POST /session/anonymous` returns a token to send as a Bearer header on the authed endpoints.
+Then `GET http://localhost:8000/health`. The web app calls the API from the browser, so `CORS_ORIGINS` must list its origin; the default already allows `http://localhost:3000` and `http://127.0.0.1:3000` (D36). Set `SESSION_JWT_SECRET` in `.env` (any long random string locally), then `POST /session/anonymous` returns a token to send as a Bearer header on the authed endpoints.
 
 ## Test
 
@@ -73,4 +73,14 @@ uv run rizalai eval-reflection --models anthropic/claude-opus-5,qwen/qwen3.8-max
 uv run rizalai eval-summary ../../evals/reflection/results/<run>   # after filling scores.csv
 ```
 
-Provider switches, all defaulting to fakes so a fresh checkout runs with no keys: LLM_PROVIDER (fake, openrouter, anthropic; OpenRouter is production, D32), EMBEDDINGS_PROVIDER (fake, deepinfra), TTS_ENGINE (fake, mms, xtts, google), AUDIO_STORE (local, s3 for a Railway bucket).
+Provider switches, all defaulting to fakes so a fresh checkout runs with no keys: LLM_PROVIDER (fake, openrouter, anthropic; OpenRouter is production, D32), EMBEDDINGS_PROVIDER (fake, deepinfra), TTS_ENGINE (fake, mms, xtts, google), AUDIO_STORE (local, s3 for a Railway bucket). Browser access is set by CORS_ORIGINS (comma-separated origins, default the local web app) and the optional CORS_ORIGIN_REGEX for Vercel previews (D36).
+
+## Word orders for review
+
+`rizalai orders` lists the word orders a token exercise's tiles can build, so a reviewer only has to judge which ones are natural and belong in `accepted_orders` (D34). It needs no database.
+
+```
+uv run rizalai orders ../../content/units/02-san-diego/01-the-town.yaml --key ex4
+```
+
+For each token exercise it prints the primary order, the listed orders it can reach, any listed order the rule cannot reach, and the unlisted candidates with the smallest changes first. By default each run of adjacent particles (po, ba, na, pa, ako, and so on; function words for English targets) moves as one block. `--split` moves each particle on its own, `--bank` also drops, swaps or adds bank particles, `--phrases` moves whole phrases (kay ..., sa ...), `--clitics a,b` replaces the mover list, and `--max N` caps the printout (default 50). Naturalness stays a human call.

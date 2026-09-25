@@ -60,6 +60,11 @@ def _read_yaml(path: Path) -> Any:
         return yaml.safe_load(fh)
 
 
+def load_lesson(path: Path) -> LessonContent:
+    """One lesson file, validated through the contract."""
+    return LessonContent.model_validate(_read_yaml(path))
+
+
 def load_content(content_dir: Path) -> list[UnitContent]:
     units_dir = content_dir / "units"
     if not units_dir.is_dir():

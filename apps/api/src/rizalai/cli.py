@@ -167,7 +167,62 @@ async def _reflections(action: str, cache_id: str | None) -> None:
     await dispose_engine()
 
 
-def main() -> None:
+def _non_negative(value: str) -> int:
+    number = int(value)
+    if number < 0:
+        raise argparse.ArgumentTypeError("must be 0 or more")
+    return number
+
+
+def _orders(args: argparse.Namespace) -> None:
+    import yaml
+    from pydantic import ValidationError
+
+    from rizalai.content.loader import load_lesson
+    from rizalai.content.orders import format_report, movers_for, report
+    from rizalai.contracts.lesson import ListenTap, TokenExercise
+
+    path: Path = args.lesson
+    try:
+        lesson = load_lesson(path)
+    except OSError as err:
+        raise SystemExit(f"cannot read {path}: {err.strerror or err}") from None
+    except (ValidationError, yaml.YAMLError, TypeError) as err:
+        first = str(err).splitlines()[0]
+        raise SystemExit(f"{path} is not a valid lesson file ({first})") from None
+
+    exercises = list(lesson.exercises)
+    if args.key is not None:
+        exercises = [e for e in exercises if e.key == args.key]
+        if not exercises:
+            raise SystemExit(f"no exercise with key {args.key} in {path}")
+        if not isinstance(exercises[0], TokenExercise):
+            raise SystemExit(
+                f"{args.key} is a comprehension_mc (multiple choice) exercise; it has no word order"
+            )
+    for ex in exercises:
+        if not isinstance(ex, TokenExercise):
+            continue
+        if isinstance(ex, ListenTap) and args.key is None and not args.include_listen_tap:
+            print(
+                f"{ex.key} listen_tap: skipped, it grades the transcript as heard"
+                " (--include-listen-tap to list)"
+            )
+            print()
+            continue
+        r = report(
+            ex,
+            movers_for(ex, args.clitics),
+            args.max,
+            split=args.split,
+            bank=args.bank,
+            phrases=args.phrases,
+        )
+        print(format_report(r))
+        print()
+
+
+def main(argv: list[str] | None = None) -> int:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
     parser = argparse.ArgumentParser(prog="rizalai")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -206,7 +261,21 @@ def main() -> None:
     reflections.add_argument("action", choices=["list", "reject"])
     reflections.add_argument("cache_id", nargs="?", default=None)
 
-    args = parser.parse_args()
+    orders = sub.add_parser("orders", help="list the word orders a token exercise's tiles can build")
+    orders.add_argument("lesson", type=Path, help="a lesson YAML file")
+    orders.add_argument("--key", default=None, help="one exercise, for example ex4")
+    orders.add_argument("--clitics", default=None, help="comma separated movers, replacing the defaults")
+    orders.add_argument("--max", type=_non_negative, default=50, help="candidates to print per exercise")
+    orders.add_argument("--split", action="store_true", help="move each particle alone, not in runs")
+    orders.add_argument("--bank", action="store_true", help="also drop, swap or add bank particles")
+    orders.add_argument("--phrases", action="store_true", help="also move whole phrases (kay ..., sa ...)")
+    orders.add_argument(
+        "--include-listen-tap",
+        action="store_true",
+        help="also list listen_tap orders (they grade the transcript)",
+    )
+
+    args = parser.parse_args(argv)
     if args.command == "seed":
         asyncio.run(_seed(args.content_dir or get_settings().content_dir))
     elif args.command == "export-contracts":
@@ -232,3 +301,6 @@ def main() -> None:
         )
     elif args.command == "tts-bakeoff":
         _bakeoff(args.content_dir or get_settings().content_dir, args.out, args.lines)
+    elif args.command == "orders":
+        _orders(args)
+    return 0
