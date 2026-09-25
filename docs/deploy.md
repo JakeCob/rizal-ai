@@ -15,6 +15,8 @@ Variables on the API service (see .env.example at the repo root for every option
 ENV=production
 DATABASE_URL=postgresql+asyncpg://${{Postgres.PGUSER}}:${{Postgres.PGPASSWORD}}@${{Postgres.RAILWAY_PRIVATE_DOMAIN}}:5432/${{Postgres.PGDATABASE}}
 SESSION_JWT_SECRET=<openssl rand -hex 32>
+CORS_ORIGINS=https://<web domain>
+CORS_ORIGIN_REGEX=https://<vercel project>-[a-z0-9-]+-<team>\.vercel\.app
 LLM_PROVIDER=openrouter
 OPENROUTER_API_KEY=<key>
 EMBEDDINGS_PROVIDER=deepinfra
@@ -47,7 +49,7 @@ NEXT_PUBLIC_API_MODE=
 NEXT_PUBLIC_API_URL=https://<api domain>
 ```
 
-Preview deployments get the same API URL; they only read and write the learner's own anonymous session.
+The browser calls the API cross-origin (D36), so the API's CORS_ORIGINS must list the Vercel production domain exactly (scheme and host, no trailing path). Preview deployments get per-deploy hostnames, which CORS_ORIGIN_REGEX admits; leave it empty to keep previews off the real API. Anchor the regex on the team suffix Vercel appends to preview hostnames (`-<team>.vercel.app`): a bare project prefix such as `https://rizal-ai-[a-z0-9-]+\.vercel\.app` also matches any other account's project named `rizal-ai-<anything>`, so the allowlist would stop meaning our deployments. Previews get the same API URL and only read and write the learner's own anonymous session.
 
 ## Rotation and rollback
 

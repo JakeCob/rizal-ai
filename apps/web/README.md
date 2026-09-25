@@ -10,7 +10,7 @@ pnpm install
 pnpm dev                       # http://localhost:3000
 ```
 
-Mock mode serves fixtures from `lib/api/fixtures.ts`, so the tree and the lesson play with no backend. To use the real API, clear `NEXT_PUBLIC_API_MODE` and point `NEXT_PUBLIC_API_URL` at it; the first visit asks the API for an anonymous session and keeps the token in localStorage.
+Mock mode serves fixtures from `lib/api/fixtures.ts`, so the tree and the lesson play with no backend. To use the real API, clear `NEXT_PUBLIC_API_MODE` and point `NEXT_PUBLIC_API_URL` at it (the API's `CORS_ORIGINS` must list this app's origin, which the API's default already does for http://localhost:3000); the first visit asks the API for an anonymous session and keeps the token in localStorage.
 
 ## Test
 

@@ -4,6 +4,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -21,6 +22,13 @@ class Settings(BaseSettings):
     session_jwt_secret: str = ""
     auth_jwks_url: str = ""
     supabase_jwt_secret: str = ""
+
+    # CORS (tech debt 24, D36): comma-separated web origins allowed to call the API
+    # from a browser. Production: the Vercel URL. CORS_ORIGIN_REGEX optionally admits
+    # Vercel preview hostnames. Bearer tokens only, so no credentials. A string, not a
+    # list: pydantic-settings would JSON-decode a list from the environment.
+    cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
+    cors_origin_regex: str | None = None
 
     content_dir: Path = Path("../../content")
 
@@ -46,9 +54,19 @@ class Settings(BaseSettings):
     openrouter_api_key: str = ""
     anthropic_api_key: str = ""
 
+    @field_validator("cors_origin_regex")
+    @classmethod
+    def _blank_regex_is_none(cls, value: str | None) -> str | None:
+        # The .env examples ship CORS_ORIGIN_REGEX= (blank), which must mean no regex.
+        return value if value and value.strip() else None
+
     @property
     def active_database_url(self) -> str:
         return self.test_database_url if self.env == "test" else self.database_url
+
+    @property
+    def cors_origin_list(self) -> list[str]:
+        return [o.strip().rstrip("/") for o in self.cors_origins.split(",") if o.strip()]
 
 
 @lru_cache

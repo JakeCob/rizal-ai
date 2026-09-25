@@ -5,11 +5,13 @@ from contextlib import asynccontextmanager
 from typing import Annotated
 
 from fastapi import Depends, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from rizalai.audio.routes import router as audio_router
 from rizalai.auth.session import router as session_router
+from rizalai.config import get_settings
 from rizalai.db.session import dispose_engine, get_session
 from rizalai.generation.router import router as reflection_router
 from rizalai.lessons.router import router as lessons_router
@@ -26,6 +28,16 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 
 def create_app() -> FastAPI:
     app = FastAPI(title="RizalAI API", version="0.1.0", lifespan=lifespan)
+    settings = get_settings()
+    # The web app calls the API cross-origin with a bearer token (D36).
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_origin_list,
+        allow_origin_regex=settings.cors_origin_regex,
+        allow_credentials=False,
+        allow_methods=["GET", "POST", "OPTIONS"],
+        allow_headers=["Authorization", "Content-Type", "X-Timezone"],
+    )
 
     @app.get("/health", tags=["ops"])
     async def health(session: Annotated[AsyncSession, Depends(get_session)]) -> dict[str, str]:
