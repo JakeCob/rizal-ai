@@ -6,6 +6,8 @@ How to undo each kind of change. Updated per plan.
 
 Every plan lands as one or more commits on main. Rollback is git revert of those commits. Vercel and Railway redeploy from main automatically, so a revert is a deploy.
 
+A revert that touches apps/api/src/rizalai/contracts must also revert packages/contracts/schema.json and apps/web/lib/types.generated.ts, or CI fails on drift. Reverting the whole commit does this; a partial revert must re-run export-contracts and gen:types.
+
 ## Database schema
 
 Alembic owns the schema. Each migration has a downgrade. To roll back one migration:
@@ -21,7 +23,7 @@ To wipe a local or test database:
 uv run alembic downgrade base
 ```
 
-Never run downgrade base against Supabase once learners exist. Write a forward migration instead.
+Never run downgrade base against the Railway database once learners exist. Write a forward migration instead. A downgrade that restores a dropped column must give it a server default so existing rows stay valid (the units.published downgrade in plan 005 does).
 
 ## Content
 

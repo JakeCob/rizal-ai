@@ -30,7 +30,7 @@ Session = Annotated[AsyncSession, Depends(get_session)]
 
 class AttemptIn(BaseModel):
     exercise_id: uuid.UUID
-    correct: bool = Field(description="The client's local grade; recorded but not trusted")
+    correct: bool = Field(description="The client's local grade; ignored, the server grades the response")
     response: dict[str, Any]
     duration_ms: int = Field(ge=0, le=3_600_000)
 

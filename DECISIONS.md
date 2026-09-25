@@ -309,3 +309,23 @@ Context: the owner asked whether a Postgres service in the Railway project is be
 Decision: the database is a Postgres service in the Railway project, on the private network with the API. Learner identity is an anonymous session token the API issues at POST /session/anonymous, signed HS256 with SESSION_JWT_SECRET, valid for a year, kept by the browser in localStorage. Rendered audio lives in a Railway bucket through an S3 adapter, and every audio URL points at the API's /audio/{key} so the store can change without touching seeded data. There is no third-party client in the browser. The verifier keeps its JWKS path for a future identity provider when account linking arrives.
 
 Consequences: one vendor for backend and data, one dashboard, no cross-provider hop per query. Anonymous tokens cannot be revoked individually; rotating the secret signs everyone out. The RLS migration is a permanent no-op and can be removed. D22's rule becomes: the browser never talks to the database, only to the API.
+
+## D34. Token answers accept listed alternate orders and ignore letter case
+
+Status: accepted, 2026-09-25, amends D15
+
+Context: the graders compared a tapped sequence with `answer_tokens` by strict equality. Tagalog allows several natural orders for many sentences, so plan 004 had to bend ten exercises to keep one buildable order, and three of them stopped matching the beat they follow (tech debt 17). Capitalized first tiles also pinned the sentence start, and case-only duplicate tiles were banned (tech debt 18).
+
+Decision: a token answer is correct when the tapped tokens equal `answer_tokens` or any entry of `accepted_orders`, compared case-insensitively for sentence_assembly, translate_line and listen_tap. `accepted_orders` is authored in YAML per exercise; each order is non-empty, distinct, and covered by the bank as a multiset, and may add or drop a particle relative to the primary. `answer_tokens` stays the canonical order shown on the wrong-answer sheet. Both graders implement the rule and share one case table in packages/contracts. The key, including the alternates, ships to the client as D15 already allows.
+
+Consequences: authors write the natural sentence and list what a fluent speaker would also accept; naturalness stays a review judgment, never derived by code. A learner may place a capitalized tile mid-sentence and still be right. The bank coverage check stays exact so tiles render as authored.
+
+## D35. Units carry no published flag
+
+Status: accepted, 2026-09-25, amends D07 and D26
+
+Context: `Unit.published` was seeded and never read; the tree, the lesson helpers and the review queue gate on `Lesson.published` only, so an unpublished unit with a published lesson would have leaked everywhere (tech debt 19). The owner's locked horizon (a visible unit whose lessons are locked) is delivered by lesson flags alone.
+
+Decision: drop the field from the unit contract, the loader, the seed and the model, with a migration whose downgrade restores the column as NOT NULL default true. A unit is visible whenever it is in content; its lessons lock themselves through `Lesson.published`. A lesson the learner completed and that is later unpublished shows as locked on the tree, not done (tech debt 22).
+
+Consequences: there is no way to hide a whole unit; hide its lessons. Completion history survives unpublishing.

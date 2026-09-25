@@ -1,7 +1,7 @@
 /* Generated from packages/contracts/schema.json. Do not edit. */
 
 /**
- * The client's local grade; recorded but not trusted
+ * The client's local grade; ignored, the server grades the response
  */
 export type Correct = boolean;
 export type DurationMs = number;

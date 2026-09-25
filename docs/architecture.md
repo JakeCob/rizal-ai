@@ -99,7 +99,7 @@ users
 
 ```
 units
-  id, slug unique, title, order_index int, published bool, created_at
+  id, slug unique, title, order_index int, created_at  (no published flag: a unit is visible whenever it is in content, D35)
 
 lessons
   id, unit_id fk, slug unique, title, order_index int
@@ -115,7 +115,7 @@ exercises
   id, lesson_id fk, order_index int
   type               text            sentence_assembly | translate_line | listen_tap | comprehension_mc
   payload            jsonb           discriminated on type, schema in packages/contracts
-  answer             jsonb           ships to client for local grading, re-graded on completion
+  answer             jsonb           answer_tokens or correct_index, plus accepted_orders (D34); ships to client for local grading, re-graded on completion
   xp                 int             default 10
   created_at
 ```

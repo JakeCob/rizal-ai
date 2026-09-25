@@ -3,7 +3,7 @@
     "AttemptIn": {
       "properties": {
         "correct": {
-          "description": "The client's local grade; recorded but not trusted",
+          "description": "The client's local grade; ignored, the server grades the response",
           "title": "Correct",
           "type": "boolean"
         },

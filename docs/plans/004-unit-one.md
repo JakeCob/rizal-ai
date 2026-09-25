@@ -96,7 +96,7 @@ Content is tested by the existing content tests (test_real_content_directory_val
 
 Run as an architect session with Herdr workers: builder (Claude) authored all content and code, reviewer (Claude) reviewed every change with the review and code-review skills plus a line-by-line Tagalog audit and an alignment audit against the corpus, and the architect ran the suites as the tester after each change. The Cursor tester ran out of usage before its first task, so the RLS cleanup (E) and the phone play-throughs did not happen; the owner was told and no substitute was used.
 
-Each lesson went through two review rounds. Review findings by kind, across the three lessons: 5 lines that were Poblete's 1909 text with modernized spelling (D01), rewritten; 1 factual slip (a man who "fell" because he was stopped; the text has a push), fixed; 1 mistranslated joke (the chaperoning neighborhood), fixed; 9 token exercises whose tiles admitted a second natural order, each fixed by changing the prompt, the answer, or a distractor (the root cause is logged as tech debt 17); 6 vocabulary entries that were never tappable because the line used a linked form, fixed by keying on the used form; register corrections (Kapitan Tiago now formal, Ibarra consistent with po). The reviewer also caught two of its own suggested wordings being too close to Poblete, and corrected them on re-check.
+Each lesson went through two review rounds. Review findings by kind, across the three lessons: 5 lines that were Poblete's 1909 text with modernized spelling (D01), rewritten; 1 factual slip (a man who "fell" because he was stopped; the text has a push), fixed; 1 mistranslated joke (the chaperoning neighborhood), fixed; 10 token exercises whose tiles admitted a second natural order (the review reports list ten; an earlier draft of this record said nine), each fixed by changing the prompt, the answer, or a distractor (the root cause is logged as tech debt 17); 6 vocabulary entries that were never tappable because the line used a linked form, fixed by keying on the used form; register corrections (Kapitan Tiago now formal, Ibarra consistent with po). The reviewer also caught two of its own suggested wordings being too close to Poblete, and corrected them on re-check.
 
 Results at the end of the plan:
 
@@ -123,7 +123,7 @@ What worked:
 - Verifying every handoff myself (content test, seed, em dash grep) before routing to review kept the reviewer on judgment calls rather than mechanics.
 
 What did not:
-- The exact-match grader shaped nine exercises. Authors had to avoid natural sentences because a second valid order would be marked wrong. Tech debt 17 (accepted orders) should be paid before lesson 5.
+- The exact-match grader shaped ten exercises. Authors had to avoid natural sentences because a second valid order would be marked wrong. Tech debt 17 (accepted orders) should be paid before lesson 5.
 - The test brief was too loose on one rule and the reviewer had to relax it (D19's Tagalog-less passage). Rules that tests enforce should be quoted from the decision, not paraphrased.
 - The Cursor worker was unusable from the start. Check every worker's usage state before assigning, not after.
 - Blocking herdr waits settle on transient states; four waits returned early and had to be re-armed. Waiting on the report file's existence would be more reliable than waiting on agent state.
