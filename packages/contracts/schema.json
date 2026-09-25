@@ -402,6 +402,17 @@
       "additionalProperties": false,
       "description": "Hear a Tagalog line, tap the words heard.",
       "properties": {
+        "accepted_orders": {
+          "description": "Other natural orders graded correct besides answer_tokens (DECISIONS.md D34). Each is non-empty, differs from answer_tokens and from the other orders, and is covered by the bank. answer_tokens stays the order shown on the feedback sheet.",
+          "items": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": "Accepted Orders",
+          "type": "array"
+        },
         "answer_tokens": {
           "items": {
             "type": "string"
@@ -456,6 +467,7 @@
         }
       },
       "required": [
+        "accepted_orders",
         "answer_tokens",
         "audio_url",
         "bank",
@@ -732,6 +744,17 @@
       "additionalProperties": false,
       "description": "Build the Tagalog line from a word bank, given the English.",
       "properties": {
+        "accepted_orders": {
+          "description": "Other natural orders graded correct besides answer_tokens (DECISIONS.md D34). Each is non-empty, differs from answer_tokens and from the other orders, and is covered by the bank. answer_tokens stays the order shown on the feedback sheet.",
+          "items": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": "Accepted Orders",
+          "type": "array"
+        },
         "answer_tokens": {
           "items": {
             "type": "string"
@@ -774,6 +797,7 @@
         }
       },
       "required": [
+        "accepted_orders",
         "answer_tokens",
         "bank",
         "key",
@@ -788,6 +812,17 @@
       "additionalProperties": false,
       "description": "Translate a line in either direction from a word bank.",
       "properties": {
+        "accepted_orders": {
+          "description": "Other natural orders graded correct besides answer_tokens (DECISIONS.md D34). Each is non-empty, differs from answer_tokens and from the other orders, and is covered by the bank. answer_tokens stays the order shown on the feedback sheet.",
+          "items": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": "Accepted Orders",
+          "type": "array"
+        },
         "answer_tokens": {
           "items": {
             "type": "string"
@@ -838,6 +873,7 @@
         }
       },
       "required": [
+        "accepted_orders",
         "answer_tokens",
         "bank",
         "direction",

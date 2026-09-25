@@ -69,10 +69,27 @@ def spend_heart(user: User, now: datetime) -> None:
     user.hearts = max(0, user.hearts - 1)
 
 
+def _token_list(value: Any) -> list[str] | None:
+    if isinstance(value, list) and all(isinstance(t, str) for t in value):
+        return [t.lower() for t in value]
+    return None
+
+
 def grade_response(exercise_type: str, answer: dict[str, Any], response: dict[str, Any]) -> bool:
-    """Server-side grading, the mirror of lib/runner/grade.ts on the web."""
+    """Server-side grading, the mirror of lib/runner/grade.ts on the web
+    (DECISIONS.md D34). A token answer is correct when the tapped tokens equal
+    answer_tokens or any accepted order, compared after lowercasing every
+    token. Rows seeded before accepted_orders existed grade on answer_tokens
+    alone. Empty or malformed candidates are skipped and malformed taps grade
+    wrong, never raising. comprehension_mc compares an int option index (a
+    bool is not an index), matching the web's strict equality."""
     if exercise_type == "comprehension_mc":
-        return response.get("optionIndex") == answer.get("correct_index")
-    tokens = response.get("tokens")
-    expected = answer.get("answer_tokens")
-    return isinstance(tokens, list) and isinstance(expected, list) and tokens == expected
+        index = response.get("optionIndex")
+        is_int = isinstance(index, int) and not isinstance(index, bool)
+        return is_int and index == answer.get("correct_index")
+    tokens = _token_list(response.get("tokens"))
+    if tokens is None:
+        return False
+    orders = answer.get("accepted_orders")
+    candidates = [answer.get("answer_tokens"), *(orders if isinstance(orders, list) else [])]
+    return any(tokens == expected for expected in map(_token_list, candidates) if expected)

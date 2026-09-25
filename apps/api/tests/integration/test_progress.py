@@ -148,6 +148,34 @@ async def test_complete_uses_latest_attempt_per_exercise_and_re_grades(client, d
     assert body["xp_earned"] == 60
 
 
+async def test_listed_alternate_order_is_correct_and_completion_agrees(client, db):
+    """D34: an order listed in accepted_orders grades correct on POST /attempts
+    (no heart spent) and again when completion re-grades the latest attempt.
+    Letter case is ignored on the way."""
+    rows = await _seeded(db)
+    ex5 = next(row for row in rows if row.payload["key"] == "ex5")
+    _, token = mint_token()
+    headers = {"Authorization": f"Bearer {token}"}
+    response = await client.post(
+        "/attempts",
+        headers=headers,
+        json={
+            "exercise_id": str(ex5.id),
+            "correct": True,
+            "response": {"tokens": ["Isang", "binata", "ang", "dumating"]},
+            "duration_ms": 900,
+        },
+    )
+    assert response.status_code == 202, response.text
+    assert response.json() == {"correct": True, "hearts": 5}
+
+    done = await _complete(client, token)
+    assert done.status_code == 200, done.text
+    results = {r["exercise_id"]: r["correct"] for r in done.json()["results"]}
+    assert results[str(ex5.id)] is True
+    assert done.json()["hearts"] == 5
+
+
 async def test_streak_rules_over_days(client, db):
     rows = await _seeded(db)
     uid, token = mint_token()

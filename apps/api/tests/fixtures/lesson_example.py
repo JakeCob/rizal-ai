@@ -75,6 +75,7 @@ LESSON_EXAMPLE: dict = {
             "key": "ex5",
             "prompt_en": "A young man arrived.",
             "answer_tokens": ["Dumating", "ang", "isang", "binata"],
+            "accepted_orders": [["isang", "binata", "ang", "Dumating"]],
             "bank": ["Dumating", "ang", "isang", "binata", "dalaga", "umalis"],
         },
         {

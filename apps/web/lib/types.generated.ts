@@ -42,6 +42,10 @@ export type Type = "comprehension_mc";
 export type Xp1 = number;
 export type Exercise = SentenceAssembly | TranslateLine | ListenTap | ComprehensionMC;
 /**
+ * Other natural orders graded correct besides answer_tokens (DECISIONS.md D34). Each is non-empty, differs from answer_tokens and from the other orders, and is covered by the bank. answer_tokens stays the order shown on the feedback sheet.
+ */
+export type AcceptedOrders = string[][];
+/**
  * @minItems 1
  */
 export type AnswerTokens = [string, ...string[]];
@@ -56,6 +60,10 @@ export type Key1 = string;
 export type PromptEn = string;
 export type Type1 = "sentence_assembly";
 export type Xp2 = number;
+/**
+ * Other natural orders graded correct besides answer_tokens (DECISIONS.md D34). Each is non-empty, differs from answer_tokens and from the other orders, and is covered by the bank. answer_tokens stays the order shown on the feedback sheet.
+ */
+export type AcceptedOrders1 = string[][];
 /**
  * @minItems 1
  */
@@ -72,6 +80,10 @@ export type Key2 = string;
 export type Prompt = string;
 export type Type2 = "translate_line";
 export type Xp3 = number;
+/**
+ * Other natural orders graded correct besides answer_tokens (DECISIONS.md D34). Each is non-empty, differs from answer_tokens and from the other orders, and is covered by the bank. answer_tokens stays the order shown on the feedback sheet.
+ */
+export type AcceptedOrders2 = string[][];
 /**
  * @minItems 1
  */
@@ -248,6 +260,7 @@ export interface ExerciseOut {
  * via the `definition` "SentenceAssembly".
  */
 export interface SentenceAssembly {
+  accepted_orders: AcceptedOrders;
   answer_tokens: AnswerTokens;
   bank: Bank;
   key: Key1;
@@ -262,6 +275,7 @@ export interface SentenceAssembly {
  * via the `definition` "TranslateLine".
  */
 export interface TranslateLine {
+  accepted_orders: AcceptedOrders1;
   answer_tokens: AnswerTokens1;
   bank: Bank1;
   direction: Direction;
@@ -277,6 +291,7 @@ export interface TranslateLine {
  * via the `definition` "ListenTap".
  */
 export interface ListenTap {
+  accepted_orders: AcceptedOrders2;
   answer_tokens: AnswerTokens2;
   audio_url: AudioUrl1;
   bank: Bank2;

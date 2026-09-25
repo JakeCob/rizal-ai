@@ -24,7 +24,7 @@ from rizalai.db.models import Exercise, Lesson, SourcePassage, Unit
 
 log = logging.getLogger(__name__)
 
-ANSWER_FIELDS = frozenset({"answer_tokens", "correct_index"})
+ANSWER_FIELDS = frozenset({"answer_tokens", "accepted_orders", "correct_index"})
 
 
 @dataclass

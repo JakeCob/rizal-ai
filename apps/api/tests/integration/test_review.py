@@ -100,6 +100,20 @@ async def test_answer_reschedules_and_refills_hearts_after_ten(client, db):
     assert item.due_at > datetime.now(UTC)
 
 
+async def test_answer_accepts_a_listed_alternate_order(client, db):
+    uid, token = mint_token()
+    await client.get("/me", headers={"Authorization": f"Bearer {token}"})
+    rows = await _queue_all(db, uid, timedelta(minutes=-1))
+    ex5 = next(row for row in rows if row.payload["key"] == "ex5")
+    response = await client.post(
+        "/review/answer",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"exercise_id": str(ex5.id), "response": {"tokens": ["isang", "binata", "ang", "Dumating"]}},
+    )
+    assert response.status_code == 200, response.text
+    assert response.json()["correct"] is True
+
+
 async def test_answer_unknown_exercise_is_404(client, db):
     _, token = mint_token()
     response = await client.post(

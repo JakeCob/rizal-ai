@@ -10,7 +10,7 @@ new member, not a change to existing members.
 
 import uuid
 from collections import Counter
-from typing import Annotated, Literal
+from typing import Annotated, Literal, Self
 
 from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, model_validator
 
@@ -57,54 +57,71 @@ class ExerciseBase(StrictModel):
     xp: int = Field(default=10, ge=0, le=100)
 
 
-def _check_bank_covers_answer(answer_tokens: list[str], bank: list[str]) -> None:
-    missing = Counter(answer_tokens) - Counter(bank)
+ACCEPTED_ORDERS_DESCRIPTION = (
+    "Other natural orders graded correct besides answer_tokens (DECISIONS.md D34). "
+    "Each is non-empty, differs from answer_tokens and from the other orders, and is "
+    "covered by the bank. answer_tokens stays the order shown on the feedback sheet."
+)
+
+
+def _check_covered(label: str, tokens: list[str], bank: list[str]) -> None:
+    """Bank coverage as a multiset, case-sensitive so tiles render as authored."""
+    missing = Counter(tokens) - Counter(bank)
     if missing:
-        raise ValueError(f"answer tokens not covered by bank: {sorted(missing)}")
+        raise ValueError(f"{label} not covered by bank: {sorted(missing)}")
 
 
-class SentenceAssembly(ExerciseBase):
+def _folded(tokens: list[str]) -> list[str]:
+    return [t.lower() for t in tokens]
+
+
+class TokenExercise(ExerciseBase):
+    """Fields and checks shared by the three token exercises. Only grading
+    folds case (D34), so distinctness is judged after lowercasing while bank
+    coverage stays exact."""
+
+    answer_tokens: list[str] = Field(min_length=1)
+    accepted_orders: list[list[str]] = Field(default_factory=list, description=ACCEPTED_ORDERS_DESCRIPTION)
+    bank: list[str] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def check_tokens(self) -> Self:
+        _check_covered("answer tokens", self.answer_tokens, self.bank)
+        seen = [_folded(self.answer_tokens)]
+        for order in self.accepted_orders:
+            if not order:
+                raise ValueError("accepted order is empty")
+            folded = _folded(order)
+            if folded == seen[0]:
+                raise ValueError(f"accepted order {order} repeats answer_tokens (letter case is ignored)")
+            if folded in seen:
+                raise ValueError(f"accepted order {order} is a duplicate (letter case is ignored)")
+            _check_covered(f"accepted order {order}", order, self.bank)
+            seen.append(folded)
+        return self
+
+
+class SentenceAssembly(TokenExercise):
     """Build the Tagalog line from a word bank, given the English."""
 
     type: Literal["sentence_assembly"]
     prompt_en: str = Field(min_length=1)
-    answer_tokens: list[str] = Field(min_length=1)
-    bank: list[str] = Field(min_length=1)
-
-    @model_validator(mode="after")
-    def bank_covers_answer(self) -> "SentenceAssembly":
-        _check_bank_covers_answer(self.answer_tokens, self.bank)
-        return self
 
 
-class TranslateLine(ExerciseBase):
+class TranslateLine(TokenExercise):
     """Translate a line in either direction from a word bank."""
 
     type: Literal["translate_line"]
     direction: Literal["tl_to_en", "en_to_tl"]
     prompt: str = Field(min_length=1)
-    answer_tokens: list[str] = Field(min_length=1)
-    bank: list[str] = Field(min_length=1)
-
-    @model_validator(mode="after")
-    def bank_covers_answer(self) -> "TranslateLine":
-        _check_bank_covers_answer(self.answer_tokens, self.bank)
-        return self
 
 
-class ListenTap(ExerciseBase):
+class ListenTap(TokenExercise):
     """Hear a Tagalog line, tap the words heard."""
 
     type: Literal["listen_tap"]
     audio_url: str | None = None
     transcript_tl: str = Field(min_length=1)
-    answer_tokens: list[str] = Field(min_length=1)
-    bank: list[str] = Field(min_length=1)
-
-    @model_validator(mode="after")
-    def bank_covers_answer(self) -> "ListenTap":
-        _check_bank_covers_answer(self.answer_tokens, self.bank)
-        return self
 
 
 class ComprehensionMC(ExerciseBase):

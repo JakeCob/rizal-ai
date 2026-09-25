@@ -60,6 +60,16 @@ async def test_exercise_payload_excludes_answer(db):
         assert row.answer  # never empty
 
 
+async def test_accepted_orders_live_in_the_answer_column(db):
+    await seed_content(db, CONTENT_DIR)
+    rows = (await db.scalars(select(Exercise).order_by(Exercise.order_index))).all()
+    by_key = {row.payload["key"]: row for row in rows}
+    assert by_key["ex5"].answer["accepted_orders"] == [["isang", "binata", "ang", "Dumating"]]
+    assert by_key["ex1"].answer["accepted_orders"] == []
+    for row in rows:
+        assert "accepted_orders" not in row.payload
+
+
 async def test_get_lesson_requires_auth(client, db):
     await seed_content(db, CONTENT_DIR)
     response = await client.get(f"/lessons/{lesson_id('scaffold-placeholder')}")
@@ -82,6 +92,12 @@ async def test_get_lesson_returns_contract_shape(client, db):
     assert first.type == "sentence_assembly"
     assert first.answer_tokens == ["Marami", "ang", "bisita", "ngayong", "gabi"]
     assert lesson.version == content_hash(load_content(CONTENT_DIR)[0].lessons[0])
+    fifth = lesson.exercises[4].exercise
+    assert fifth.type == "sentence_assembly"
+    assert fifth.accepted_orders == [["isang", "binata", "ang", "Dumating"]]
+    assert response.json()["exercises"][4]["exercise"]["accepted_orders"] == [
+        ["isang", "binata", "ang", "Dumating"]
+    ]
 
 
 async def test_get_unknown_lesson_is_404(client, db):

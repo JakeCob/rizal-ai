@@ -13,6 +13,7 @@
 """
 
 import copy
+import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -155,7 +156,8 @@ def test_answer_tokens_never_contain_whitespace(real_units):
         for exercise in lesson.exercises:
             if not isinstance(exercise, SentenceAssembly | TranslateLine | ListenTap):
                 continue
-            for token in [*exercise.answer_tokens, *exercise.bank]:
+            orders = [token for order in exercise.accepted_orders for token in order]
+            for token in [*exercise.answer_tokens, *orders, *exercise.bank]:
                 if not token or any(ch.isspace() or ch in _HIDDEN_SPACES for ch in token):
                     problems.append(f"{lesson.slug} {exercise.key}: bad token {token!r}")
     assert not problems, "\n".join(problems)
@@ -202,3 +204,38 @@ def test_unit_folder_prefix_matches_order_index(real_units):
         f"order_index {index} shared by units {slugs}" for index, slugs in order.items() if len(slugs) > 1
     ]
     assert not problems, "\n".join(problems)
+
+
+def test_listen_tap_banks_have_no_case_only_duplicates(real_units):
+    """Tiles compare case-insensitively (D34), so a learner working by ear
+    cannot tell Galit from galit. Two such tiles are allowed only when the
+    transcript uses both."""
+    problems = []
+    for lesson in _lessons(real_units):
+        for exercise in lesson.exercises:
+            if not isinstance(exercise, ListenTap):
+                continue
+            for variants in _case_only_duplicates(exercise):
+                problems.append(f"{lesson.slug} {exercise.key}: tiles {sorted(variants)} differ only by case")
+    assert not problems, "\n".join(problems)
+
+
+def _case_only_duplicates(exercise: ListenTap) -> list[set[str]]:
+    """Groups of bank tiles equal under lower() that the transcript does not
+    use in every spelling."""
+    folded: dict[str, set[str]] = defaultdict(set)
+    for tile in exercise.bank:
+        folded[tile.lower()].add(tile)
+    transcript = set(re.findall(r"[\w'-]+", exercise.transcript_tl))
+    return [variants for variants in folded.values() if len(variants) > 1 and not variants <= transcript]
+
+
+def test_case_only_duplicate_check_ignores_punctuation():
+    exercise = ListenTap(
+        type="listen_tap",
+        key="x",
+        transcript_tl="Ano? ano raw?",
+        answer_tokens=["Ano", "ano", "raw"],
+        bank=["Ano", "ano", "raw", "sino"],
+    )
+    assert _case_only_duplicates(exercise) == []

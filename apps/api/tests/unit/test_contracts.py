@@ -145,3 +145,112 @@ def test_passage_ref_accepts_optional_alignment_group():
         ).group
         is None
     )
+
+
+def _assembly(**overrides) -> dict:
+    exercise = {
+        "type": "sentence_assembly",
+        "key": "x",
+        "prompt_en": "There are many guests tonight.",
+        "answer_tokens": ["Marami", "ang", "bisita", "ngayong", "gabi"],
+        "bank": ["Marami", "ang", "bisita", "ngayong", "gabi", "kahapon"],
+    }
+    return {**exercise, **overrides}
+
+
+def test_accepted_order_must_be_covered_by_bank():
+    bad = _assembly(accepted_orders=[["ngayong", "gabi", "Marami", "ang", "bisita", "kaunti"]])
+    with pytest.raises(ValidationError, match="kaunti"):
+        ExerciseAdapter.validate_python(bad)
+
+
+def test_accepted_order_bank_check_is_case_sensitive():
+    bad = _assembly(accepted_orders=[["Ngayong", "gabi", "marami", "ang", "bisita"]])
+    with pytest.raises(ValidationError, match="Ngayong"):
+        ExerciseAdapter.validate_python(bad)
+
+
+def test_accepted_order_must_not_be_empty():
+    with pytest.raises(ValidationError, match="empty"):
+        ExerciseAdapter.validate_python(_assembly(accepted_orders=[[]]))
+
+
+def test_accepted_order_must_differ_from_answer_tokens():
+    same = ["Marami", "ang", "bisita", "ngayong", "gabi"]
+    with pytest.raises(ValidationError, match="answer_tokens"):
+        ExerciseAdapter.validate_python(_assembly(accepted_orders=[same]))
+
+
+def test_accepted_orders_must_be_distinct():
+    order = ["ngayong", "gabi", "Marami", "ang", "bisita"]
+    with pytest.raises(ValidationError, match="duplicate"):
+        ExerciseAdapter.validate_python(_assembly(accepted_orders=[order, list(order)]))
+
+
+@pytest.mark.parametrize(
+    "exercise",
+    [
+        _assembly(),
+        {
+            "type": "translate_line",
+            "key": "t",
+            "direction": "tl_to_en",
+            "prompt": "Dumating ang isang binata.",
+            "answer_tokens": ["A", "young", "man", "arrived"],
+            "bank": ["A", "young", "man", "arrived", "left"],
+        },
+        {
+            "type": "listen_tap",
+            "key": "l",
+            "transcript_tl": "Siya si Crisostomo Ibarra.",
+            "answer_tokens": ["Siya", "si", "Crisostomo", "Ibarra"],
+            "bank": ["Siya", "si", "Crisostomo", "Ibarra", "ni"],
+        },
+    ],
+    ids=["sentence_assembly", "translate_line", "listen_tap"],
+)
+def test_missing_accepted_orders_defaults_to_empty(exercise):
+    parsed = ExerciseAdapter.validate_python(exercise)
+    assert ExerciseAdapter.dump_python(parsed, mode="json")["accepted_orders"] == []
+
+
+def test_valid_accepted_order_is_kept():
+    order = ["ngayong", "gabi", "Marami", "ang", "bisita"]
+    parsed = ExerciseAdapter.validate_python(_assembly(accepted_orders=[order]))
+    assert ExerciseAdapter.dump_python(parsed, mode="json")["accepted_orders"] == [order]
+
+
+def test_example_lesson_carries_one_accepted_order():
+    lesson = LessonContent.model_validate(LESSON_EXAMPLE)
+    orders = {e.key: e.accepted_orders for e in lesson.exercises if e.type != "comprehension_mc"}
+    assert [key for key, value in orders.items() if value] == ["ex5"]
+
+
+def test_export_has_accepted_orders_on_token_types(tmp_path):
+    out = tmp_path / "schema.json"
+    export_schema(out)
+    defs = json.loads(out.read_bytes())["$defs"]
+    for name in ("SentenceAssembly", "TranslateLine", "ListenTap"):
+        assert "accepted_orders" in defs[name]["properties"], name
+    assert "accepted_orders" not in defs["ComprehensionMC"]["properties"]
+
+
+def test_accepted_order_differing_only_by_case_from_answer_is_rejected():
+    exercise = _assembly(
+        bank=["Marami", "marami", "ang", "bisita", "ngayong", "gabi"],
+        accepted_orders=[["marami", "ang", "bisita", "ngayong", "gabi"]],
+    )
+    with pytest.raises(ValidationError, match="answer_tokens"):
+        ExerciseAdapter.validate_python(exercise)
+
+
+def test_accepted_orders_differing_only_by_case_are_duplicates():
+    exercise = _assembly(
+        bank=["Marami", "ang", "bisita", "ngayong", "Ngayong", "gabi"],
+        accepted_orders=[
+            ["ngayong", "gabi", "Marami", "ang", "bisita"],
+            ["Ngayong", "gabi", "Marami", "ang", "bisita"],
+        ],
+    )
+    with pytest.raises(ValidationError, match="duplicate"):
+        ExerciseAdapter.validate_python(exercise)
