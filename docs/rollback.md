@@ -4,7 +4,7 @@ How to undo each kind of change. Updated per plan.
 
 ## Code
 
-Every plan lands as one or more commits on main. Rollback is git revert of those commits. Vercel and Railway redeploy from main automatically, so a revert is a deploy.
+Every plan lands as one or more commits on main. Rollback is git revert of those commits. Vercel and Railway redeploy from main automatically (Railway waits for CI), so a revert is a deploy. On Railway a previous image can also be redeployed from the dashboard without a commit; on Vercel a previous deployment can be promoted. Migrations run in Railway's pre-deploy step, so a failing migration blocks the deploy and the previous image keeps serving (D37).
 
 A blocked browser request after a deploy (a CORS error in the console) is usually configuration, not code: fix CORS_ORIGINS or CORS_ORIGIN_REGEX on the Railway service and redeploy (D36). A CORS error on one endpoint while the others work usually means that endpoint returned an unhandled 500 (Starlette's error middleware sits outside CORS, so the error response carries no allow-origin header): read the API logs before touching the origin settings.
 

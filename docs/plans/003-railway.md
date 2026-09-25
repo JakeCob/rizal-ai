@@ -1,6 +1,6 @@
 # Plan 003: Railway Postgres, API-issued sessions, bucket audio
 
-Workflow phases 0 to 5. Status: in progress. Date: 2026-09-17.
+Workflow phases 0 to 5. Status: complete (item 5.2 handed to plan 007 on 2026-09-25). Date: 2026-09-17.
 
 Scope, decided by the owner on 2026-09-17 (DECISIONS.md D33): the database moves from Supabase to a Postgres service in the Railway project, learner identity is an anonymous session token issued by the API, and rendered audio lives in a Railway bucket served through the API. Supabase leaves the stack. Account linking (email, Google) is deferred to a later auth provider decision.
 
@@ -67,7 +67,7 @@ API: unit tests for the issuer (claims, expiry, secret), integration for the end
 - [x] 3.1 Web session bootstrap via /session/anonymous, Supabase client removed
 - [x] 4.1 D33, SPEC, architecture, env examples, READMEs, AGENTS, tech debt
 - [x] 5.1 Dockerfile, railway.toml, .dockerignore, docs/deploy.md
-- [ ] 5.2 Provision the Railway project (owner: it creates billable services)
+- [~] 5.2 Provision the Railway project (owner: it creates billable services). Handed to docs/plans/007-deploy.md, which also corrects this plan's deploy files: the image is built from the repo root, migrations run in Railway's pre-deploy step, railway.toml is removed, and Postgres comes from the pgvector template.
 
 ## Phase 3 record
 

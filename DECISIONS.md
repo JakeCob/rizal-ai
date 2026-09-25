@@ -339,3 +339,13 @@ Context: the API had no CORS middleware, so a browser on any origin other than t
 Decision: the web app keeps calling the API directly across origins. The API allows an exact, comma-separated list of origins from CORS_ORIGINS (default: the local dev origins) plus an optional CORS_ORIGIN_REGEX for preview hostnames, with GET, POST and OPTIONS, the three request headers, and no credentials (bearer tokens, no cookies). No Next rewrite or proxy sits in front of the API.
 
 Consequences: production and preview origins are configuration on Railway, not code. A wrong origin shows up as a blocked preflight in the browser console, fixable by an env change and a redeploy.
+
+## D37. Deploy pipeline: image from the repo root, migrations in pre-deploy, auto-deploy from main, mock previews, committed corpus
+
+Status: accepted, 2026-09-25, supersedes D24 in part, amends D11 and D33
+
+Context: plan 003's deploy files were never built on Railway. Four readers found that Railway's default Postgres has no pgvector, the image cannot see content/ from an apps/api build context, migrations in the start command crash-loop on failure and re-run per replica, railway.toml is deprecated, the runbook's bucket names do not exist, and a fresh Gutenberg download could shift the hand-aligned passages.
+
+Decision: the API image is built from the repo root by apps/api/Dockerfile (multi-stage uv, content/ baked in, non-root, uvicorn alone as the start command); Railway runs `alembic upgrade head` as the pre-deploy command so a failed migration blocks the deploy; Postgres comes from the pgvector template; service settings live in the Railway dashboard. Railway and Vercel deploy from main automatically, Railway waiting for CI. Vercel previews run in mock mode; CORS_ORIGIN_REGEX stays empty until a preview needs the real API. The three Gutenberg texts are committed under apps/api/data/raw with a checksum test, and `rizalai bootstrap` ingests and seeds idempotently with count checks. render-audio runs locally once an engine exists and is never followed by a plain seed.
+
+Consequences: a deploy touching only apps/web or only apps/api still builds both unless the ignore rules skip it (Vercel ignore command, Railway watch paths). Production and dev passages are byte-identical. Audio ships only after the bake-off. Every learner on previews sees fixtures, not real lessons.

@@ -227,7 +227,7 @@ Hearts at zero: runner exits to a practice screen that plays due review_queue it
 20. Quality gate: citation validator (hard), judge score (threshold), one-command reject.
 21. FastAPI scopes every learner query by user_id in code. The browser never talks to the database, only to the API (D22 as amended by D33).
 22. Tests: pytest against a Postgres service container, Vitest for the runner, one Playwright play-through at 375px against a mock API. GitHub Actions on every PR, 80 percent coverage gate, LLM and TTS mocked in CI, nightly real eval.
-23. Migrations: Alembic, run on Railway deploy before uvicorn.
+23. Migrations: Alembic, run in Railway's pre-deploy step so a failure blocks the deploy; the image is built from the repo root with content baked in (D37).
 24. PWA at MVP: manifest, icons, app-shell service worker. No offline lessons.
 25. Minor: UI chrome is English; placeholder lessons are real rows with published false; uv and pnpm.
 
