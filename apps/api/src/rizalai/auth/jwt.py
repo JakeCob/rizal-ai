@@ -1,4 +1,4 @@
-"""Verify Supabase access tokens.
+"""Verify bearer access tokens.
 
 The API issues its own HS256 tokens (rizalai.auth.session). A future
 identity provider publishes asymmetric keys at a JWKS URL. The verifier

@@ -44,7 +44,7 @@ def _created_at() -> Mapped[datetime]:
 class User(Base):
     __tablename__ = "users"
 
-    # Equals auth.users.id on Supabase. No FK locally; see docs/tech-debt.md item 1.
+    # The subject of the session token (D33); no foreign key to any identity provider.
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
     timezone: Mapped[str] = mapped_column(String(64), default="UTC", nullable=False)
     total_xp: Mapped[int] = mapped_column(Integer, default=0, nullable=False)

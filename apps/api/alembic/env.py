@@ -1,5 +1,5 @@
 """Alembic environment. Reads the database URL from application settings so
-one migration history serves local, CI, and Supabase."""
+one migration history serves local, CI, and Railway."""
 
 import asyncio
 from logging.config import fileConfig

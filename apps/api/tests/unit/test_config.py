@@ -208,3 +208,8 @@ def test_create_app_refuses_to_start_in_production_without_a_secret(monkeypatch)
     finally:
         monkeypatch.undo()
         get_settings.cache_clear()
+
+
+def test_the_supabase_secret_setting_is_gone():
+    """Tech debt 16: the SUPABASE_JWT_SECRET fallback was removed after the first deploy."""
+    assert "supabase_jwt_secret" not in Settings.model_fields

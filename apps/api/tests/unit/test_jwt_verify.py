@@ -1,7 +1,8 @@
-"""Behavior: the verifier accepts HS256 tokens signed with the project JWT
-secret, and ES256 tokens whose key is published in the project's JWKS.
-Both are Supabase configurations: legacy projects use the shared secret,
-projects created since 2025 publish asymmetric keys."""
+"""Behavior: the verifier accepts HS256 tokens signed with SESSION_JWT_SECRET
+(the API's own anonymous sessions, D33), and ES256 or RS256 tokens whose key
+is published at AUTH_JWKS_URL (the hook for a future identity provider).
+SUPABASE_JWT_SECRET is no longer read: a token signed with it is rejected
+(tech debt 16)."""
 
 import uuid
 from datetime import UTC, datetime, timedelta
@@ -71,3 +72,22 @@ def test_token_without_sub_is_rejected():
     verifier = JwtVerifier(secret=TEST_JWT_SECRET)
     with pytest.raises(InvalidTokenError):
         verifier.verify(token)
+
+
+def test_a_token_signed_with_the_old_supabase_secret_is_rejected(monkeypatch):
+    from rizalai.auth.deps import get_verifier
+    from rizalai.config import get_settings
+
+    monkeypatch.delenv("SESSION_JWT_SECRET", raising=False)
+    monkeypatch.setenv("SUPABASE_JWT_SECRET", "old-supabase-secret-value-padded-to-32-bytes")
+    get_settings.cache_clear()
+    get_verifier.cache_clear()
+    try:
+        verifier = get_verifier()
+        _, token = mint_token(secret="old-supabase-secret-value-padded-to-32-bytes")
+        with pytest.raises(InvalidTokenError):
+            verifier.verify(token)
+    finally:
+        monkeypatch.undo()
+        get_settings.cache_clear()
+        get_verifier.cache_clear()

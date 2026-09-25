@@ -1,1 +1,1 @@
-"""Supabase JWT verification and the current-user dependency."""
+"""Anonymous sessions, bearer token verification and the current-user dependency (D33)."""

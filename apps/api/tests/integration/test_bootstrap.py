@@ -12,6 +12,9 @@ with the small Gutenberg fixtures and the fixture content:
 - Given content that drops a lesson or exercise learners have rows for, then
   it refuses and leaves the rows in place, unless learner data loss is
   explicitly allowed; deletions with no learner rows are listed and done.
+- Given a completed lesson whose exercise key is renamed in content, then it
+  refuses, naming the exercise with the attempt and review row counts, and the
+  rows survive; with learner data loss allowed it proceeds and they go.
 - Given a unit removed from content, then its row goes too (same guard).
 - Given --dry-run, then it prints the plan and writes nothing.
 - Given an edition already present, when --embed is passed, then it still
@@ -29,6 +32,7 @@ import hashlib
 import shutil
 import time
 import uuid
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -41,7 +45,16 @@ from rizalai.audio.store import LocalAudioStore
 from rizalai.content.loader import exercise_id, lesson_id, load_content, unit_id
 from rizalai.content.seed import SeedReport, seed_content
 from rizalai.corpus.embeddings import FakeEmbedder
-from rizalai.db.models import Exercise, ExerciseAttempt, Lesson, SourcePassage, Unit, User, UserProgress
+from rizalai.db.models import (
+    Exercise,
+    ExerciseAttempt,
+    Lesson,
+    ReviewQueue,
+    SourcePassage,
+    Unit,
+    User,
+    UserProgress,
+)
 from rizalai.ops import bootstrap as ops
 from rizalai.ops.bootstrap import advisory_lock, bootstrap, database_revision, script_head
 
@@ -290,3 +303,52 @@ async def test_bootstrap_waits_on_the_advisory_lock(db, engine):
         assert time.monotonic() - started >= 0.5
         assert await holder.scalar(text("select pg_try_advisory_lock(7007)")) is True
         await holder.execute(text("select pg_advisory_unlock(7007)"))
+
+
+async def test_renaming_a_completed_exercise_key_is_refused(db, tmp_path):
+    await _run(db)
+    ex1 = exercise_id("scaffold-placeholder", "ex1")
+    uid = uuid.uuid4()
+    db.add(User(id=uid))
+    await db.flush()
+    db.add(
+        ExerciseAttempt(
+            user_id=uid, exercise_id=ex1, lesson_id=SCAFFOLD, correct=True, response={}, duration_ms=1
+        )
+    )
+    db.add(UserProgress(user_id=uid, lesson_id=SCAFFOLD, lesson_version="v", completed_at=datetime.now(UTC)))
+    db.add(
+        ReviewQueue(
+            user_id=uid,
+            exercise_id=ex1,
+            due_at=datetime.now(UTC),
+            stability=1.0,
+            difficulty=5.0,
+            state="review",
+        )
+    )
+    await db.commit()
+
+    work = _copy_content(tmp_path)
+    lesson_file = work / "units" / "01-test-unit" / "01-scaffold-placeholder.yaml"
+    data = yaml.safe_load(lesson_file.read_text(encoding="utf-8"))
+    data["exercises"][0]["key"] = "ex1-renamed"
+    for beat in data["vignette"]:
+        if beat.get("exercise_after") == "ex1":
+            beat["exercise_after"] = "ex1-renamed"
+    lesson_file.write_text(yaml.safe_dump(data, allow_unicode=True), encoding="utf-8")
+
+    refused = await _run(db, content_dir=work)
+    assert not refused.ok
+    message = " ".join(refused.problems)
+    assert "scaffold-placeholder:ex1" in message
+    assert "exercise_attempts 1" in message and "review_queue 1" in message
+    assert refused.deletions.exercises == ["scaffold-placeholder:ex1"]
+    assert await _count(db, ExerciseAttempt) == 1 and await _count(db, ReviewQueue) == 1
+    assert await db.get(Exercise, ex1) is not None
+
+    allowed = await _run(db, content_dir=work, allow_learner_data_loss=True)
+    assert allowed.ok, allowed.problems
+    assert await _count(db, ExerciseAttempt) == 0 and await _count(db, ReviewQueue) == 0
+    assert await _count(db, UserProgress) == 1  # the lesson stays, so its progress stays
+    assert await db.get(Exercise, ex1) is None

@@ -15,6 +15,7 @@ from rizalai.config import get_settings
 from rizalai.db.session import dispose_engine, get_session
 from rizalai.generation.router import router as reflection_router
 from rizalai.lessons.router import router as lessons_router
+from rizalai.logging_setup import configure_logging
 from rizalai.progress.review import router as review_router
 from rizalai.progress.router import router as progress_router
 from rizalai.users.router import router as users_router
@@ -30,6 +31,7 @@ def create_app() -> FastAPI:
     app = FastAPI(title="RizalAI API", version="0.1.0", lifespan=lifespan)
     settings = get_settings()
     settings.validate_for_production()
+    configure_logging(settings.log_level)
     # The web app calls the API cross-origin with a bearer token (D36).
     app.add_middleware(
         CORSMiddleware,

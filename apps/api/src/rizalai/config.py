@@ -26,12 +26,10 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/rizalai"
     test_database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/rizalai_test"
 
-    # Sessions (D33): the API issues HS256 tokens with this secret. AUTH_JWKS_URL is
-    # the hook for a future identity provider; SUPABASE_JWT_SECRET is honored for
-    # one release so a rollback is an env change.
+    # Sessions (D33): the API issues and verifies HS256 tokens with this secret.
+    # AUTH_JWKS_URL is the hook for a future identity provider.
     session_jwt_secret: str = ""
     auth_jwks_url: str = ""
-    supabase_jwt_secret: str = ""
 
     # CORS (tech debt 24, D36): comma-separated web origins allowed to call the API
     # from a browser. Production: the Vercel URL. CORS_ORIGIN_REGEX optionally admits
@@ -41,6 +39,9 @@ class Settings(BaseSettings):
     cors_origin_regex: str | None = None
 
     content_dir: Path = Path("../../content")
+
+    # Logging (tech debt 29): level for the rizalai loggers, applied at app creation.
+    log_level: str = "INFO"
 
     embeddings_provider: Literal["fake", "deepinfra"] = "fake"
     embeddings_api_key: str = ""

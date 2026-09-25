@@ -1,4 +1,4 @@
-"""Test helpers: minting Supabase-shaped JWTs."""
+"""Test helpers: minting session tokens shaped like the API's own (D33)."""
 
 import uuid
 from datetime import UTC, datetime, timedelta
