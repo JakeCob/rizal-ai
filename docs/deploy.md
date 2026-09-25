@@ -1,6 +1,6 @@
 # Deploy
 
-Railway hosts the API, a Postgres service and a storage bucket in one project (DECISIONS.md D33, D37). Vercel hosts the web app (D11, D36). Both deploy from main automatically once connected; Railway waits for CI. Plan 007 (docs/plans/007-deploy.md) is the first deploy. Steps marked "owner" create billable or account-bound resources; steps marked "agent" are run by the architect session with the Railway MCP and the CLI once the resources exist. The first deploy happened on 2026-09-25 through the Railway MCP; the real names are recorded below. Project rizal-ai (id 4d761190-0333-476c-86e7-73bee551fa9c) in the jacob-rafal workspace, environment production, region asia-southeast1 (Singapore); services pgvector (Postgres 18 with pgvector from template 3jJFCA, volume 50 GB, public TCP proxy shuttle.proxy.rlwy.net:34659), api (this repo, main), bucket audio (region sin). API domain: https://api-production-377a.up.railway.app.
+Railway hosts the API, a Postgres service and a storage bucket in one project (DECISIONS.md D33, D37). Vercel hosts the web app (D11, D36). Both deploy from main automatically once connected; Railway waits for CI. Plan 007 (docs/plans/007-deploy.md) is the first deploy. Steps marked "owner" create billable or account-bound resources; steps marked "agent" are run by the architect session with the Railway MCP and the CLI once the resources exist. The first deploy happened on 2026-09-25 through the Railway MCP; the real names are recorded below. Project rizal-ai (id 4d761190-0333-476c-86e7-73bee551fa9c) in the jacob-rafal workspace, environment production, region asia-southeast1 (Singapore); services pgvector (Postgres 18 with pgvector from template 3jJFCA, volume 50 GB, public TCP proxy shuttle.proxy.rlwy.net:34659), api (this repo, main), bucket audio (region sin). API domain: https://rizal-ai.up.railway.app.
 
 ## 1. Railway project (owner)
 
@@ -8,7 +8,7 @@ Railway hosts the API, a Postgres service and a storage bucket in one project (D
 2. Add Postgres from the pgvector template (railway.com/deploy/3jJFCA), not the default Postgres template: the default image has no extensions and the first migration runs `CREATE EXTENSION IF NOT EXISTS vector`. Enable Public Access (TCP proxy) on the database so the bootstrap can run from a laptop; it can be disabled again afterwards.
 3. Add a storage bucket named audio. Each environment gets its own bucket and credentials. Railway exposes ENDPOINT, BUCKET, ACCESS_KEY_ID, SECRET_ACCESS_KEY and REGION as reference variables; the real S3 bucket name carries a hash, so never assume "audio".
 4. Add the API service from the GitHub repo JakeCob/rizal-ai. Settings: root directory empty (the image is built from the repo root so content/ ships in it), Dockerfile path `/apps/api/Dockerfile` (variable RAILWAY_DOCKERFILE_PATH), watch paths `/apps/api/**` and `/content/**`, pre-deploy command `alembic upgrade head` with a timeout of about 300 seconds, healthcheck path `/health` with a 120 second timeout, restart policy on failure with 5 retries, and "wait for CI" on (a dashboard-only setting the MCP cannot set; still off as of the first deploy). The start command stays empty (the Dockerfile runs uvicorn). railway.toml is gone: Railway deprecated config files and they never followed the root directory.
-5. Generate a domain for the API service (done: https://api-production-377a.up.railway.app, target port 8000).
+5. Generate a domain for the API service (done: https://rizal-ai.up.railway.app, target port 8000).
 6. Generate a session secret with `openssl rand -hex 32` and keep it as `<session secret>`.
 
 ## 2. API variables (agent, through the Railway MCP once the services exist)
@@ -27,7 +27,7 @@ S3_BUCKET=${{audio.BUCKET}}
 S3_ACCESS_KEY_ID=${{audio.ACCESS_KEY_ID}}
 S3_SECRET_ACCESS_KEY=${{audio.SECRET_ACCESS_KEY}}
 S3_REGION=${{audio.REGION}}
-AUDIO_BASE_URL=https://api-production-377a.up.railway.app/audio
+AUDIO_BASE_URL=https://rizal-ai.up.railway.app/audio
 PORT=8000
 RAILWAY_DOCKERFILE_PATH=apps/api/Dockerfile
 ```
@@ -38,7 +38,7 @@ Notes. The settings rewrite a plain `postgresql://` URL to the asyncpg scheme, b
 
 ## 3. First deploy and bootstrap (agent)
 
-1. Connecting the GitHub source triggers the first deploy. The pre-deploy step runs the migrations; a failure blocks the deploy instead of crash-looping. Then `GET https://api-production-377a.up.railway.app/health` returns `{"status":"ok","db":"ok"}` on the empty schema. On 2026-09-25 the first deploy built in about a minute and all five migrations ran in pre-deploy.
+1. Connecting the GitHub source triggers the first deploy. The pre-deploy step runs the migrations; a failure blocks the deploy instead of crash-looping. Then `GET https://rizal-ai.up.railway.app/health` returns `{"status":"ok","db":"ok"}` on the empty schema. On 2026-09-25 the first deploy built in about a minute and all five migrations ran in pre-deploy.
 2. Bootstrap inside the API container, where the content and the corpus texts are baked in and the private database domain resolves, with the Railway CLI logged in to an account on the workspace (no secret leaves Railway):
 
 ```
@@ -55,7 +55,7 @@ It takes an advisory lock, checks the database is at the migration head, ingests
 3. Smoke test from the same machine:
 
 ```
-uv run rizalai smoke --base-url https://api-production-377a.up.railway.app --origin https://<web domain>
+uv run rizalai smoke --base-url https://rizal-ai.up.railway.app --origin https://<web domain>
 ```
 
 It checks /health, a CORS preflight from the web origin, POST /session/anonymous, GET /me, GET /tree (8 lessons), and the first published lesson with its passages, and exits non-zero on any failure. On 2026-09-25 it passed 6 of 6 after the bootstrap (12,114 passages, 3 units, 8 lessons, 70 exercises, 0 unresolved refs).
@@ -64,7 +64,7 @@ It checks /health, a CORS preflight from the web origin, POST /session/anonymous
 ## 4. Vercel project (owner)
 
 1. Import JakeCob/rizal-ai as a Hobby project. Root directory `apps/web`, framework Next.js, install `pnpm install --frozen-lockfile`, build `pnpm build`, Node 22.x. Keep "Include files outside the Root Directory in the Build Step" on (a test imports packages/contracts). apps/web/package.json pins pnpm 9 through packageManager; set ENABLE_EXPERIMENTAL_COREPACK=1 so Vercel honours it. apps/web/vercel.json skips builds for pushes that touch neither apps/web nor packages/contracts.
-2. Production environment variables: `NEXT_PUBLIC_API_URL=https://api-production-377a.up.railway.app` (https, no trailing slash); leave NEXT_PUBLIC_API_MODE unset.
+2. Production environment variables: `NEXT_PUBLIC_API_URL=https://rizal-ai.up.railway.app` (https, no trailing slash); leave NEXT_PUBLIC_API_MODE unset.
 3. Preview environment variables: `NEXT_PUBLIC_API_MODE=mock` (previews play the fixture lesson and never touch the production database). NEXT_PUBLIC_API_URL may be omitted.
 4. Note the production domain Vercel assigns as `<web domain>` and give it to the agent for CORS_ORIGINS. NEXT_PUBLIC values are inlined at build time: changing either needs a redeploy without the build cache.
 5. Open `https://<web domain>` on the phone, start a lesson, and play it through. The service worker registers for the first time on this deploy (D25); a stale shell is fixed by the next deploy because the cache is network-first.
