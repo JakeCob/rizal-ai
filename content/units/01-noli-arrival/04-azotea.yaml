@@ -1,0 +1,201 @@
+# Lesson 4: An Idyl on an Azotea.
+#
+# Scene: Chapter 7. Ibarra calls at Capitan Tiago's house in the morning.
+# He and Maria Clara slip away to the azotea above the river while Tiya
+# Isabel jokes that the whole neighborhood will chaperone them. Maria Clara
+# asks whether he always thought of her among the beautiful women of Europe;
+# he answers that he could never forget her. She recalls their childhood and
+# the sambong leaves she gave him on the way home; he takes the dried leaves
+# from his wallet. She brings out the farewell letter he wrote before leaving
+# and says she will read it to him, skipping his compliments.
+#
+# The vignette below is our own modern Tagalog adaptation (DECISIONS.md
+# D01). It is not Rizal's text and never carries his byline. The originals,
+# in Spanish, Poblete's 1909 Tagalog, and Derbyshire's English, are pinned
+# under source_passages and shown verbatim on the "In Rizal's voice" card.
+# Refs sharing a group are the same passage in three editions, aligned by
+# content. Poblete runs two behind the Spanish for es 23 to 30; his tl 29 is
+# an illustration caption, so es 31 is his tl 30; he splits es 32 (the
+# childhood memory) into his tl 31 and 32, so the childhood group carries
+# both; after that the numbers match again (34, 36, 40). Derbyshire splits
+# Ibarra's long reply (es 31) into his 19 to 22; only 19, which opens it, is
+# pinned.
+
+slug: noli-azotea
+title: "An idyl on the azotea"
+published: true
+estimated_minutes: 6
+
+grammar_focus:
+  - question-particle-ba
+  - linker-na-ng
+  - completed-and-contemplated-aspect
+  - plural-pronouns-tayo-kayo
+
+target_vocab:
+  - { tl: nag-usap, en: talked, pos: verb, note: "root: usap; sila ni Maria Clara: he and Maria Clara" }
+  - { tl: azotea, en: "open roof terrace", pos: noun }
+  - { tl: kita, en: "I to you (b4); in view (b2)", pos: pronoun, note: "paano kita makakalimutan: how could I forget you; kita kayo: you are in plain view" }
+  - { tl: buong, en: whole, pos: adjective, note: "root: buo, with the linker ng" }
+  - { tl: kapitbahayan, en: neighborhood, pos: noun, note: "root: kapitbahay, neighbor" }
+  - { tl: lagi, en: always, pos: adverb }
+  - { tl: naaalala, en: remember, pos: verb, note: "root: alala" }
+  - { tl: kayang, en: "you know", pos: particle, note: "root: kaya, with the linker ng; here it adds emphasis, not so" }
+  - { tl: magagandang, en: beautiful, pos: adjective, note: "root: ganda; plural maganda with the linker ng" }
+  - { tl: makakalimutan, en: could forget, pos: verb, note: "root: limot" }
+  - { tl: binigyan, en: gave someone, pos: verb, note: "root: bigay" }
+  - { tl: dahon, en: leaf, pos: noun }
+  - { tl: sambong, en: "sambong, a medicinal herb (Rizal wrote salvia, sage)", pos: noun }
+  - { tl: sumakit, en: to ache, pos: verb, note: "root: sakit" }
+  - { tl: bigay, en: gift, pos: noun, note: "ang bigay mo: what you gave" }
+  - { tl: hawakan, en: to touch, pos: verb, note: "root: hawak" }
+  - { tl: sulat, en: letter, pos: noun }
+  - { tl: basahin, en: to read, pos: verb, note: "root: basa" }
+  - { tl: isasama, en: will include, pos: verb, note: "root: sama" }
+  - { tl: bola, en: sweet talk, pos: noun, note: "casual: flattery, literally ball" }
+
+source_passages:
+  # The two lovers escape Tiya Isabel's feather duster to the azotea
+  - { work: noli, language: es, chapter: 7, paragraph_index: 23, group: azotea }
+  - { work: noli, language: tl, chapter: 7, paragraph_index: 21, group: azotea }
+  - { work: noli, language: en, chapter: 7, paragraph_index: 16, group: azotea }
+  # Tiya Isabel: better there, the whole neighborhood will watch you
+  - { work: noli, language: es, chapter: 7, paragraph_index: 26, group: watched }
+  - { work: noli, language: tl, chapter: 7, paragraph_index: 24, group: watched }
+  - { work: noli, language: en, chapter: 7, paragraph_index: 17, group: watched }
+  # Maria Clara: have you always thought of me, among so many beautiful women?
+  - { work: noli, language: es, chapter: 7, paragraph_index: 29, group: question }
+  - { work: noli, language: tl, chapter: 7, paragraph_index: 27, group: question }
+  - { work: noli, language: en, chapter: 7, paragraph_index: 18, group: question }
+  # Ibarra: could I forget you?
+  - { work: noli, language: es, chapter: 7, paragraph_index: 31, group: forget }
+  - { work: noli, language: tl, chapter: 7, paragraph_index: 30, group: forget }
+  - { work: noli, language: en, chapter: 7, paragraph_index: 19, group: forget }
+  # Maria Clara recalls their childhood and the sage leaves (one Spanish and English paragraph, two Tagalog)
+  - { work: noli, language: es, chapter: 7, paragraph_index: 32, group: childhood }
+  - { work: noli, language: tl, chapter: 7, paragraph_index: 31, group: childhood }
+  - { work: noli, language: tl, chapter: 7, paragraph_index: 32, group: childhood }
+  - { work: noli, language: en, chapter: 7, paragraph_index: 23, group: childhood }
+  # Ibarra: your sage leaves, all you have ever given me
+  - { work: noli, language: es, chapter: 7, paragraph_index: 34, group: leaves }
+  - { work: noli, language: tl, chapter: 7, paragraph_index: 34, group: leaves }
+  - { work: noli, language: en, chapter: 7, paragraph_index: 24, group: leaves }
+  # Maria Clara: no touching, it is a letter of farewell
+  - { work: noli, language: es, chapter: 7, paragraph_index: 36, group: letter }
+  - { work: noli, language: tl, chapter: 7, paragraph_index: 36, group: letter }
+  - { work: noli, language: en, chapter: 7, paragraph_index: 25, group: letter }
+  # Maria Clara: I will read it, but leave out your compliments
+  - { work: noli, language: es, chapter: 7, paragraph_index: 40, group: read }
+  - { work: noli, language: tl, chapter: 7, paragraph_index: 40, group: read }
+  - { work: noli, language: en, chapter: 7, paragraph_index: 29, group: read }
+
+vignette:
+  - line_id: b1
+    speaker: null
+    tl: "Dumating si Ibarra sa bahay ni Kapitan Tiago. Nag-usap sila ni Maria Clara sa azotea."
+    en: "Ibarra arrived at Capitan Tiago's house. He and Maria Clara talked on the azotea."
+    exercise_after: ex1
+  - line_id: b2
+    speaker: "Tiya Isabel"
+    tl: "Mabuti pa diyan, kita kayo ng buong kapitbahayan."
+    en: "Better there, the whole neighborhood can keep an eye on you."
+    exercise_after: ex2
+  - line_id: b3
+    speaker: "Maria Clara"
+    tl: "Lagi mo ba akong naaalala? Ang dami kayang magagandang babae sa Europa!"
+    en: "Did you always think of me? There are so many beautiful women in Europe, you know!"
+    exercise_after: ex3
+  - line_id: b4
+    speaker: "Ibarra"
+    tl: "Paano kita makakalimutan? Lagi kitang naaalala, mula pa noong mga bata tayo."
+    en: "How could I forget you? I have always thought of you, ever since we were kids."
+    exercise_after: ex4
+  - line_id: b5
+    speaker: "Maria Clara"
+    tl: "Naaalala mo pa ba? Binigyan kita ng dahon ng sambong para hindi sumakit ang ulo mo."
+    en: "Do you still remember? I gave you sambong leaves so your head wouldn't ache."
+    exercise_after: ex5
+  - line_id: b6
+    speaker: "Ibarra"
+    tl: "Heto yung mga dahon mo, o. Ito lang kasi ang bigay mo sa akin."
+    en: "Here are your leaves, look. This is all you ever gave me, you know."
+    exercise_after: ex6
+  - line_id: b7
+    speaker: "Maria Clara"
+    tl: "Uy, huwag mong hawakan! Ito ang sulat mo bago ka umalis."
+    en: "Hey, don't touch it! This is the letter you wrote before you left."
+    exercise_after: ex7
+  - line_id: b8
+    speaker: "Maria Clara"
+    tl: "Sige, basahin ko na sa iyo, pero hindi ko isasama ang mga bola mo."
+    en: "Okay, I'll read it to you now, but I'm leaving out your sweet talk."
+    exercise_after: ex8
+
+exercises:
+  - type: comprehension_mc
+    key: ex1
+    question: "Where did Ibarra and Maria Clara talk?"
+    options: ["In the church", "On the azotea", "In the convent", "In the kitchen"]
+    correct_index: 1
+    explanation: "Nag-usap sila ni Maria Clara sa azotea: he and Maria Clara talked on the azotea."
+
+  - type: listen_tap
+    key: ex2
+    audio_url: null
+    transcript_tl: "Kita kayo ng buong kapitbahayan."
+    answer_tokens: [Kita, kayo, ng, buong, kapitbahayan]
+    bank: [Kita, kayo, ng, buong, kapitbahayan, bahay, lahat, ni]
+
+  - type: sentence_assembly
+    key: ex3
+    prompt_en: "Did you always think of me?"
+    answer_tokens: [Lagi, mo, ba, akong, naaalala]
+    bank: [Lagi, mo, ba, akong, naaalala, kita, siya, nakalimutan]
+
+  - type: translate_line
+    key: ex4
+    direction: en_to_tl
+    prompt: "How could I forget you?"
+    answer_tokens: [Paano, kita, makakalimutan]
+    bank: [Paano, kita, makakalimutan, ako, nakalimutan, bakit]
+
+  - type: comprehension_mc
+    key: ex5
+    question: "Why did Maria Clara give Ibarra the sambong leaves?"
+    options: ["So his head wouldn't ache", "As a gift for his mother", "To cook with", "To remember her by in Europe"]
+    correct_index: 0
+    explanation: "Binigyan kita ng dahon ng sambong para hindi sumakit ang ulo mo: I gave you sambong leaves so your head wouldn't ache."
+
+  - type: translate_line
+    key: ex6
+    direction: tl_to_en
+    prompt: "Ito lang kasi ang bigay mo sa akin."
+    answer_tokens: [This, is, all, you, gave, me]
+    bank: [This, is, all, you, gave, me, took, us, them]
+
+  - type: listen_tap
+    key: ex7
+    audio_url: null
+    transcript_tl: "Ito ang sulat mo bago ka umalis."
+    answer_tokens: [Ito, ang, sulat, mo, bago, ka, umalis]
+    bank: [Ito, ang, sulat, mo, bago, ka, umalis, ko, dumating, libro]
+
+  - type: sentence_assembly
+    key: ex8
+    prompt_en: "I'll read it to you now."
+    answer_tokens: [Basahin, ko, na, sa, iyo]
+    bank: [Basahin, ko, na, sa, iyo, binasa, sulat, niya]
+
+  - type: comprehension_mc
+    key: ex9
+    question: "What does Maria Clara tell Ibarra not to do with the letter?"
+    options: ["Read it aloud", "Touch it", "Throw it away", "Show it to Tiya Isabel"]
+    correct_index: 1
+    explanation: "Uy, huwag mong hawakan! (Hey, don't touch it!)"
+
+  - type: translate_line
+    key: ex10
+    direction: tl_to_en
+    prompt: "Sa azotea sila nag-usap."
+    answer_tokens: [They, talked, "on", the, azotea]
+    bank: [They, talked, "on", the, azotea, We, sat, kitchen]

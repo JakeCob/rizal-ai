@@ -1,0 +1,213 @@
+# Lesson 2: The Dinner.
+#
+# Scene: Chapter 3. The two friars both head for the head of the table,
+# Capitan Tiago keeps Ibarra seated and has tinola served in his honor,
+# Padre Damaso is served the neck and a tough wing and pushes his plate
+# away, then sneers that Ibarra wasted his fortune in Europe to learn what
+# any schoolboy knows. Ibarra answers with restraint, drinks a toast and
+# leaves; Capitan Tiago begs him to stay. After he goes, Damaso blames the
+# habit of sending young men to Europe.
+#
+# The vignette below is our own modern Tagalog adaptation (DECISIONS.md
+# D01). It is not Rizal's text and never carries his byline. The originals,
+# in Spanish, Poblete's 1909 Tagalog, and Derbyshire's English, are pinned
+# under source_passages and shown verbatim on the "In Rizal's voice" card.
+# Refs sharing a group are the same passage in three editions, aligned by
+# content (Derbyshire merges short paragraphs: his 13 holds the Spanish 13
+# and 14, so from Spanish paragraph 14 on his numbering runs one to eight
+# behind the Spanish and Tagalog). Ibarra's toast and Damaso's outburst after
+# he leaves appear only as pinned passages (groups leave and pride), not as
+# beats. The vignette uses spoken modern forms (natutunan, pasensya) where
+# KWF prefers natutuhan and pasensiya.
+
+slug: noli-the-dinner
+title: "The dinner"
+published: true
+estimated_minutes: 6
+
+grammar_focus:
+  - personal-markers-si-ni-kay
+  - linker-na-ng
+  - negative-imperative-huwag
+  - politeness-po-opo
+
+target_vocab:
+  - { tl: umupo, en: sat down, pos: verb, note: "root: upo" }
+  - { tl: bisita, en: guest, pos: noun }
+  - { tl: parehong, en: both, pos: adjective, note: "root: pareho, with the linker ng" }
+  - { tl: pumunta, en: went, pos: verb, note: "root: punta" }
+  - { tl: kabisera, en: head of the table, pos: noun }
+  - { tl: pari, en: priest, pos: noun }
+  - { tl: tumayo, en: to stand up, pos: verb, note: "root: tayo" }
+  - { tl: nagpaluto, en: had something cooked, pos: verb, note: "root: luto; magpa- means to have someone do it" }
+  - { tl: tinola, en: "chicken soup with ginger and squash", pos: noun }
+  - { tl: napunta, en: ended up with, pos: verb, note: "root: punta" }
+  - { tl: leeg, en: neck, pos: noun }
+  - { tl: pakpak, en: wing, pos: noun }
+  - { tl: manok, en: chicken, pos: noun }
+  - { tl: itinulak, en: pushed away, pos: verb, note: "root: tulak" }
+  - { tl: plato, en: plate, pos: noun }
+  - { tl: galit, en: angry, pos: adjective, note: "galit na galit: repeated with the linker for very angry" }
+  - { tl: nagsalita, en: spoke, pos: verb, note: "root: salita" }
+  - { tl: natutunan, en: learned, pos: verb, note: "root: tuto" }
+  - { tl: kahit, en: even, pos: conjunction }
+  - { tl: batang, en: child, pos: noun, note: "root: bata, with the linker ng before nag-aaral" }
+  - { tl: bata, en: child, pos: noun }
+  - { tl: nag-aaral, en: studying, pos: verb, note: "root: aral" }
+  - { tl: alam, en: know, pos: verb }
+  - { tl: ginoo, en: gentleman, pos: noun, note: "mga ginoo: gentlemen" }
+  - { tl: tratuhin, en: to treat someone, pos: verb, note: "root: trato, from Spanish" }
+  - { tl: talaga, en: really, pos: adverb }
+  - { tl: mula, en: since, pos: preposition, note: "mula noong: ever since" }
+  - { tl: pasensya, en: "sorry, excuse me", pos: noun, note: "pasensya na po: a polite apology" }
+  - { tl: kailangan, en: need to, pos: verb }
+  - { tl: umalis, en: to leave, pos: verb, note: "root: alis" }
+  - { tl: aasikasuhin, en: will take care of, pos: verb, note: "root: asikaso" }
+  - { tl: teka, en: wait, pos: interjection, note: "short for hintay ka; teka lang po: wait a moment, please" }
+  - { tl: muna, en: "yet, for now", pos: adverb, note: "huwag muna: not yet" }
+  - { tl: papunta, en: on the way, pos: verb, note: "root: punta" }
+
+source_passages:
+  # Both friars head for the head of the table
+  - { work: noli, language: es, chapter: 3, paragraph_index: 5, group: seats }
+  - { work: noli, language: tl, chapter: 3, paragraph_index: 5, group: seats }
+  - { work: noli, language: en, chapter: 3, paragraph_index: 5, group: seats }
+  # Capitan Tiago keeps Ibarra seated and orders the tinola for him
+  - { work: noli, language: es, chapter: 3, paragraph_index: 18, group: tiago }
+  - { work: noli, language: tl, chapter: 3, paragraph_index: 18, group: tiago }
+  - { work: noli, language: en, chapter: 3, paragraph_index: 17, group: tiago }
+  # Padre Damaso gets the neck and wing and pushes his plate away
+  - { work: noli, language: es, chapter: 3, paragraph_index: 19, group: tinola }
+  - { work: noli, language: tl, chapter: 3, paragraph_index: 19, group: tinola }
+  - { work: noli, language: en, chapter: 3, paragraph_index: 18, group: tinola }
+  # Damaso sneers: any schoolboy knows that
+  - { work: noli, language: es, chapter: 3, paragraph_index: 46, group: sneer }
+  - { work: noli, language: tl, chapter: 3, paragraph_index: 46, group: sneer }
+  - { work: noli, language: en, chapter: 3, paragraph_index: 42, group: sneer }
+  # Ibarra's restrained answer about his former curate
+  - { work: noli, language: es, chapter: 3, paragraph_index: 48, group: restraint }
+  - { work: noli, language: tl, chapter: 3, paragraph_index: 48, group: restraint }
+  - { work: noli, language: en, chapter: 3, paragraph_index: 43, group: restraint }
+  # Ibarra asks leave to go and drinks to Spain and the Philippines
+  - { work: noli, language: es, chapter: 3, paragraph_index: 50, group: leave }
+  - { work: noli, language: tl, chapter: 3, paragraph_index: 50, group: leave }
+  - { work: noli, language: en, chapter: 3, paragraph_index: 44, group: leave }
+  # Capitan Tiago: don't go, Maria Clara is coming
+  - { work: noli, language: es, chapter: 3, paragraph_index: 52, group: stay }
+  - { work: noli, language: tl, chapter: 3, paragraph_index: 52, group: stay }
+  - { work: noli, language: en, chapter: 3, paragraph_index: 45, group: stay }
+  # Damaso blames sending young men to Europe
+  - { work: noli, language: es, chapter: 3, paragraph_index: 55, group: pride }
+  - { work: noli, language: tl, chapter: 3, paragraph_index: 55, group: pride }
+  - { work: noli, language: en, chapter: 3, paragraph_index: 47, group: pride }
+
+vignette:
+  - line_id: b1
+    speaker: null
+    tl: "Umupo na ang mga bisita. Parehong pumunta sa kabisera ang dalawang pari."
+    en: "The guests sat down. Both priests went to the head of the table."
+    exercise_after: ex1
+  - line_id: b2
+    speaker: "Kapitan Tiago"
+    tl: "Diyan lang po kayo, huwag na po kayong tumayo! Nagpaluto ako ng tinola para sa inyo."
+    en: "Stay where you are, don't get up! I had tinola cooked for you."
+    exercise_after: ex2
+  - line_id: b3
+    speaker: null
+    tl: "Napunta kay Padre Damaso ang leeg at pakpak ng manok."
+    en: "Padre Damaso ended up with the neck and the wing of the chicken."
+    exercise_after: ex3
+  - line_id: b4
+    speaker: null
+    tl: "Itinulak niya ang plato. Galit na galit siya pero hindi siya nagsalita."
+    en: "He pushed the plate away. He was furious, but he said nothing."
+    exercise_after: ex4
+  - line_id: b5
+    speaker: "Padre Damaso"
+    tl: "Iyan lang ba ang natutunan mo sa Europa? Kahit batang nag-aaral pa lang, alam na 'yan!"
+    en: "Is that all you learned in Europe? Even a schoolkid knows that!"
+    exercise_after: ex5
+  - line_id: b6
+    speaker: "Ibarra"
+    tl: "Mga ginoo, ganyan na po talaga ako tratuhin ni Padre Damaso mula noong bata pa ako."
+    en: "Gentlemen, Padre Damaso has treated me like this ever since I was a child."
+    exercise_after: ex6
+  - line_id: b7
+    speaker: "Ibarra"
+    tl: "Pasensya na po, kailangan ko nang umalis. Marami pa akong aasikasuhin."
+    en: "Excuse me, I have to leave now. I still have a lot to take care of."
+    exercise_after: ex7
+  - line_id: b8
+    speaker: "Kapitan Tiago"
+    tl: "Teka lang po, huwag muna kayong umalis! Papunta na si Maria Clara."
+    en: "Wait a moment, don't go yet! Maria Clara is on her way."
+    exercise_after: ex8
+
+exercises:
+  - type: comprehension_mc
+    key: ex1
+    question: "Where did both priests go when the guests sat down?"
+    options: ["To the kitchen", "To the head of the table", "To the door", "To the window"]
+    correct_index: 1
+    explanation: "Parehong pumunta sa kabisera ang dalawang pari: both priests went to the head of the table."
+
+  - type: translate_line
+    key: ex2
+    direction: tl_to_en
+    prompt: "Nagpaluto ako ng tinola para sa inyo."
+    answer_tokens: [I, had, tinola, cooked, for, you]
+    bank: [I, had, tinola, cooked, for, you, she, me, soup]
+
+  - type: sentence_assembly
+    key: ex3
+    prompt_en: "Padre Damaso ended up with the neck and the wing of the chicken."
+    answer_tokens: [Napunta, kay, Padre, Damaso, ang, leeg, at, pakpak, ng, manok]
+    bank: [Napunta, kay, Padre, Damaso, ang, leeg, at, pakpak, ng, manok, si, hita, ni]
+
+  - type: listen_tap
+    key: ex4
+    audio_url: null
+    transcript_tl: "Itinulak niya ang plato."
+    answer_tokens: [Itinulak, niya, ang, plato]
+    bank: [Itinulak, niya, ang, plato, kinain, nila, baso]
+
+  - type: comprehension_mc
+    key: ex5
+    question: "What does Padre Damaso say about what Ibarra learned in Europe?"
+    options: ["It was worth the money", "Even a schoolkid knows it", "It is dangerous", "He should teach it"]
+    correct_index: 1
+    explanation: "Padre Damaso says: Kahit batang nag-aaral pa lang, alam na 'yan! (Even a schoolkid knows that.)"
+
+  - type: translate_line
+    key: ex6
+    direction: en_to_tl
+    prompt: "Ever since I was a child."
+    answer_tokens: [Mula, noong, bata, ako]
+    bank: [Mula, noong, bata, ako, ka, ngayon, matanda]
+
+  - type: sentence_assembly
+    key: ex7
+    prompt_en: "I have to leave now."
+    answer_tokens: [Kailangan, ko, nang, umalis]
+    bank: [Kailangan, ko, nang, umalis, na, ako, dumating]
+
+  - type: listen_tap
+    key: ex8
+    audio_url: null
+    transcript_tl: "Papunta na si Maria Clara."
+    answer_tokens: [Papunta, na, si, Maria, Clara]
+    bank: [Papunta, na, si, Maria, Clara, ni, pauwi, Isabel]
+
+  - type: comprehension_mc
+    key: ex9
+    question: "Why does Ibarra say he has to leave?"
+    options: ["He is angry at Capitan Tiago", "He feels sick", "He still has a lot to take care of", "Maria Clara is waiting outside"]
+    correct_index: 2
+    explanation: "Marami pa akong aasikasuhin: I still have a lot to take care of."
+
+  - type: translate_line
+    key: ex10
+    direction: tl_to_en
+    prompt: "Itinulak ni Padre Damaso ang plato."
+    answer_tokens: [Padre, Damaso, pushed, the, plate]
+    bank: [Padre, Damaso, pushed, the, plate, pulled, bowl, Ibarra]

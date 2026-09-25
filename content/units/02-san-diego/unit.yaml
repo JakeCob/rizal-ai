@@ -1,0 +1,9 @@
+# Unit 2. Lessons are listed in play order. Each entry is a lesson file in this folder.
+slug: san-diego
+title: "Noli Me Tangere: San Diego"
+order_index: 2
+published: true
+lessons:
+  - 01-placeholder.yaml
+  - 02-placeholder.yaml
+  - 03-placeholder.yaml

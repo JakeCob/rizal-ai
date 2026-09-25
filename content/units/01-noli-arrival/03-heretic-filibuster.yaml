@@ -1,0 +1,199 @@
+# Lesson 3: Heretic and Filibuster.
+#
+# Scene: Chapter 4. Ibarra walks through Binondo at night and Teniente
+# Guevara catches up with him. Ibarra asks how his father died; Guevara
+# tells him Don Rafael died in prison, buried in his town almost a year ago.
+# A tax collector who could not read struck a schoolboy, Don Rafael pushed
+# him, the man fell against a stone and died. Don Rafael was jailed, his
+# enemies called him a heretic and a filibuster, and he died alone just
+# before he would have been acquitted. Ibarra shakes the lieutenant's hand
+# in silence and leaves.
+#
+# The vignette below is our own modern Tagalog adaptation (DECISIONS.md
+# D01). It is not Rizal's text and never carries his byline. The originals,
+# in Spanish, Poblete's 1909 Tagalog, and Derbyshire's English, are pinned
+# under source_passages and shown verbatim on the "In Rizal's voice" card.
+# Refs sharing a group are the same passage in three editions, aligned by
+# content. Poblete inserts an illustration caption as paragraph 23, so from
+# there his numbering runs one ahead of the Spanish; Derbyshire merges and
+# splits paragraphs, so his numbering drifts further (the Spanish paragraph
+# 33 is his 25 and 26, both pinned in the incident group).
+
+slug: noli-heretic-filibuster
+title: "Heretic and filibuster"
+published: true
+estimated_minutes: 6
+
+grammar_focus:
+  - completed-aspect-verbs
+  - noong-past-time
+  - dahil-kaya-cause-result
+  - object-focus-ng-actor
+
+target_vocab:
+  - { tl: noong, en: "when (in the past)", pos: preposition, note: "noong gabing iyon: that night" }
+  - { tl: noon, en: back then, pos: adverb }
+  - { tl: gabing, en: night, pos: noun, note: "gabi + linker ng" }
+  - { tl: inabutan, en: caught up with, pos: verb, note: "root: abot" }
+  - { tl: namatay, en: died, pos: verb, note: "root: patay" }
+  - { tl: kulungan, en: jail, pos: noun, note: "root: kulong, to lock up" }
+  - { tl: maniningil, en: collector, pos: noun, note: "root: singil, to collect a payment" }
+  - { tl: buwis, en: tax, pos: noun }
+  - { tl: sinaktan, en: hurt, pos: verb, note: "root: sakit" }
+  - { tl: itinulak, en: pushed, pos: verb, note: "root: tulak" }
+  - { tl: kaya, en: so, pos: conjunction, note: "introduces a result" }
+  - { tl: natumba, en: fell over, pos: verb, note: "root: tumba" }
+  - { tl: dahil, en: because, pos: conjunction, note: "dahil doon: because of that" }
+  - { tl: ikinulong, en: was jailed, pos: verb, note: "root: kulong" }
+  - { tl: erehe, en: heretic, pos: noun, note: "from Spanish hereje" }
+  - { tl: pilibustero, en: "filibuster, subversive", pos: noun, note: "from Spanish filibustero" }
+  - { tl: kaaway, en: enemy, pos: noun }
+  - { tl: mapawalang-sala, en: to be acquitted, pos: verb, note: "walang sala: without guilt" }
+  - { tl: nakalibing, en: is buried, pos: verb, note: "root: libing" }
+  - { tl: kinamayan, en: shook hands with, pos: verb, note: "root: kamay, hand" }
+
+source_passages:
+  # Ibarra walks toward the Binondo plaza at night
+  - { work: noli, language: es, chapter: 4, paragraph_index: 2, group: walk }
+  - { work: noli, language: tl, chapter: 4, paragraph_index: 2, group: walk }
+  - { work: noli, language: en, chapter: 4, paragraph_index: 1, group: walk }
+  # Ibarra asks the lieutenant what became of his father
+  - { work: noli, language: es, chapter: 4, paragraph_index: 9, group: ask }
+  - { work: noli, language: tl, chapter: 4, paragraph_index: 9, group: ask }
+  - { work: noli, language: en, chapter: 4, paragraph_index: 5, group: ask }
+  # He died in prison
+  - { work: noli, language: es, chapter: 4, paragraph_index: 12, group: prison }
+  - { work: noli, language: tl, chapter: 4, paragraph_index: 12, group: prison }
+  - { work: noli, language: en, chapter: 4, paragraph_index: 8, group: prison }
+  # The letter came just before he died; the burial almost a year ago
+  - { work: noli, language: es, chapter: 4, paragraph_index: 24, group: buried }
+  - { work: noli, language: tl, chapter: 4, paragraph_index: 25, group: buried }
+  - { work: noli, language: en, chapter: 4, paragraph_index: 18, group: buried }
+  # The tax collector who could not read
+  - { work: noli, language: es, chapter: 4, paragraph_index: 32, group: collector }
+  - { work: noli, language: tl, chapter: 4, paragraph_index: 33, group: collector }
+  - { work: noli, language: en, chapter: 4, paragraph_index: 24, group: collector }
+  # The schoolboy, the fall, the arrest, heretic and filibuster (one Spanish and Tagalog paragraph, two English)
+  - { work: noli, language: es, chapter: 4, paragraph_index: 33, group: incident }
+  - { work: noli, language: tl, chapter: 4, paragraph_index: 34, group: incident }
+  - { work: noli, language: en, chapter: 4, paragraph_index: 25, group: incident }
+  - { work: noli, language: en, chapter: 4, paragraph_index: 26, group: incident }
+  # About to be acquitted, he died in prison alone
+  - { work: noli, language: es, chapter: 4, paragraph_index: 36, group: death }
+  - { work: noli, language: tl, chapter: 4, paragraph_index: 37, group: death }
+  - { work: noli, language: en, chapter: 4, paragraph_index: 28, group: death }
+  # Ibarra shakes the lieutenant's hand in silence
+  - { work: noli, language: es, chapter: 4, paragraph_index: 39, group: farewell }
+  - { work: noli, language: tl, chapter: 4, paragraph_index: 40, group: farewell }
+  - { work: noli, language: en, chapter: 4, paragraph_index: 30, group: farewell }
+
+vignette:
+  - line_id: b1
+    speaker: null
+    tl: "Noong gabing iyon, naglakad si Ibarra sa Binondo. Doon siya inabutan ni Tenyente Guevara."
+    en: "That night, Ibarra walked through Binondo. There Teniente Guevara caught up with him."
+    exercise_after: ex1
+  - line_id: b2
+    speaker: "Ibarra"
+    tl: "Tenyente, paano po namatay ang aking ama?"
+    en: "Teniente, how did my father die?"
+    exercise_after: ex2
+  - line_id: b3
+    speaker: "Tenyente"
+    tl: "Hindi mo ba alam? Sa kulungan siya namatay."
+    en: "Don't you know? He died in jail."
+    exercise_after: ex3
+  - line_id: b4
+    speaker: "Tenyente"
+    tl: "Noon, may maniningil ng buwis na hindi marunong magbasa. Sinaktan niya ang isang batang estudyante."
+    en: "Back then, there was a tax collector who could not read. He hurt a schoolboy."
+    exercise_after: ex4
+  - line_id: b5
+    speaker: "Tenyente"
+    tl: "Itinulak siya ng iyong ama, kaya natumba ang lalaki. Tumama ang ulo niya sa bato, at namatay siya."
+    en: "Your father pushed him, so the man fell. His head hit a stone, and he died."
+    exercise_after: ex5
+  - line_id: b6
+    speaker: "Tenyente"
+    tl: "Dahil doon, ikinulong ang ama mo. Tinawag siyang erehe at pilibustero ng mga kaaway niya."
+    en: "Because of that, your father was jailed. His enemies called him a heretic and a filibuster."
+    exercise_after: ex6
+  - line_id: b7
+    speaker: "Tenyente"
+    tl: "Malapit na sana siyang mapawalang-sala, pero namatay siyang mag-isa. Halos isang taon na siyang nakalibing sa bayan mo."
+    en: "He was about to be acquitted, but he died alone. It has been almost a year since he was buried in your town."
+    exercise_after: ex7
+  - line_id: b8
+    speaker: null
+    tl: "Wala nang nasabi si Ibarra. Tahimik niyang kinamayan ang tenyente, saka siya umalis."
+    en: "Ibarra had nothing more to say. He quietly shook the teniente's hand, then he left."
+    exercise_after: ex8
+
+exercises:
+  - type: comprehension_mc
+    key: ex1
+    question: "Who caught up with Ibarra in Binondo?"
+    options: ["Padre Damaso", "Capitan Tiago", "Teniente Guevara", "Maria Clara"]
+    correct_index: 2
+    explanation: "Doon siya inabutan ni Tenyente Guevara: there Teniente Guevara caught up with him."
+
+  - type: sentence_assembly
+    key: ex2
+    prompt_en: "How did my father die? (politely, to an elder)"
+    answer_tokens: [Paano, po, namatay, ang, aking, ama]
+    bank: [Paano, po, namatay, ang, aking, ama, ina, nabuhay, saan]
+
+  - type: listen_tap
+    key: ex3
+    audio_url: null
+    transcript_tl: "Sa kulungan siya namatay."
+    answer_tokens: [Sa, kulungan, siya, namatay]
+    bank: [Sa, kulungan, siya, namatay, ako, bahay, nabuhay]
+
+  - type: comprehension_mc
+    key: ex4
+    question: "What could the tax collector not do?"
+    options: ["Read", "Walk", "Speak Spanish", "Count money"]
+    correct_index: 0
+    explanation: "may maniningil ng buwis na hindi marunong magbasa: there was a tax collector who could not read."
+
+  - type: translate_line
+    key: ex5
+    direction: tl_to_en
+    prompt: "Itinulak siya ng iyong ama, kaya natumba ang lalaki."
+    answer_tokens: [Your, father, pushed, him, so, the, man, fell]
+    bank: [Your, father, pushed, him, so, the, man, fell, mother, but, boy]
+
+  - type: translate_line
+    key: ex6
+    direction: en_to_tl
+    prompt: "That is why your father was jailed."
+    answer_tokens: [Kaya, ikinulong, ang, ama, mo]
+    bank: [Kaya, ikinulong, ang, ama, mo, kahit, pinalaya, ina]
+
+  - type: comprehension_mc
+    key: ex7
+    question: "How did Don Rafael die?"
+    options: ["At home with his family", "Alone in jail", "In a fight with the collector", "In Europe"]
+    correct_index: 1
+    explanation: "Sa kulungan siya namatay. Malapit na sana siyang mapawalang-sala, pero namatay siyang mag-isa: he died in jail, alone, just before he would have been acquitted."
+
+  - type: listen_tap
+    key: ex8
+    audio_url: null
+    transcript_tl: "Tahimik niyang kinamayan ang tenyente."
+    answer_tokens: [Tahimik, niyang, kinamayan, ang, tenyente]
+    bank: [Tahimik, niyang, kinamayan, ang, tenyente, pari, masaya, nilang]
+
+  - type: sentence_assembly
+    key: ex9
+    prompt_en: "His enemies called him a heretic."
+    answer_tokens: [Tinawag, siyang, erehe, ng, mga, kaaway, niya]
+    bank: [Tinawag, siyang, erehe, ng, mga, kaaway, niya, kaibigan, ako, si]
+
+  - type: translate_line
+    key: ex10
+    direction: tl_to_en
+    prompt: "Wala nang nasabi si Ibarra."
+    answer_tokens: [Ibarra, had, nothing, more, to, say]
+    bank: [Ibarra, had, nothing, more, to, say, Guevara, less, asked]
