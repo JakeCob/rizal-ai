@@ -154,12 +154,22 @@ exercises:
     direction: en_to_tl
     prompt: "Come and eat with us tomorrow."
     answer_tokens: [Kumain, kayo, sa, amin, bukas]
+    accepted_orders:
+      - [bukas, Kumain, kayo, sa, amin]
+      - [Kumain, kayo, bukas, sa, amin]
+      - [sa, amin, kayo, Kumain, bukas]
+      - [bukas, sa, amin, kayo, Kumain]
     bank: [Kumain, kayo, sa, amin, bukas, kahapon, ako, ngayon]
 
   - type: sentence_assembly
     key: ex7
     prompt_en: "Tomorrow I leave for San Diego."
     answer_tokens: [Bukas, ay, aalis, ako, patungong, San, Diego]
+    accepted_orders:
+      - [Bukas, aalis, ako, patungong, San, Diego]
+      - [aalis, ako, Bukas, patungong, San, Diego]
+      - [aalis, ako, patungong, San, Diego, Bukas]
+      - [Bukas, ako, aalis, patungong, San, Diego]
     bank: [Bukas, ay, aalis, ako, patungong, San, Diego, dumating, kami]
 
   - type: comprehension_mc

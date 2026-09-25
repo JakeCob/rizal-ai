@@ -162,14 +162,17 @@ exercises:
     key: ex3
     prompt_en: "Padre Damaso ended up with the neck and the wing of the chicken."
     answer_tokens: [Napunta, kay, Padre, Damaso, ang, leeg, at, pakpak, ng, manok]
+    accepted_orders:
+      - [Napunta, ang, leeg, at, pakpak, ng, manok, kay, Padre, Damaso]
+      - [kay, Padre, Damaso, Napunta, ang, leeg, at, pakpak, ng, manok]
     bank: [Napunta, kay, Padre, Damaso, ang, leeg, at, pakpak, ng, manok, si, hita, ni]
 
   - type: listen_tap
     key: ex4
     audio_url: null
-    transcript_tl: "Itinulak niya ang plato."
-    answer_tokens: [Itinulak, niya, ang, plato]
-    bank: [Itinulak, niya, ang, plato, kinain, nila, baso]
+    transcript_tl: "Galit na galit siya pero hindi siya nagsalita."
+    answer_tokens: [Galit, na, galit, siya, pero, hindi, siya, nagsalita]
+    bank: [Galit, na, galit, siya, pero, hindi, siya, nagsalita, masaya, kami, sumigaw]
 
   - type: comprehension_mc
     key: ex5
@@ -182,8 +185,11 @@ exercises:
     key: ex6
     direction: en_to_tl
     prompt: "Ever since I was a child."
-    answer_tokens: [Mula, noong, bata, ako]
-    bank: [Mula, noong, bata, ako, ka, ngayon, matanda]
+    answer_tokens: [Mula, noong, bata, pa, ako]
+    accepted_orders:
+      - [Mula, pa, noong, bata, ako]
+      - [Mula, noong, bata, ako]
+    bank: [Mula, noong, bata, pa, ako, ka, ngayon, matanda]
 
   - type: sentence_assembly
     key: ex7

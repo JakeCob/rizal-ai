@@ -141,7 +141,9 @@ exercises:
     key: ex2
     prompt_en: "How did my father die? (politely, to an elder)"
     answer_tokens: [Paano, po, namatay, ang, aking, ama]
-    bank: [Paano, po, namatay, ang, aking, ama, ina, nabuhay, saan]
+    accepted_orders:
+      - [Paano, po, ba, namatay, ang, aking, ama]
+    bank: [Paano, po, namatay, ang, aking, ama, ina, nabuhay, saan, ba]
 
   - type: listen_tap
     key: ex3
@@ -167,9 +169,11 @@ exercises:
   - type: translate_line
     key: ex6
     direction: en_to_tl
-    prompt: "That is why your father was jailed."
-    answer_tokens: [Kaya, ikinulong, ang, ama, mo]
-    bank: [Kaya, ikinulong, ang, ama, mo, kahit, pinalaya, ina]
+    prompt: "Because of that, your father was jailed."
+    answer_tokens: [Dahil, doon, ikinulong, ang, ama, mo]
+    accepted_orders:
+      - [ikinulong, ang, ama, mo, Dahil, doon]
+    bank: [Dahil, doon, ikinulong, ang, ama, mo, kahit, pinalaya, ina]
 
   - type: comprehension_mc
     key: ex7

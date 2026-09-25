@@ -150,7 +150,9 @@ exercises:
     key: ex3
     prompt_en: "Did you always think of me?"
     answer_tokens: [Lagi, mo, ba, akong, naaalala]
-    bank: [Lagi, mo, ba, akong, naaalala, kita, siya, nakalimutan]
+    accepted_orders:
+      - [Lagi, mo, kaya, akong, naaalala]
+    bank: [Lagi, mo, ba, akong, naaalala, kita, kaya, nakalimutan]
 
   - type: translate_line
     key: ex4
@@ -182,9 +184,11 @@ exercises:
 
   - type: sentence_assembly
     key: ex8
-    prompt_en: "I'll read it to you now."
-    answer_tokens: [Basahin, ko, na, sa, iyo]
-    bank: [Basahin, ko, na, sa, iyo, binasa, sulat, niya]
+    prompt_en: "Okay, I'll read it to you now."
+    answer_tokens: [Sige, basahin, ko, na, sa, iyo]
+    accepted_orders:
+      - [Sige, na, basahin, ko, sa, iyo]
+    bank: [Sige, basahin, ko, na, sa, iyo, binasa, sulat, niya]
 
   - type: comprehension_mc
     key: ex9
