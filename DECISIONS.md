@@ -329,3 +329,13 @@ Context: `Unit.published` was seeded and never read; the tree, the lesson helper
 Decision: drop the field from the unit contract, the loader, the seed and the model, with a migration whose downgrade restores the column as NOT NULL default true. A unit is visible whenever it is in content; its lessons lock themselves through `Lesson.published`. A lesson the learner completed and that is later unpublished shows as locked on the tree, not done (tech debt 22).
 
 Consequences: there is no way to hide a whole unit; hide its lessons. Completion history survives unpublishing.
+
+## D36. The browser calls the API cross-origin; the API allows configured origins
+
+Status: accepted, 2026-09-25, amends D11 and D33
+
+Context: the API had no CORS middleware, so a browser on any origin other than the API's own could not call it (every request preflights because of Authorization, Content-Type and X-Timezone, and OPTIONS returned 405). Web runs on Vercel and the API on Railway, and D11 promises Vercel preview deployments for phone review, whose hostnames change per deploy.
+
+Decision: the web app keeps calling the API directly across origins. The API allows an exact, comma-separated list of origins from CORS_ORIGINS (default: the local dev origins) plus an optional CORS_ORIGIN_REGEX for preview hostnames, with GET, POST and OPTIONS, the three request headers, and no credentials (bearer tokens, no cookies). No Next rewrite or proxy sits in front of the API.
+
+Consequences: production and preview origins are configuration on Railway, not code. A wrong origin shows up as a blocked preflight in the browser console, fixable by an env change and a redeploy.

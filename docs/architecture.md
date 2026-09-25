@@ -191,7 +191,7 @@ generated_content_cache
 
 ## 4. Request flows
 
-Session: the browser calls POST /session/anonymous on first visit, keeps the token in localStorage, and sends it as a Bearer header on every call. Account linking is a later feature.
+Session: the browser calls POST /session/anonymous on first visit, keeps the token in localStorage, and sends it as a Bearer header on every call. Account linking is a later feature. The call is cross-origin (web on Vercel, API on Railway): the API allows the origins in CORS_ORIGINS plus an optional CORS_ORIGIN_REGEX for preview hostnames, with the Authorization, Content-Type and X-Timezone headers and no credentials (D36).
 
 Lesson start: GET /lessons/{id} returns the whole lesson, exercises with answers, audio URLs, and the pinned passages. The client fires GET /lessons/{id}/reflection in parallel so the card is ready before the last exercise. Every exercise transition is local state.
 

@@ -6,6 +6,8 @@ How to undo each kind of change. Updated per plan.
 
 Every plan lands as one or more commits on main. Rollback is git revert of those commits. Vercel and Railway redeploy from main automatically, so a revert is a deploy.
 
+A blocked browser request after a deploy (a CORS error in the console) is usually configuration, not code: fix CORS_ORIGINS or CORS_ORIGIN_REGEX on the Railway service and redeploy (D36). A CORS error on one endpoint while the others work usually means that endpoint returned an unhandled 500 (Starlette's error middleware sits outside CORS, so the error response carries no allow-origin header): read the API logs before touching the origin settings.
+
 A revert that touches apps/api/src/rizalai/contracts must also revert packages/contracts/schema.json and apps/web/lib/types.generated.ts, or CI fails on drift. Reverting the whole commit does this; a partial revert must re-run export-contracts and gen:types.
 
 ## Database schema
