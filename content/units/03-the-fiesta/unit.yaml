@@ -1,0 +1,7 @@
+# Unit 3. Lessons are listed in play order. Each entry is a lesson file in this folder.
+# Locked horizon (plan 006): one unpublished stub so the tree always ends in a locked node.
+slug: the-fiesta
+title: "Noli Me Tangere: The fiesta"
+order_index: 3
+lessons:
+  - 01-placeholder.yaml

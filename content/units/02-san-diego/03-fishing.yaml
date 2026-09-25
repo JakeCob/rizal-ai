@@ -1,0 +1,234 @@
+# Lesson 7: Fishing.
+#
+# Scene: Chapter 23, the cayman. At the fish corral on the lake, Leon finds
+# that nobody has checked it in five days and feels something big below:
+# not sand but cayman hide, the posts shaking. Sinang wants to tie it to the
+# banca and drag it home; Maria Clara has never seen a live one. The pilot
+# takes a long rope and jumps into the pen; Ibarra offers his knife as the
+# water closes over him. The old boatman calms the ladies: they call him the
+# Pilot, the best he has seen. The cayman breaks loose and drags the pilot
+# under, Ibarra dives in, the water turns red, and both surface holding the
+# dead cayman. The pilot tells Ibarra he owes him his life.
+#
+# Speaker labels. The pilot is labelled Piloto (and called "the pilot" in
+# narration) in this lesson and Elias from chapter 24 on. This is a recorded
+# exception to the same-label norm, by the owner's ruling: the novel
+# withholds his name until chapter 24, and every pinned edition here says
+# "the pilot". His one line is quoted inside the narrated last beat, the way
+# lesson 6 quotes Ibarra, because the beat also carries the dive and the
+# surfacing. Matandang bangkero follows the Matandang alila pattern.
+#
+# Sensitivity. The blood is stated plainly in one clause (b8), as chapter
+# 10's hanging was. The sagip group pins es 138 to 140, tl 137 to 139 and
+# en 103 and 104. es 139 / tl 138 (inside en 103) carry the dive and also
+# Rizal's aside that Filipino women do not yet know how to swoon; the
+# vignette does not carry that sentence.
+#
+# The vignette below is our own modern Tagalog adaptation (DECISIONS.md
+# D01). It is not Rizal's text and never carries his byline. The originals,
+# in Spanish, Poblete's 1909 Tagalog, and Derbyshire's English, are pinned
+# under source_passages and shown verbatim on the "In Rizal's voice" card.
+# Refs sharing a group are the same passage in different editions, aligned
+# by content. es and tl share numbers for 108 to 124; Poblete leaves out es
+# 125 (only Maria Clara had noticed the pilot), so from es 126 his numbers
+# run one behind (es 126 is tl 125, es 143 is tl 142). Derbyshire merges es
+# 116 and 117 (his 88), es 124 to 126 (95), es 127 and 128 (96), es 138 and
+# 139 (103) and es 142 to 144 (106). Never pin tl 23:82 or 23:84 (section
+# breaks) or anything past tl 23:160.
+
+slug: noli-fishing
+title: "Fishing"
+published: true
+estimated_minutes: 6
+
+grammar_focus:
+  - inclusive-natin
+  - ang-intensifier-ang-laki
+  - negative-imperative-huwag
+  - completed-aspect-verbs
+
+target_vocab:
+  - { tl: sumisilip, en: checking, pos: verb, note: "root: silip, to peek" }
+  - { tl: baklad, en: "fish corral, pen", pos: noun }
+  - { tl: engkantado, en: enchanted, pos: adjective, note: "from Spanish encantado" }
+  - { tl: balat, en: "skin, hide", pos: noun }
+  - { tl: buwaya, en: "cayman, crocodile", pos: noun }
+  - { tl: tinatamaan, en: hitting, pos: verb, note: "root: tama" }
+  - { tl: buhangin, en: sand, pos: noun }
+  - { tl: poste, en: post, pos: noun }
+  - { tl: nakatali, en: tied, pos: adjective, note: "root: tali" }
+  - { tl: bangka, en: "banca, boat", pos: noun }
+  - { tl: lubid, en: rope, pos: noun }
+  - { tl: tumalon, en: jumped, pos: verb, note: "root: talon" }
+  - { tl: kutsilyo, en: knife, pos: noun }
+  - { tl: binibini, en: "miss, young lady", pos: noun, note: "mga binibini: ladies" }
+  - { tl: kalma, en: calm, pos: adjective, note: "from Spanish calma; kalma lang po kayo: please stay calm" }
+  - { tl: nakawala, en: broke loose, pos: verb, note: "root: wala" }
+  - { tl: hinila, en: dragged, pos: verb, note: "root: hila" }
+  - { tl: kidlat, en: lightning, pos: noun, note: "parang kidlat: quick as lightning" }
+  - { tl: dugo, en: blood, pos: noun }
+  - { tl: lumitaw, en: surfaced, pos: verb, note: "root: litaw" }
+
+source_passages:
+  # Leon: either the lake is enchanted or I will pull something up
+  - { work: noli, language: es, chapter: 23, paragraph_index: 110, group: lawa }
+  - { work: noli, language: tl, chapter: 23, paragraph_index: 110, group: lawa }
+  - { work: noli, language: en, chapter: 23, paragraph_index: 83, group: lawa }
+  # Leon: a cayman is caught; not sand but hide (es and tl 116 and 117; en 88 merges them)
+  - { work: noli, language: es, chapter: 23, paragraph_index: 116, group: buwaya }
+  - { work: noli, language: es, chapter: 23, paragraph_index: 117, group: buwaya }
+  - { work: noli, language: tl, chapter: 23, paragraph_index: 116, group: buwaya }
+  - { work: noli, language: tl, chapter: 23, paragraph_index: 117, group: buwaya }
+  - { work: noli, language: en, chapter: 23, paragraph_index: 88, group: buwaya }
+  # Sinang wants to drag it home; Maria Clara has never seen a live cayman
+  - { work: noli, language: es, chapter: 23, paragraph_index: 122, group: sino }
+  - { work: noli, language: es, chapter: 23, paragraph_index: 123, group: sino }
+  - { work: noli, language: tl, chapter: 23, paragraph_index: 122, group: sino }
+  - { work: noli, language: tl, chapter: 23, paragraph_index: 123, group: sino }
+  - { work: noli, language: en, chapter: 23, paragraph_index: 93, group: sino }
+  - { work: noli, language: en, chapter: 23, paragraph_index: 94, group: sino }
+  # The pilot jumps into the pen (en 95 merges es 124 to 126; Poblete has no es 125)
+  - { work: noli, language: es, chapter: 23, paragraph_index: 126, group: talon }
+  - { work: noli, language: tl, chapter: 23, paragraph_index: 125, group: talon }
+  - { work: noli, language: en, chapter: 23, paragraph_index: 95, group: talon }
+  # Ibarra: take this knife! (en 96 merges es 127 and 128)
+  - { work: noli, language: es, chapter: 23, paragraph_index: 127, group: sundang }
+  - { work: noli, language: tl, chapter: 23, paragraph_index: 126, group: sundang }
+  - { work: noli, language: en, chapter: 23, paragraph_index: 96, group: sundang }
+  # The old boatman: do not worry; we call him the Pilot
+  - { work: noli, language: es, chapter: 23, paragraph_index: 130, group: piloto }
+  - { work: noli, language: es, chapter: 23, paragraph_index: 132, group: piloto }
+  - { work: noli, language: tl, chapter: 23, paragraph_index: 129, group: piloto }
+  - { work: noli, language: tl, chapter: 23, paragraph_index: 131, group: piloto }
+  - { work: noli, language: en, chapter: 23, paragraph_index: 98, group: piloto }
+  - { work: noli, language: en, chapter: 23, paragraph_index: 100, group: piloto }
+  # The cayman breaks loose; Ibarra dives; the water turns red; both surface with it dead (en 103 merges es 138 and 139)
+  - { work: noli, language: es, chapter: 23, paragraph_index: 138, group: sagip }
+  - { work: noli, language: es, chapter: 23, paragraph_index: 139, group: sagip }
+  - { work: noli, language: es, chapter: 23, paragraph_index: 140, group: sagip }
+  - { work: noli, language: tl, chapter: 23, paragraph_index: 137, group: sagip }
+  - { work: noli, language: tl, chapter: 23, paragraph_index: 138, group: sagip }
+  - { work: noli, language: tl, chapter: 23, paragraph_index: 139, group: sagip }
+  - { work: noli, language: en, chapter: 23, paragraph_index: 103, group: sagip }
+  - { work: noli, language: en, chapter: 23, paragraph_index: 104, group: sagip }
+  # The pilot: I owe you my life (en 106 merges es 142 to 144)
+  - { work: noli, language: es, chapter: 23, paragraph_index: 143, group: utang }
+  - { work: noli, language: tl, chapter: 23, paragraph_index: 142, group: utang }
+  - { work: noli, language: en, chapter: 23, paragraph_index: 106, group: utang }
+
+vignette:
+  - line_id: b1
+    speaker: "Leon"
+    tl: "Limang araw nang walang sumisilip sa baklad? Siguradong may malaking nahuli rito, kung hindi engkantado ang lawa."
+    en: "Nobody has checked the corral in five days? Then something big is caught in here, unless the lake is enchanted."
+    exercise_after: ex1
+  - line_id: b2
+    speaker: "Leon"
+    tl: "Balat ng buwaya ang tinatamaan ko, hindi buhangin! Tingnan n'yo, gumagalaw ang mga poste. Ang laki niya!"
+    en: "What I'm hitting is cayman hide, not sand! Look, the posts are moving. It's huge!"
+    exercise_after: ex2
+  - line_id: b3
+    speaker: "Sinang"
+    tl: "Dalhin natin siya pauwi, nakatali sa bangka! Ang kapal ng mukha niya, kinain ang mga isda natin!"
+    en: "Let's take it home, tied to the banca! The nerve of it, eating our fish!"
+    exercise_after: ex3
+  - line_id: b4
+    speaker: "Maria Clara"
+    tl: "Ngayon lang ako makakakita ng buhay na buwaya."
+    en: "This is the first time I'll see a live cayman."
+    exercise_after: ex4
+  - line_id: b5
+    speaker: null
+    tl: "Biglang tumayo ang piloto. May dala na siyang mahabang lubid nang umakyat siya sa plataporma, at walang sabi-sabing tumalon siya sa baklad. Napasigaw ang lahat."
+    en: "Suddenly the pilot stood up. He had a long rope with him when he climbed onto the platform, and without a word he jumped into the pen. Everyone cried out."
+    exercise_after: ex5
+  - line_id: b6
+    speaker: "Ibarra"
+    tl: "Sandali! Kunin mo ang kutsilyo ko!"
+    en: "Wait! Take my knife!"
+    exercise_after: ex6
+  - line_id: b7
+    speaker: "Matandang bangkero"
+    tl: "Kalma lang po kayo, mga binibini. Piloto ang tawag namin sa kanya, at wala pa akong nakitang mas magaling."
+    en: "Stay calm, ladies. We call him the Pilot, and I've never seen anyone better."
+    exercise_after: ex7
+  - line_id: b8
+    speaker: null
+    tl: 'Nakawala ang buwaya at hinila pailalim ang piloto. Parang kidlat, tumalon si Ibarra sa tubig. Namula sa dugo ang tubig, pero lumitaw silang dalawa na hawak ang patay na buwaya. "Kung hindi po dahil sa inyo, patay na ako," ang nasabi ng piloto.'
+    en: 'The cayman broke loose and dragged the pilot under. Quick as lightning, Ibarra dove into the water. The water turned red with blood, but the two of them surfaced holding the dead cayman. "If it weren''t for you, sir, I''d be dead," was all the pilot could say.'
+    exercise_after: ex8
+
+exercises:
+  - type: comprehension_mc
+    key: ex1
+    question: "How long had nobody checked the corral?"
+    options: ["Five days", "One day", "A month", "A year"]
+    correct_index: 0
+    explanation: "Limang araw nang walang sumisilip sa baklad? (Nobody has checked the corral in five days?)"
+
+  - type: listen_tap
+    key: ex2
+    audio_url: null
+    transcript_tl: "Balat ng buwaya ang tinatamaan ko, hindi buhangin!"
+    answer_tokens: [Balat, ng, buwaya, ang, tinatamaan, ko, hindi, buhangin]
+    bank: [Balat, ng, buwaya, ang, tinatamaan, ko, hindi, buhangin, bato, isda, mo]
+
+  - type: sentence_assembly
+    key: ex3
+    prompt_en: "Let's take it home!"
+    answer_tokens: [Dalhin, natin, siya, pauwi]
+    bank: [Dalhin, natin, siya, pauwi, kami, papunta, nila]
+
+  - type: comprehension_mc
+    key: ex4
+    question: "What has Maria Clara never seen before?"
+    options: ["A live cayman", "A fish corral", "A banca", "The pilot"]
+    correct_index: 0
+    explanation: "Ngayon lang ako makakakita ng buhay na buwaya. (This is the first time I'll see a live cayman.)"
+
+  - type: translate_line
+    key: ex5
+    direction: tl_to_en
+    prompt: "Tumalon sa baklad ang piloto."
+    answer_tokens: [The, pilot, jumped, into, the, pen]
+    bank: [The, pilot, jumped, into, the, pen, climbed, boatman, out]
+
+  - type: sentence_assembly
+    key: ex6
+    prompt_en: "Take my knife!"
+    answer_tokens: [Kunin, mo, ang, kutsilyo, ko]
+    accepted_orders:
+      - [ang, kutsilyo, ko, Kunin, mo]
+    bank: [Kunin, mo, ang, kutsilyo, ko, lubid, niya, itapon]
+
+  - type: listen_tap
+    key: ex7
+    audio_url: null
+    transcript_tl: "Piloto ang tawag namin sa kanya."
+    answer_tokens: [Piloto, ang, tawag, namin, sa, kanya]
+    bank: [Piloto, ang, tawag, namin, sa, kanya, pangalan, nila, ko]
+
+  - type: comprehension_mc
+    key: ex8
+    question: "What happened to the water after Ibarra dove in?"
+    options: ["It turned red with blood", "It became calm and clear", "It flooded the banca", "It dried up"]
+    correct_index: 0
+    explanation: "Namula sa dugo ang tubig (the water turned red with blood)."
+
+  - type: translate_line
+    key: ex9
+    direction: en_to_tl
+    prompt: "Don't worry. (politely)"
+    answer_tokens: [Huwag, po, kayong, mag-alala]
+    accepted_orders:
+      - [Huwag, kayong, mag-alala, po]
+    bank: [Huwag, po, kayong, mag-alala, kaming, sila, tumalon]
+
+  - type: sentence_assembly
+    key: ex10
+    prompt_en: "The water turned red with blood."
+    answer_tokens: [Namula, sa, dugo, ang, tubig]
+    accepted_orders:
+      - [Namula, ang, tubig, sa, dugo]
+      - [ang, tubig, Namula, sa, dugo]
+    bank: [Namula, sa, dugo, ang, tubig, asul, bangka, isda]

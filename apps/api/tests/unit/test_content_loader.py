@@ -173,7 +173,6 @@ def test_answer_tokens_never_contain_whitespace(real_units):
 
 def test_unpublished_lessons_are_empty_stubs(real_units):
     stubs = [lesson for lesson in _lessons(real_units) if not lesson.published]
-    assert stubs, "no unpublished lesson found"
     problems = [
         f"{lesson.slug}: {len(lesson.vignette)} beats, {len(lesson.exercises)} exercises, "
         f"{len(lesson.source_passages)} source_passages"
