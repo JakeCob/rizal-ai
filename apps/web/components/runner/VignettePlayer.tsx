@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Volume2 } from "lucide-react";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
@@ -11,6 +11,8 @@ import type { Beat, VocabItem } from "@/lib/types.generated";
  * the current one is bright (docs/ui-references.md section 4). Tagalog
  * words that are in the lesson's target vocabulary are tappable and open a
  * gloss sheet; the gloss comes from the lesson, never from the network.
+ * The current line is scrolled into view on reveal and on remount (the
+ * player unmounts during every exercise), clearing the fixed footer.
  */
 export function VignettePlayer({
   beats,
@@ -23,6 +25,16 @@ export function VignettePlayer({
 }) {
   const [selected, setSelected] = useState<VocabItem | null>(null);
   const glossary = useMemo(() => new Map(vocab.map((v) => [normalize(v.tl), v])), [vocab]);
+  const currentRef = useRef<HTMLLIElement>(null);
+
+  useEffect(() => {
+    const el = currentRef.current;
+    if (!el || typeof el.scrollIntoView !== "function") return;
+    const reduce =
+      typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // nearest: an already visible line does not jump; scroll-mb-28 keeps it clear of the footer.
+    el.scrollIntoView({ block: "nearest", behavior: reduce ? "auto" : "smooth" });
+  }, [revealed]);
 
   return (
     <>
@@ -32,9 +44,10 @@ export function VignettePlayer({
           return (
             <li
               key={beat.line_id}
+              ref={dimmed ? undefined : currentRef}
               data-dimmed={dimmed ? "true" : "false"}
               aria-current={dimmed ? undefined : "step"}
-              className={cn("flex flex-col gap-1 transition-opacity duration-200", dimmed ? "opacity-45" : "opacity-100")}
+              className={cn("flex scroll-mb-28 flex-col gap-1 transition-opacity duration-200", dimmed ? "opacity-45" : "opacity-100")}
             >
               {beat.speaker && (
                 <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{beat.speaker}</p>

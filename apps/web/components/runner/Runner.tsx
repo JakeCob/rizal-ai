@@ -11,7 +11,7 @@ import type { ApiClient } from "@/lib/api/client";
 import { correctAnswerText, grade, isEmptyResponse, type ExerciseResponse } from "@/lib/runner/grade";
 import { initialState, progressFraction, reduce } from "@/lib/runner/reducer";
 import type { CompleteOut, LessonOut, ReflectionOut } from "@/lib/types.generated";
-import { ExerciseView } from "./ExerciseView";
+import { ExerciseView, scrollWindowToTop } from "./ExerciseView";
 import { VignettePlayer } from "./VignettePlayer";
 
 /**
@@ -234,6 +234,11 @@ function EndScreen({
   practice?: boolean;
   reflection: ReflectionOut | null;
 }) {
+  // Both end screens (complete and out of hearts) open at the top.
+  useEffect(() => {
+    scrollWindowToTop();
+  }, []);
+
   return (
     <div className="flex min-h-dvh flex-col gap-6 px-5 pb-10 pt-10">
       <div className="flex flex-col items-center gap-3 text-center">

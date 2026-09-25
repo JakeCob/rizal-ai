@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Volume2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Exercise } from "@/lib/types.generated";
@@ -14,6 +14,18 @@ const INSTRUCTION: Record<Exercise["type"], string> = {
   comprehension_mc: "About the passage",
 };
 
+/**
+ * Start a screen at the top of the window. Called from mount effects only
+ * (each exercise is keyed, so it mounts per exercise), never on the way back
+ * to the vignette, where it would undo the beat's scrollIntoView. "auto"
+ * rather than "instant": no CSS scroll-behavior is set, so auto is already
+ * instant, and older WebKit only knows auto and smooth. jsdom has no scroll.
+ */
+export function scrollWindowToTop() {
+  if (typeof window === "undefined" || typeof window.scrollTo !== "function") return;
+  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+}
+
 export function ExerciseView({
   exercise,
   disabled,
@@ -23,6 +35,10 @@ export function ExerciseView({
   disabled: boolean;
   onResponse: (response: ExerciseResponse) => void;
 }) {
+  useEffect(() => {
+    scrollWindowToTop();
+  }, []);
+
   return (
     <div className="flex flex-col gap-5">
       <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{INSTRUCTION[exercise.type]}</p>

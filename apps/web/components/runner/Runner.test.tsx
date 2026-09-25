@@ -7,6 +7,9 @@
  *   the correct answer
  * - the completion screen shows the xp total
  * - no network request happens between exercises
+ * - a revealed beat is scrolled into view (block nearest, no smooth scroll
+ *   under reduced motion), also when the vignette remounts after an exercise;
+ *   an exercise mounting scrolls the window back to the top instantly
  */
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -30,13 +33,35 @@ const stalledApi: ApiClient = {
 };
 
 const fetchSpy = vi.fn();
+/** jsdom has no scrollIntoView and no matchMedia; the spy records each call's `this`. */
+const scrollSpy = vi.fn();
+let reducedMotion = false;
+const originalScrollIntoView = Element.prototype.scrollIntoView;
 
 beforeEach(() => {
   vi.stubGlobal("fetch", fetchSpy);
+  Element.prototype.scrollIntoView = scrollSpy;
+  reducedMotion = false;
+  vi.stubGlobal(
+    "matchMedia",
+    vi.fn((query: string) => ({
+      matches: query.includes("prefers-reduced-motion") && reducedMotion,
+      media: query,
+      onchange: null,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+  );
 });
 afterEach(() => {
   vi.unstubAllGlobals();
+  vi.restoreAllMocks();
   fetchSpy.mockReset();
+  scrollSpy.mockReset();
+  Element.prototype.scrollIntoView = originalScrollIntoView;
 });
 
 /** The Tagalog line is split into tappable words, so match the paragraph. */
@@ -124,5 +149,70 @@ describe("Runner", () => {
     expect(screen.getByRole("heading", { name: /lesson complete/i })).toBeInTheDocument();
     expect(screen.getByText(/60 XP/)).toBeInTheDocument();
     expect(fetchSpy).not.toHaveBeenCalled(); // every call went through the injected api, none through fetch
+  });
+});
+
+describe("Runner scrolling", () => {
+  const currentBeat = () => screen.getByRole("list", { name: "Story" }).querySelector('[aria-current="step"]');
+
+  it("scrolls the newly revealed beat into view", async () => {
+    const user = userEvent.setup();
+    render(<Runner lesson={MOCK_LESSON} hearts={5} api={stalledApi} />);
+    await user.click(screen.getByRole("button", { name: /continue/i }));
+    const li = screen.getByText(line("Marami ang bisita ngayong gabi.")).closest("li");
+    expect(li).toHaveAttribute("aria-current", "step");
+    expect(scrollSpy.mock.contexts.at(-1)).toBe(li);
+    expect(scrollSpy).toHaveBeenLastCalledWith(expect.objectContaining({ block: "nearest", behavior: "smooth" }));
+  });
+
+  it("scrolls the current beat into view when the vignette remounts after an exercise", async () => {
+    const scrollTo = vi.spyOn(window, "scrollTo").mockImplementation(() => undefined);
+    const user = userEvent.setup();
+    render(<Runner lesson={MOCK_LESSON} hearts={5} api={stalledApi} />);
+    await user.click(screen.getByRole("button", { name: /continue/i }));
+    await user.click(screen.getByRole("button", { name: /continue/i })); // ex1
+    await tapTokens(user, ["Marami", "ang", "bisita", "ngayong", "gabi"]);
+    await user.click(screen.getByRole("button", { name: /^check$/i }));
+    await user.click(screen.getByRole("button", { name: /continue/i })); // back to the vignette, b3
+    const li = screen.getByText(line("Dumating ang isang binata.")).closest("li");
+    expect(currentBeat()).toBe(li);
+    expect(scrollSpy.mock.contexts.at(-1)).toBe(li);
+    // Nothing may scroll the window back up after the beat was brought into view.
+    const lastBeatScroll = scrollSpy.mock.invocationCallOrder.at(-1) ?? 0;
+    const lastWindowScroll = scrollTo.mock.invocationCallOrder.at(-1) ?? 0;
+    expect(lastWindowScroll).toBeLessThan(lastBeatScroll);
+  });
+
+  it("does not smooth-scroll under prefers-reduced-motion", async () => {
+    reducedMotion = true;
+    const user = userEvent.setup();
+    render(<Runner lesson={MOCK_LESSON} hearts={5} api={stalledApi} />);
+    await user.click(screen.getByRole("button", { name: /continue/i }));
+    expect(scrollSpy).toHaveBeenLastCalledWith(expect.objectContaining({ block: "nearest", behavior: "auto" }));
+  });
+
+  it("scrolls the window to the top when an exercise mounts", async () => {
+    const scrollTo = vi.spyOn(window, "scrollTo").mockImplementation(() => undefined);
+    const user = userEvent.setup();
+    render(<Runner lesson={MOCK_LESSON} hearts={5} api={stalledApi} />);
+    await user.click(screen.getByRole("button", { name: /continue/i }));
+    scrollTo.mockClear();
+    await user.click(screen.getByRole("button", { name: /continue/i })); // ex1 mounts
+    expect(screen.getByText("There are many guests tonight.")).toBeInTheDocument();
+    expect(scrollTo).toHaveBeenCalledWith(expect.objectContaining({ top: 0, behavior: "auto" }));
+  });
+
+  it("scrolls the window to the top when the out-of-hearts screen mounts", async () => {
+    const scrollTo = vi.spyOn(window, "scrollTo").mockImplementation(() => undefined);
+    const user = userEvent.setup();
+    render(<Runner lesson={MOCK_LESSON} hearts={1} api={stalledApi} />);
+    await user.click(screen.getByRole("button", { name: /continue/i }));
+    await user.click(screen.getByRole("button", { name: /continue/i })); // ex1
+    await tapTokens(user, ["gabi"]);
+    await user.click(screen.getByRole("button", { name: /^check$/i })); // wrong, last heart
+    scrollTo.mockClear();
+    await user.click(screen.getByRole("button", { name: /continue/i }));
+    expect(screen.getByRole("heading", { name: /out of hearts/i })).toBeInTheDocument();
+    expect(scrollTo).toHaveBeenCalledWith(expect.objectContaining({ top: 0, behavior: "auto" }));
   });
 });
