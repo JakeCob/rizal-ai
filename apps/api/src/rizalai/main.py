@@ -29,6 +29,7 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 def create_app() -> FastAPI:
     app = FastAPI(title="RizalAI API", version="0.1.0", lifespan=lifespan)
     settings = get_settings()
+    settings.validate_for_production()
     # The web app calls the API cross-origin with a bearer token (D36).
     app.add_middleware(
         CORSMiddleware,

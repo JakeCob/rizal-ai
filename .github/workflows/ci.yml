@@ -43,6 +43,44 @@ jobs:
           uv run rizalai export-contracts ../../packages/contracts/schema.json
           git diff --exit-code -- ../../packages/contracts/schema.json
 
+  docker:
+    # The API image (D37), built the way Railway builds it: from the repo root
+    # with apps/api/Dockerfile. No database: the checks only prove the image
+    # has the CLI, the package and the baked content.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: build
+        run: docker build -f apps/api/Dockerfile -t rizalai-api .
+      - name: the CLI runs
+        run: docker run --rm rizalai-api rizalai --help
+      - name: the package imports
+        run: docker run --rm rizalai-api python -c "import rizalai"
+      - name: content is baked in
+        run: |
+          units="$(docker run --rm rizalai-api ls /app/content/units)"
+          echo "$units"
+          for unit in 01-noli-arrival 02-san-diego 03-the-fiesta; do
+            echo "$units" | grep -qx "$unit" || { echo "missing content/units/$unit"; exit 1; }
+          done
+      - name: runs as a non-root user
+        run: test "$(docker run --rm rizalai-api id -u)" = "10001"
+      - name: every lesson file is baked in
+        run: |
+          expected="$(find content/units -name '*.yaml' | wc -l)"
+          baked="$(docker run --rm rizalai-api find /app/content/units -name '*.yaml' | wc -l)"
+          echo "lesson and unit files: repo $expected, image $baked"
+          test "$expected" -gt 0 && test "$baked" = "$expected"
+      - name: the real entrypoint starts and the production guard refuses an empty config
+        run: |
+          set +e
+          out="$(docker run --rm -e ENV=production rizalai-api 2>&1)"
+          code=$?
+          set -e
+          echo "$out" | tail -n 20
+          test "$code" -ne 0 || { echo "expected a non-zero exit"; exit 1; }
+          echo "$out" | grep -q ProductionConfigError || { echo "expected ProductionConfigError"; exit 1; }
+
   web:
     runs-on: ubuntu-latest
     defaults:
@@ -60,6 +98,9 @@ jobs:
           git diff --exit-code -- lib/types.generated.ts
       - run: pnpm lint
       - run: pnpm typecheck
+      - name: production build (what Vercel runs), in mock mode so no API is needed
+        run: pnpm build
+        env: { NEXT_PUBLIC_API_MODE: mock }
       - run: pnpm test
 
   e2e:
