@@ -173,7 +173,6 @@ async def seed_content(
             "slug": unit.slug,
             "title": unit.title,
             "order_index": unit.order_index,
-            "published": unit.published,
         }
         stmt = insert(Unit).values(**values)
         stmt = stmt.on_conflict_do_update(

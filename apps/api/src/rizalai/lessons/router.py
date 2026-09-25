@@ -65,7 +65,9 @@ async def get_tree(user: CurrentUser, session: Session) -> Tree:
     by_unit: dict[uuid.UUID, list[TreeLesson]] = {u.id: [] for u in units}
     for lesson in lessons:
         status_: LessonStatus
-        if lesson.id in done_ids:
+        if lesson.id in done_ids and lesson.published:
+            # A completed lesson that was later unpublished locks (D35); its
+            # progress row stays, but it is no longer tappable.
             status_ = "done"
         elif lesson.published and not active_assigned:
             status_ = "active"

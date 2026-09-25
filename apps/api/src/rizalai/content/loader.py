@@ -28,7 +28,6 @@ class UnitFile(BaseModel):
     slug: str = Field(pattern=r"^[a-z0-9]+(-[a-z0-9]+)*$", max_length=80)
     title: str = Field(min_length=1, max_length=160)
     order_index: int = Field(ge=0)
-    published: bool = False
     lessons: list[str] = Field(min_length=1)
 
 
@@ -36,7 +35,6 @@ class UnitContent(BaseModel):
     slug: str
     title: str
     order_index: int
-    published: bool
     lessons: list[LessonContent]
 
 
@@ -82,7 +80,6 @@ def load_content(content_dir: Path) -> list[UnitContent]:
                 slug=unit.slug,
                 title=unit.title,
                 order_index=unit.order_index,
-                published=unit.published,
                 lessons=lessons,
             )
         )

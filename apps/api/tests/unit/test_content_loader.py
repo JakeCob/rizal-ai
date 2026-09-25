@@ -20,7 +20,15 @@ from pathlib import Path
 import pytest
 import yaml
 
-from rizalai.content.loader import UnitContent, content_hash, exercise_id, lesson_id, load_content, unit_id
+from rizalai.content.loader import (
+    UnitContent,
+    UnitFile,
+    content_hash,
+    exercise_id,
+    lesson_id,
+    load_content,
+    unit_id,
+)
 from rizalai.contracts.lesson import LessonContent, ListenTap, SentenceAssembly, TranslateLine
 from tests.fixtures.lesson_example import LESSON_EXAMPLE
 
@@ -239,3 +247,12 @@ def test_case_only_duplicate_check_ignores_punctuation():
         bank=["Ano", "ano", "raw", "sino"],
     )
     assert _case_only_duplicates(exercise) == []
+
+
+def test_unit_file_rejects_published_key():
+    """D35: units carry no published flag; a leftover key fails loudly."""
+    from pydantic import ValidationError
+
+    unit = {"slug": "u", "title": "U", "order_index": 1, "published": True, "lessons": ["a.yaml"]}
+    with pytest.raises(ValidationError, match="published"):
+        UnitFile.model_validate(unit)

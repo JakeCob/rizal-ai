@@ -65,7 +65,6 @@ class Unit(Base):
     slug: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
     title: Mapped[str] = mapped_column(String(160), nullable=False)
     order_index: Mapped[int] = mapped_column(Integer, nullable=False)
-    published: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     created_at: Mapped[datetime] = _created_at()
 
 

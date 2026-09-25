@@ -2,7 +2,6 @@
 slug: san-diego
 title: "Noli Me Tangere: San Diego"
 order_index: 2
-published: true
 lessons:
   - 01-the-town.yaml
   - 02-signs-of-storm.yaml

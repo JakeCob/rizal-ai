@@ -2,7 +2,6 @@
 slug: test-unit
 title: "Test unit"
 order_index: 1
-published: true
 lessons:
   - 01-scaffold-placeholder.yaml
   - 02-placeholder.yaml
