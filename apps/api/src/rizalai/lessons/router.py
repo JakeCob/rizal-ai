@@ -1,33 +1,25 @@
 import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from rizalai.auth.deps import CurrentUser
-from rizalai.contracts.lesson import Beat, ExerciseAdapter, ExerciseOut, LessonOut, VocabItem
+from rizalai.contracts.lesson import Beat, LessonOut, VocabItem
 from rizalai.contracts.tree import LessonStatus, Tree, TreeLesson, TreeUnit
 from rizalai.db.models import Exercise, Lesson, Unit, UserProgress
 from rizalai.db.session import get_session
+from rizalai.lessons.service import get_published_lesson, to_exercise_out
 
 router = APIRouter(tags=["lessons"])
 
 Session = Annotated[AsyncSession, Depends(get_session)]
 
 
-def to_exercise_out(row: Exercise) -> ExerciseOut:
-    merged = {**row.payload, **row.answer}
-    return ExerciseOut(
-        id=row.id, order_index=row.order_index, exercise=ExerciseAdapter.validate_python(merged)
-    )
-
-
 @router.get("/lessons/{lesson_id}", response_model=LessonOut)
 async def get_lesson(lesson_id: uuid.UUID, user: CurrentUser, session: Session) -> LessonOut:
-    lesson = await session.get(Lesson, lesson_id)
-    if lesson is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="lesson not found")
+    lesson = await get_published_lesson(session, lesson_id)
     rows = await session.scalars(
         select(Exercise).where(Exercise.lesson_id == lesson_id).order_by(Exercise.order_index)
     )
@@ -49,7 +41,13 @@ async def get_lesson(lesson_id: uuid.UUID, user: CurrentUser, session: Session) 
 @router.get("/tree", response_model=Tree)
 async def get_tree(user: CurrentUser, session: Session) -> Tree:
     units = (await session.scalars(select(Unit).order_by(Unit.order_index))).all()
-    lessons = (await session.scalars(select(Lesson).order_by(Lesson.unit_id, Lesson.order_index))).all()
+    lessons = (
+        await session.scalars(
+            select(Lesson)
+            .join(Unit, Lesson.unit_id == Unit.id)
+            .order_by(Unit.order_index, Lesson.order_index)
+        )
+    ).all()
     done_ids = set(
         await session.scalars(
             select(UserProgress.lesson_id).where(

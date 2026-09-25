@@ -18,8 +18,9 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from rizalai.auth.deps import CurrentUser
-from rizalai.db.models import Exercise, ExerciseAttempt, Lesson, UserProgress
+from rizalai.db.models import Exercise, ExerciseAttempt, UserProgress
 from rizalai.db.session import get_session
+from rizalai.lessons.service import get_published_exercise, get_published_lesson
 from rizalai.progress.rules import apply_regen, grade_response, local_today, next_streak, spend_heart
 from rizalai.srs.scheduler import record_review
 
@@ -56,9 +57,7 @@ class CompleteOut(BaseModel):
 
 @router.post("/attempts", response_model=AttemptOut, status_code=status.HTTP_202_ACCEPTED)
 async def post_attempt(body: AttemptIn, user: CurrentUser, session: Session) -> AttemptOut:
-    exercise = await session.get(Exercise, body.exercise_id)
-    if exercise is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="exercise not found")
+    exercise = await get_published_exercise(session, body.exercise_id)
     now = datetime.now(UTC)
     correct = grade_response(exercise.type, exercise.answer, body.response)
     if correct:
@@ -98,9 +97,7 @@ async def _latest_attempts_since(
 
 @router.post("/lessons/{lesson_id}/complete", response_model=CompleteOut)
 async def complete_lesson(lesson_id: uuid.UUID, user: CurrentUser, session: Session) -> CompleteOut:
-    lesson = await session.get(Lesson, lesson_id)
-    if lesson is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="lesson not found")
+    lesson = await get_published_lesson(session, lesson_id)
     exercises = (
         await session.scalars(
             select(Exercise).where(Exercise.lesson_id == lesson_id).order_by(Exercise.order_index)

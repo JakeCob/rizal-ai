@@ -4,7 +4,7 @@
 - a draft whose span is not verbatim is regenerated once, then falls back
 - the response carries the three labeled passage layers
 - a rejected cache row regenerates on the next request
-- 401 without auth, 404 unknown lesson
+- 401 without auth, 404 unknown or unpublished lesson
 """
 
 import uuid
@@ -78,6 +78,13 @@ async def test_requires_auth_and_known_lesson(client, db, fake_llm):
     assert (await client.get(f"/lessons/{LESSON}/reflection")).status_code == 401
     _, token = mint_token()
     assert (await _get(client, token, uuid.uuid4())).status_code == 404
+
+
+async def test_unpublished_lesson_is_404(client, db, fake_llm):
+    await _prepare(db)
+    _, token = mint_token()
+    assert (await _get(client, token, lesson_id("noli-ch02-placeholder"))).status_code == 404
+    assert fake_llm.calls == 0
 
 
 async def test_generates_once_validates_and_caches(client, db, fake_llm):

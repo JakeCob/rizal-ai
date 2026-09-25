@@ -9,16 +9,16 @@ import uuid
 from datetime import UTC, datetime, timedelta
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from rizalai.auth.deps import CurrentUser
 from rizalai.contracts.lesson import ExerciseOut
-from rizalai.db.models import Exercise, ExerciseAttempt, ReviewQueue
+from rizalai.db.models import Exercise, ExerciseAttempt, Lesson, ReviewQueue
 from rizalai.db.session import get_session
-from rizalai.lessons.router import to_exercise_out
+from rizalai.lessons.service import get_published_exercise, to_exercise_out
 from rizalai.progress.rules import MAX_HEARTS, apply_regen, grade_response
 from rizalai.srs.scheduler import record_review
 
@@ -61,7 +61,8 @@ async def due(user: CurrentUser, session: Session) -> ReviewDueOut:
     rows = await session.execute(
         select(ReviewQueue, Exercise)
         .join(Exercise, Exercise.id == ReviewQueue.exercise_id)
-        .where(ReviewQueue.user_id == user.id, ReviewQueue.due_at <= now)
+        .join(Lesson, Lesson.id == Exercise.lesson_id)
+        .where(ReviewQueue.user_id == user.id, ReviewQueue.due_at <= now, Lesson.published.is_(True))
         .order_by(ReviewQueue.due_at)
         .limit(DUE_LIMIT)
     )
@@ -76,9 +77,7 @@ async def due(user: CurrentUser, session: Session) -> ReviewDueOut:
 
 @router.post("/answer", response_model=ReviewAnswerOut)
 async def answer(body: ReviewAnswerIn, user: CurrentUser, session: Session) -> ReviewAnswerOut:
-    exercise = await session.get(Exercise, body.exercise_id)
-    if exercise is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="exercise not found")
+    exercise = await get_published_exercise(session, body.exercise_id)
     now = datetime.now(UTC)
     correct = grade_response(exercise.type, exercise.answer, body.response)
     item = await record_review(session, user.id, exercise.id, correct, now)
