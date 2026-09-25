@@ -88,7 +88,7 @@ C. CI runs `pnpm build`; a Vitest or script test is not needed for vercel.json, 
 - [x] B. Corpus committed, bootstrap and smoke commands, canonical content hash: builder, reviewer
 - [x] C. Web deploy readiness: builder, reviewer
 - [x] D. Docs and D37: architect
-- [ ] E. Provisioning (owner) and wiring, bootstrap, smoke, phone play-through (architect and owner)
+- [~] E. Provisioning and wiring done through the Railway MCP on 2026-09-25 with the owner's approval (project, pgvector Postgres, bucket, API service, domain, variables, first deploy, bootstrap over railway ssh, smoke 6 of 6). Open: the Vercel project (owner), CORS_ORIGINS corrected to the real web domain, "wait for CI" in the dashboard, and the phone play-through
 - [ ] F. Remove the Supabase secret fallback after the first deploy (tech debt 16): builder, reviewer
 
 ## Phase 3 record
