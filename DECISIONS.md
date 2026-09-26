@@ -359,3 +359,13 @@ Context: the app shipped as one phone-width column at every width (mobile-first,
 Decision: three breakpoints. Below 768px the phone layout stays byte-identical, checked by screenshot hashes. From 768px the frame widens: the tree shows a units nav beside the path, and the lesson runner, practice and end screens use one centered reading column up to 720px with the action bar inside it. From 1024px the tree adds a progress column (streak, XP, hearts, the next lesson) and the runner's type scale grows; keyboard shortcuts (1 to 9, Backspace, Enter) carry a visible hint. No new requests: the columns read the existing tree and learner queries. Dark mode stays as it is (class-based, dormant) until decided separately.
 
 Consequences: every screen has three Playwright projects (iPhone, tablet, desktop) and the 200ms and scroll checks stay on the iPhone project. The fixed footer must always match the frame width. New desktop DOM uses landmarks and a definition list rather than duplicated labels, so the phone test locators stay unique.
+
+## D39. A tempered Philippine flag palette, the eight-ray sun and banig motifs, dark mode by system setting
+
+Status: accepted, 2026-09-26, amends D28, supersedes the dark-mode sentence of D38
+
+Context: the owner wants the app to feel like a Philippine native app. D28 chose deep indigo, ochre and paper cream as generic references. Dark mode was class-based and never activated (tech debt 30), and three text pairs in the shipped palette failed WCAG AA.
+
+Decision: the palette derives from the flag's own colors, tempered: a royal blue primary a shade darker than the indigo, the flag's golden yellow as the accent on fills (nodes, sun, highlight) with a separate darker gold token for XP and streak text, the flag's red for hearts and danger, warm off-white pages, and a leaf green for success that sits with the yellow. One motif: the eight-ray sun replaces the star on active nodes and sits faintly behind the completion score; a fine banig texture covers the desktop page background under 1.15:1 contrast, never the column and never phones. Dark mode follows prefers-color-scheme with a designed navy-and-gold set. Every named text pair must reach 4.5 and every non-text pair 3 in both schemes, asserted by a test that parses the tokens. Layout is unchanged; the phone gate is a layout snapshot and a skeleton screenshot rather than pixel hashes.
+
+Consequences: learners on a dark OS switch to the dark palette when this ships. The gold can never be text on a light page, so page text uses the gold text token. Hearts never sit on the primary blue. Wrong versus correct keeps relying on copy and the heart icon, since the tempered red and the green are close in lightness.
