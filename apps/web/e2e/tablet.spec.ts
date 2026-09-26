@@ -71,6 +71,27 @@ async function startLesson(page: Page) {
   await expect(page.getByText("May hapunan sa bahay ni Kapitan Tiago.")).toBeVisible();
 }
 
+/** The card from plans 009 and 010: a 1px border, a shadow, and the desk around it. */
+async function expectCard(page: Page) {
+  const style = await page.locator("[data-app-column]").evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { border: s.borderTopWidth, shadow: s.boxShadow, column: s.backgroundColor, body: getComputedStyle(document.body).backgroundColor };
+  });
+  expect(style.border).toBe("1px");
+  expect(style.shadow).not.toBe("none");
+  expect(style.body).not.toBe(style.column);
+}
+
+test("the tree and a lesson sit in the card at 768 (below xl)", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: "RizalAI" })).toBeVisible();
+  await expectCard(page);
+  await page.getByRole("button", { name: /Placeholder: the dinner.*active/ }).click();
+  await page.getByRole("link", { name: "Start" }).click();
+  await expect(page.getByText("May hapunan sa bahay ni Kapitan Tiago.")).toBeVisible();
+  await expectCard(page);
+});
+
 test("a lesson, its end screens and practice at 768x1024 keep the phone type inside a wider frame", async ({ page }) => {
   test.setTimeout(90_000);
   await startLesson(page);

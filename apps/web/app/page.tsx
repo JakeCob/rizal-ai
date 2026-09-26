@@ -13,7 +13,11 @@ import { nextLesson } from "@/lib/tree/summary";
  * The path. Below 768px it is the phone column. From 768px (D38) a units nav
  * sits beside the path, and from 1024px a progress column joins them; both
  * read the same tree and me queries, so the extra columns cost no request.
- * data-layout="wide" asks the layout frame for the wider width.
+ * data-layout="wide" asks the layout frame for the wider width. From xl the
+ * frame is gone and this grid caps itself at 100rem, centered, with the side
+ * columns fixed and the path column taking the rest (plan 011). The lg column
+ * widths and gaps carry on through xl, so crossing 1280 never narrows the
+ * path; the wider side columns and gutters start at 2xl (1536).
  */
 export default function TreePage() {
   const api = getApiClient();
@@ -23,9 +27,9 @@ export default function TreePage() {
   return (
     <div
       data-layout="wide"
-      className="flex flex-col px-4 md:grid md:grid-cols-[13rem_minmax(0,1fr)] md:gap-x-6 md:px-6 lg:grid-cols-[14rem_minmax(0,1fr)_18rem] lg:gap-x-8 lg:px-8"
+      className="flex flex-col px-4 md:grid md:grid-cols-[13rem_minmax(0,1fr)] md:gap-x-6 md:px-6 lg:grid-cols-[14rem_minmax(0,1fr)_18rem] lg:gap-x-8 lg:px-8 xl:mx-auto xl:w-full xl:max-w-[100rem] 2xl:grid-cols-[16rem_minmax(0,1fr)_20rem] 2xl:gap-x-12 2xl:px-12"
     >
-      <header className="flex h-14 items-center justify-between md:col-span-full">
+      <header className="flex h-14 items-center justify-between md:col-span-full xl:mb-6 xl:border-b xl:border-border">
         <h1 className="text-xl font-extrabold tracking-tight">RizalAI</h1>
         <div className="flex items-center gap-4 text-sm font-extrabold lg:hidden" aria-live="polite">
           <span className="flex items-center gap-1 text-accent-foreground" aria-label="Streak">

@@ -219,6 +219,20 @@
   }
 }
 
+/* From xl (1280px) there is no frame (plan 011): pages fill the viewport
+   height again, and bottom sheets sit on the viewport's bottom edge with
+   square corners, still capped to the reading column's width. */
+@media (min-width: 80rem) {
+  [data-app-column] .min-h-dvh {
+    min-height: 100dvh;
+  }
+  [data-slot="sheet-content"][data-side="bottom"] {
+    bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;

@@ -10,7 +10,7 @@ import { PathNode } from "./PathNode";
  */
 export function SkillTree({ tree }: { tree: Tree }) {
   return (
-    <div className="flex flex-col gap-8 pb-24 md:gap-12">
+    <div className="flex flex-col gap-8 pb-24 md:gap-12 xl:mx-auto xl:w-full xl:max-w-2xl">
       {tree.units.map((unit) => (
         <section key={unit.id} aria-labelledby={`unit-${unit.id}`}>
           <header className="sticky top-0 z-10 -mx-4 bg-primary px-5 py-3 text-primary-foreground shadow-sm md:mx-0 md:rounded-2xl">

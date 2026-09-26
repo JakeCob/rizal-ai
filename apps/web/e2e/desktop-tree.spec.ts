@@ -59,6 +59,23 @@ test("desktop: units nav, path and progress aside, left to right", async ({ page
   test.skip(testInfo.project.name !== "desktop", "desktop viewport only");
   test.setTimeout(60_000);
   await page.goto("/");
+
+  // Crossing into xl (1280) never narrows the path column, and from xl the
+  // header row carries a bottom rule.
+  const headerRule = () =>
+    page
+      .getByRole("heading", { name: "RizalAI" })
+      .evaluate((h) => getComputedStyle(h.parentElement as Element).borderBottomWidth);
+  await page.setViewportSize({ width: 1279, height: 800 });
+  await expect(page.getByRole("main")).toBeVisible();
+  const mainAt1279 = (await box(page, ["main"])).width;
+  expect(await headerRule()).toBe("0px");
+  await page.setViewportSize({ width: 1280, height: 800 });
+  const mainAt1280 = (await box(page, ["main"])).width;
+  console.log(`main width: 1279 -> ${mainAt1279}px, 1280 -> ${mainAt1280}px`);
+  expect(mainAt1280).toBeGreaterThanOrEqual(mainAt1279);
+  expect(await headerRule()).toBe("1px");
+
   const nav = page.getByRole("navigation", { name: "Units" });
   const main = page.getByRole("main");
   const aside = page.getByRole("complementary", { name: "Your progress" });
@@ -124,7 +141,7 @@ test("desktop: units nav, path and progress aside, left to right", async ({ page
   await expect(go).toHaveAttribute("href", "/lesson/0a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d");
   await expect(aside).toContainText("Placeholder: the dinner at Capitan Tiago's");
   await expectNoHorizontalOverflow(page);
-  await page.screenshot({ path: `${DESKTOP_OUT}/desktop-tree-010b.png`, animations: "disabled" });
+  await page.screenshot({ path: `${DESKTOP_OUT}/desktop-tree-011b.png`, animations: "disabled" });
 
   // Play the lesson from the card, then go back client-side.
   await go.click();
@@ -156,5 +173,5 @@ test("tablet: units nav and path, the aside hidden, the header stats kept", asyn
   const m = await box(page, ["main"]);
   expect(n.x + n.width).toBeLessThanOrEqual(m.x);
   await expectNoHorizontalOverflow(page);
-  await page.screenshot({ path: `${TABLET_OUT}/tablet-tree-010b.png`, animations: "disabled" });
+  await page.screenshot({ path: `${TABLET_OUT}/tablet-tree-011.png`, animations: "disabled" });
 });

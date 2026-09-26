@@ -1,9 +1,11 @@
 /**
  * Plan 010 (D38): at 1280x800 the lesson runner, end screens and practice use
- * one centered reading column up to 720px inside the framed card, the
- * vignette type grows, and everything fixed to the viewport (the footer, the
- * gloss sheet, the feedback) stays inside that column. Runs on the "desktop"
- * project only; the phone specs run on "iphone".
+ * one centered reading column up to 720px, the vignette type grows, and
+ * everything fixed to the viewport (the footer, the gloss sheet, the
+ * feedback) stays inside that column. Plan 011: 1280 is the xl breakpoint, so
+ * there the column has no frame (full-bleed on the app background); the
+ * framed card from plan 010 is checked at 1024x768 (lg, below xl). Runs on
+ * the "desktop" project only; the phone specs run on "iphone".
  *
  * The mock API keeps its state in memory, so after the first completion the
  * spec moves between pages by clicking links (client-side navigation) and
@@ -35,8 +37,9 @@ async function expectInsideColumn(page: Page, element: Locator) {
 
 /**
  * The fixed footer matches the column: same x and width (D38, within 2px),
- * ending at the frame's bottom edge, with the frame's side borders drawn
- * beside it so the card edge does not break at the bottom corners.
+ * ending at the column's bottom edge. Its side borders match the column's:
+ * 1px in the frame's colour where there is a frame (below xl), so the card
+ * edge does not break at the bottom corners, and none where there is not.
  */
 async function expectFooterInFrame(page: Page) {
   const footer = page.locator("footer");
@@ -53,11 +56,17 @@ async function expectFooterInFrame(page: Page) {
   const borders = await page.evaluate(() => {
     const f = getComputedStyle(document.querySelector("footer") as Element);
     const c = getComputedStyle(document.querySelector("[data-app-column]") as Element);
-    return { left: f.borderLeftWidth, right: f.borderRightWidth, color: f.borderLeftColor, frame: c.borderLeftColor };
+    return {
+      left: f.borderLeftWidth,
+      right: f.borderRightWidth,
+      color: f.borderLeftColor,
+      frameWidth: c.borderLeftWidth,
+      frameColor: c.borderLeftColor,
+    };
   });
-  expect(borders.left).toBe("1px");
-  expect(borders.right).toBe("1px");
-  expect(borders.color).toBe(borders.frame);
+  expect(borders.left).toBe(borders.frameWidth);
+  expect(borders.right).toBe(borders.frameWidth);
+  if (borders.frameWidth !== "0px") expect(borders.color).toBe(borders.frameColor);
 }
 
 /** From md the exercise sits in the middle of the space between the header and the footer. */
@@ -86,11 +95,8 @@ async function tapTokens(page: Page, tokens: string[]) {
 const cont = (page: Page) => page.getByRole("button", { name: "Continue" }).click();
 const check = (page: Page) => page.getByRole("button", { name: "Check" }).click();
 
-test("the frame is a centered card on a distinct background", async ({ page }) => {
-  await page.goto("/");
-  await expect(page.getByRole("heading", { name: "RizalAI" })).toBeVisible();
-
-  const style = await page.locator("[data-app-column]").evaluate((el) => {
+async function frameStyle(page: Page) {
+  return page.locator("[data-app-column]").evaluate((el) => {
     const s = getComputedStyle(el);
     return {
       border: s.borderTopWidth,
@@ -99,9 +105,41 @@ test("the frame is a centered card on a distinct background", async ({ page }) =
       page: getComputedStyle(document.body).backgroundColor,
     };
   });
-  expect(style.border).not.toBe("0px");
-  expect(style.shadow).not.toBe("none");
-  expect(style.page).not.toBe(style.column);
+}
+
+test("at 1280 (xl) there is no frame: the tree sits on the app background", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: "RizalAI" })).toBeVisible();
+  const style = await frameStyle(page);
+  expect(style.border).toBe("0px");
+  expect(style.shadow).toBe("none");
+  expect(style.page).toBe(style.column);
+  await expectNoHorizontalOverflow(page);
+});
+
+test("at 1024x768 (lg, below xl) the framed card from plan 010 is unchanged", async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: "RizalAI" })).toBeVisible();
+  const tree = await frameStyle(page);
+  expect(tree.border).toBe("1px");
+  expect(tree.shadow).not.toBe("none");
+  expect(tree.page).not.toBe(tree.column);
+  const column = await columnBox(page);
+  expect(column.width).toBe(1024 - 48); // lg:max-w-6xl is wider than the viewport less the 24px gutters
+  await expectNoHorizontalOverflow(page);
+
+  // A lesson keeps the 720px framed column with the footer's borders on the frame's edge.
+  await page.getByRole("button", { name: /Placeholder: the dinner.*active/ }).click();
+  await page.getByRole("link", { name: "Start" }).click();
+  await expect(page.getByText("May hapunan sa bahay ni Kapitan Tiago.")).toBeVisible();
+  const lesson = await frameStyle(page);
+  expect(lesson.border).toBe("1px");
+  expect(lesson.shadow).not.toBe("none");
+  expect((await columnBox(page)).width).toBe(720);
+  const footerBorder = await page.locator("footer").evaluate((el) => getComputedStyle(el).borderLeftWidth);
+  expect(footerBorder).toBe("1px");
+  await expectFooterInFrame(page);
   await expectNoHorizontalOverflow(page);
 });
 
@@ -119,6 +157,7 @@ test("a lesson, its end screens and practice fit the 720px reading column", asyn
   const column = await columnBox(page);
   expect(column.width).toBeLessThanOrEqual(720);
   expect(column.width).toBeGreaterThan(448);
+  expect(await frameStyle(page)).toMatchObject({ border: "0px", shadow: "none" });
   expect(Math.abs(column.x - (viewport.width - column.width) / 2)).toBeLessThanOrEqual(2);
   await expectNoHorizontalOverflow(page);
 
@@ -140,7 +179,7 @@ test("a lesson, its end screens and practice fit the 720px reading column", asyn
   await page.keyboard.press("Escape");
   await expect(gloss).toBeHidden();
   await cont(page);
-  await page.screenshot({ path: `${OUT}/desktop-vignette-010b.png`, animations: "disabled" });
+  await page.screenshot({ path: `${OUT}/desktop-vignette-011.png`, animations: "disabled" });
 
   // The first exercise and its feedback.
   await cont(page);
@@ -152,7 +191,7 @@ test("a lesson, its end screens and practice fit the 720px reading column", asyn
   await expect(feedback).toHaveAttribute("data-result", "correct");
   await expectInsideColumn(page, feedback);
   await expectFooterInFrame(page);
-  await page.screenshot({ path: `${OUT}/desktop-lesson-010b.png`, animations: "disabled" });
+  await page.screenshot({ path: `${OUT}/desktop-lesson-011.png`, animations: "disabled" });
 
   // The rest of the lesson, answered correctly.
   await cont(page);
@@ -185,7 +224,7 @@ test("a lesson, its end screens and practice fit the 720px reading column", asyn
   await expectInsideColumn(page, page.getByRole("region", { name: "The passage" }));
   await expectInsideColumn(page, page.getByRole("region", { name: "In Rizal's voice" }));
   await expectNoHorizontalOverflow(page);
-  await page.screenshot({ path: `${OUT}/desktop-complete-010b.png`, animations: "disabled" });
+  await page.screenshot({ path: `${OUT}/desktop-complete-011.png`, animations: "disabled" });
 
   // Replay it wrong five times to reach the out-of-hearts screen.
   await page.getByRole("link", { name: "Back to the path" }).click();
@@ -223,5 +262,5 @@ test("a lesson, its end screens and practice fit the 720px reading column", asyn
   await expectNoHorizontalOverflow(page);
   const practice = await columnBox(page);
   expect(practice.width).toBeLessThanOrEqual(720);
-  await page.screenshot({ path: `${OUT}/desktop-practice-010b.png`, animations: "disabled" });
+  await page.screenshot({ path: `${OUT}/desktop-practice-011.png`, animations: "disabled" });
 });

@@ -41,12 +41,16 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       {/* Below md the classes are the phone layout, unchanged. From md up the
           column becomes a framed card on the desk background (plan 009), a
           720px reading column (plan 010, D38). A page that sets
-          data-layout="wide" on its root widens the frame for its own columns. */}
-      <body className="min-h-dvh bg-background text-foreground antialiased md:bg-desk md:px-6 md:py-8">
+          data-layout="wide" on its root widens the frame for its own columns.
+          From xl (1280px) the frame goes away (plan 011): the body takes the
+          app background, the wrapper loses its border, corners and shadow,
+          a wide page gets the full width (it caps itself), and every other
+          page keeps the wrapper as its 720px reading column. */}
+      <body className="min-h-dvh bg-background text-foreground antialiased md:bg-desk md:px-6 md:py-8 xl:bg-background xl:py-0">
         <Providers>
           <div
             data-app-column
-            className="mx-auto flex min-h-dvh w-full max-w-md flex-col md:min-h-[calc(100dvh-4rem)] md:rounded-3xl md:border md:border-border md:bg-background md:shadow-xl md:max-w-(--frame-w) md:has-[[data-layout=wide]]:max-w-3xl lg:has-[[data-layout=wide]]:max-w-6xl"
+            className="mx-auto flex min-h-dvh w-full max-w-md flex-col md:min-h-[calc(100dvh-4rem)] md:rounded-3xl md:border md:border-border md:bg-background md:shadow-xl md:max-w-(--frame-w) md:has-[[data-layout=wide]]:max-w-3xl lg:has-[[data-layout=wide]]:max-w-6xl xl:min-h-dvh xl:rounded-none xl:border-0 xl:[box-shadow:none] xl:has-[[data-layout=wide]]:max-w-none"
           >
             {children}
           </div>

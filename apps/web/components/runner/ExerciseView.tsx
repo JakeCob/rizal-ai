@@ -41,7 +41,7 @@ export function ExerciseView({
   }, []);
 
   return (
-    <div className="flex flex-col gap-5 md:my-auto md:gap-7">
+    <div className="flex flex-col gap-5 md:my-auto md:gap-7 xl:mb-auto xl:mt-[min(12vh,7rem)]">
       <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{INSTRUCTION[exercise.type]}</p>
       <Body exercise={exercise} disabled={disabled} onResponse={onResponse} />
     </div>

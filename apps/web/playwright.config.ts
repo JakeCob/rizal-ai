@@ -2,11 +2,13 @@ import { defineConfig, devices } from "@playwright/test";
 
 // The first deliverable is defined as a play-through on a phone browser, so
 // every phone spec runs on the iPhone project, including the 200ms check,
-// scroll.spec and screens.spec. The tablet (768x1024) and desktop (1280x800)
-// projects run only the desktop and tablet specs, which check the wider
-// layouts (plan 010, D38). The dev server runs with the mock API so the tests
-// need no database or credentials.
-const WIDE_SPECS = /(desktop|tablet).*\.spec\.ts/;
+// scroll.spec and screens.spec. The tablet (768x1024), desktop (1280x800)
+// and wide (1920x1080) projects run only the desktop, tablet and wide specs,
+// which check the wider layouts (plan 010, D38; plan 011 full-bleed from
+// 1280px). Each of those files skips itself on the projects it is not for.
+// The dev server runs with the mock API so the tests need no database or
+// credentials.
+const WIDE_SPECS = /(desktop|tablet|wide).*\.spec\.ts/;
 
 export default defineConfig({
   testDir: "./e2e",
@@ -34,6 +36,11 @@ export default defineConfig({
       name: "desktop",
       testMatch: WIDE_SPECS,
       use: { ...devices["Desktop Chrome"], viewport: { width: 1280, height: 800 } },
+    },
+    {
+      name: "wide",
+      testMatch: WIDE_SPECS,
+      use: { ...devices["Desktop Chrome"], viewport: { width: 1920, height: 1080 } },
     },
   ],
   webServer: {

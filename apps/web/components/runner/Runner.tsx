@@ -155,7 +155,7 @@ export function Runner({
           the body's 3rem gutters (less any classic scrollbar, which 100%
           already excludes), and it redraws the frame's border so the card
           edge runs on beside it (plan 010). */}
-      <footer className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md md:bottom-8 md:max-w-[min(var(--frame-w),calc(100%-3rem))] md:overflow-hidden md:rounded-b-3xl md:border-x md:border-b md:border-border">
+      <footer className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md md:bottom-8 md:max-w-[min(var(--frame-w),calc(100%-3rem))] md:overflow-hidden md:rounded-b-3xl md:border-x md:border-b md:border-border xl:bottom-0 xl:overflow-visible xl:rounded-none xl:border-0">
         {state.phase === "feedback" && current && state.lastResult && (
           <div
             role="status"
@@ -163,6 +163,7 @@ export function Runner({
             className={cn(
               "animate-in slide-in-from-bottom-4 fade-in duration-300 rounded-t-3xl px-5 pt-5",
               "md:flex md:items-center md:justify-between md:gap-6 md:px-10 md:pt-0",
+              "xl:border-t xl:border-border xl:shadow-[0_-10px_24px_-18px_rgb(0_0_0/0.35)]",
               state.lastResult.correct ? "bg-success/15 text-success-foreground" : "bg-danger/15 text-danger-foreground",
             )}
           >
@@ -187,12 +188,12 @@ export function Runner({
           </div>
         )}
         {state.phase === "vignette" && (
-          <div className="bg-background/95 px-5 py-4 backdrop-blur md:flex md:justify-end md:px-10 md:py-5">
+          <div className="bg-background/95 px-5 py-4 backdrop-blur md:flex md:justify-end md:px-10 md:py-5 xl:border-t xl:border-border xl:shadow-[0_-10px_24px_-18px_rgb(0_0_0/0.35)]">
             <BigButton onClick={() => dispatch({ type: "NEXT_BEAT" })}>Continue</BigButton>
           </div>
         )}
         {state.phase === "exercise" && (
-          <div className="bg-background/95 px-5 py-4 backdrop-blur md:flex md:justify-end md:px-10 md:py-5">
+          <div className="bg-background/95 px-5 py-4 backdrop-blur md:flex md:justify-end md:px-10 md:py-5 xl:border-t xl:border-border xl:shadow-[0_-10px_24px_-18px_rgb(0_0_0/0.35)]">
             <BigButton onClick={check} disabled={!canCheck}>
               Check
             </BigButton>
