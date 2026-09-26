@@ -17,7 +17,7 @@ Railway hosts the API, a Postgres service and a storage bucket in one project (D
 ENV=production
 DATABASE_URL=postgresql+asyncpg://${{pgvector.PGUSER}}:${{pgvector.PGPASSWORD}}@${{pgvector.PGHOST_PRIVATE}}:${{pgvector.PGPORT_PRIVATE}}/${{pgvector.PGDATABASE}}
 SESSION_JWT_SECRET=<session secret>
-CORS_ORIGINS=https://<web domain>
+CORS_ORIGINS=https://rizal-ai.vercel.app
 CORS_ORIGIN_REGEX=
 LLM_PROVIDER=openrouter
 OPENROUTER_API_KEY=<key, when the owner provides it; until then LLM_PROVIDER=fake>
@@ -56,19 +56,21 @@ It takes an advisory lock, checks the database is at the migration head, ingests
 3. Smoke test from the same machine:
 
 ```
-uv run rizalai smoke --base-url https://rizal-ai.up.railway.app --origin https://<web domain>
+uv run rizalai smoke --base-url https://rizal-ai.up.railway.app --origin https://rizal-ai.vercel.app
 ```
 
 It checks /health, a CORS preflight from the web origin, POST /session/anonymous, GET /me, GET /tree (8 lessons), and the first published lesson with its passages, and exits non-zero on any failure. On 2026-09-25 it passed 6 of 6 after the bootstrap (12,114 passages, 3 units, 8 lessons, 70 exercises, 0 unresolved refs).
 4. Audio: only after the TTS bake-off (tech debt 14). Run `rizalai render-audio --engine <winner>` locally with the S3 variables and AUDIO_BASE_URL set; it renders into the bucket and seeds on its own. After that, never run a plain `seed` or `bootstrap` seed step against production without an engine: the bootstrap keeps existing audio URLs, but render-audio is the command that changes content once audio exists.
 
-## 4. Vercel project (owner)
+## 4. Vercel project (done 2026-09-26 through the CLI with an owner token)
 
-1. Import JakeCob/rizal-ai as a Hobby project. Root directory `apps/web`, framework Next.js, install `pnpm install --frozen-lockfile`, build `pnpm build`, Node 22.x. Keep "Include files outside the Root Directory in the Build Step" on (a test imports packages/contracts). apps/web/package.json pins pnpm 9 through packageManager; set ENABLE_EXPERIMENTAL_COREPACK=1 so Vercel honours it. apps/web/vercel.json skips builds for pushes that touch neither apps/web nor packages/contracts.
+Project rizal-ai (prj_8w7SXOY7QyyulSG2yo25RxvLkf2h) in the owner's personal scope jacob-matthew-rafals-projects, production domain https://rizal-ai.vercel.app. Vercel's default pnpm rejects the v9 lockfile and the corepack pin in apps/web/package.json is not read for a subdirectory root, so the project's install and build commands are `npx -y pnpm@9.15.9 install --frozen-lockfile` and `npx -y pnpm@9.15.9 build`. Until the GitHub app is installed on the personal account (dashboard, one click), production deploys run from the repo root with `vercel deploy --prod --yes --token <token>`; the CLI honours the root directory setting, and .vercelignore keeps the API and docs out of the upload.
+
+1. Import JakeCob/rizal-ai as a Hobby project. Root directory `apps/web`, framework Next.js, install `npx -y pnpm@9.15.9 install --frozen-lockfile`, build `npx -y pnpm@9.15.9 build`, Node 22.x. Keep "Include files outside the Root Directory in the Build Step" on (a test imports packages/contracts). apps/web/package.json pins pnpm 9 through packageManager; set ENABLE_EXPERIMENTAL_COREPACK=1 so Vercel honours it. apps/web/vercel.json skips builds for pushes that touch neither apps/web nor packages/contracts.
 2. Production environment variables: `NEXT_PUBLIC_API_URL=https://rizal-ai.up.railway.app` (https, no trailing slash); leave NEXT_PUBLIC_API_MODE unset.
 3. Preview environment variables: `NEXT_PUBLIC_API_MODE=mock` (previews play the fixture lesson and never touch the production database). NEXT_PUBLIC_API_URL may be omitted.
-4. Note the production domain Vercel assigns as `<web domain>` and give it to the agent for CORS_ORIGINS. NEXT_PUBLIC values are inlined at build time: changing either needs a redeploy without the build cache.
-5. Open `https://<web domain>` on the phone, start a lesson, and play it through. The service worker registers for the first time on this deploy (D25); a stale shell is fixed by the next deploy because the cache is network-first.
+4. Note the production domain Vercel assigns as `rizal-ai.vercel.app` and give it to the agent for CORS_ORIGINS. NEXT_PUBLIC values are inlined at build time: changing either needs a redeploy without the build cache.
+5. Open `https://rizal-ai.vercel.app` on the phone, start a lesson, and play it through. The service worker registers for the first time on this deploy (D25); a stale shell is fixed by the next deploy because the cache is network-first.
 
 ## 5. Rotation and rollback
 

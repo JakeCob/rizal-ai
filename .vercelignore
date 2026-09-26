@@ -1,0 +1,7 @@
+apps/api
+evals
+samples
+docs
+.git
+**/node_modules
+**/.next

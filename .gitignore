@@ -39,3 +39,4 @@ samples/
 .DS_Store
 .idea/
 .vscode/
+.vercel
