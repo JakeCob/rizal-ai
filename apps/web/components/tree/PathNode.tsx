@@ -23,7 +23,7 @@ export function PathNode({ lesson }: { lesson: TreeLesson }) {
       aria-label={label}
       data-status={lesson.status}
       className={cn(
-        "relative flex h-[72px] w-[72px] items-center justify-center rounded-3xl text-2xl transition-transform",
+        "relative flex h-[72px] w-[72px] items-center justify-center rounded-3xl text-2xl transition-transform md:h-24 md:w-24 md:text-3xl",
         "shadow-[0_5px_0_0_var(--lip)] active:translate-y-[5px] active:shadow-none",
         "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/50",
         lesson.status === "active" && "bg-primary text-primary-foreground [--lip:var(--primary-lip)]",
@@ -33,7 +33,7 @@ export function PathNode({ lesson }: { lesson: TreeLesson }) {
     >
       {lesson.status === "done" ? <Check aria-hidden /> : locked ? <Lock aria-hidden /> : <Star aria-hidden />}
       {lesson.status === "active" && (
-        <span aria-hidden className="absolute -inset-2 -z-10 rounded-[2rem] border-4 border-primary/25" />
+        <span aria-hidden className="absolute -inset-2 -z-10 rounded-[2rem] border-4 border-primary/25 md:-inset-3" />
       )}
     </button>
   );

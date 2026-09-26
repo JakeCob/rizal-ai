@@ -39,12 +39,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={`${nunito.variable} ${sourceSerif.variable}`}>
       {/* Below md the classes are the phone layout, unchanged. From md up the
-          column becomes a framed card on the desk background (plan 009). */}
-      <body className="min-h-dvh bg-background text-foreground antialiased md:bg-desk md:py-8">
+          column becomes a framed card on the desk background (plan 009), a
+          720px reading column (plan 010, D38). A page that sets
+          data-layout="wide" on its root widens the frame for its own columns. */}
+      <body className="min-h-dvh bg-background text-foreground antialiased md:bg-desk md:px-6 md:py-8">
         <Providers>
           <div
             data-app-column
-            className="mx-auto flex min-h-dvh w-full max-w-md flex-col md:min-h-[calc(100dvh-4rem)] md:rounded-3xl md:border md:border-border md:bg-background md:shadow-xl"
+            className="mx-auto flex min-h-dvh w-full max-w-md flex-col md:min-h-[calc(100dvh-4rem)] md:rounded-3xl md:border md:border-border md:bg-background md:shadow-xl md:max-w-(--frame-w) md:has-[[data-layout=wide]]:max-w-3xl lg:has-[[data-layout=wide]]:max-w-6xl"
           >
             {children}
           </div>

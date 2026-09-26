@@ -1,10 +1,13 @@
 import { defineConfig, devices } from "@playwright/test";
 
 // The first deliverable is defined as a play-through on a phone browser, so
-// every spec runs on a phone viewport. A desktop project runs only
-// desktop.spec.ts, which checks the frame around the phone column (plan 009);
-// the phone specs, with the 200ms and scroll checks, never run on it. The dev
-// server runs with the mock API so the tests need no database or credentials.
+// every phone spec runs on the iPhone project, including the 200ms check,
+// scroll.spec and screens.spec. The tablet (768x1024) and desktop (1280x800)
+// projects run only the desktop and tablet specs, which check the wider
+// layouts (plan 010, D38). The dev server runs with the mock API so the tests
+// need no database or credentials.
+const WIDE_SPECS = /(desktop|tablet).*\.spec\.ts/;
+
 export default defineConfig({
   testDir: "./e2e",
   timeout: 30_000,
@@ -19,12 +22,17 @@ export default defineConfig({
   projects: [
     {
       name: "iphone",
-      testIgnore: /desktop\.spec\.ts/,
+      testIgnore: WIDE_SPECS,
       use: { ...devices["iPhone 13"], browserName: "chromium" },
     },
     {
+      name: "tablet",
+      testMatch: WIDE_SPECS,
+      use: { ...devices["Desktop Chrome"], viewport: { width: 768, height: 1024 } },
+    },
+    {
       name: "desktop",
-      testMatch: /desktop\.spec\.ts/,
+      testMatch: WIDE_SPECS,
       use: { ...devices["Desktop Chrome"], viewport: { width: 1280, height: 800 } },
     },
   ],

@@ -14,7 +14,7 @@ import type { LayerOut, QuotedSpan, ReflectionOut } from "@/lib/types.generated"
  */
 export function ReflectionCard({ data }: { data: ReflectionOut }) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 md:grid md:grid-cols-2 md:items-start md:gap-5">
       <section aria-label="The passage" className="rounded-2xl border-2 border-border bg-card p-4">
         <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">The passage</h2>
         <div className="mt-2 flex flex-col gap-2">
@@ -54,7 +54,7 @@ function Layer({ layer }: { layer: LayerOut }) {
             <p
               key={p.id}
               lang={layer.language}
-              className={cn("text-[15px] leading-relaxed", serif && "font-serif")}
+              className={cn("text-[15px] leading-relaxed lg:text-base", serif && "font-serif")}
               data-passage-id={p.id}
             >
               {p.text}
@@ -96,7 +96,7 @@ function Reflection({ tl, en, spans }: { tl: string; en: string; spans: QuotedSp
           ))}
         </div>
       </div>
-      <p lang={lang} className="mt-3 text-[17px] leading-relaxed">
+      <p lang={lang} className="mt-3 text-[17px] leading-relaxed lg:text-lg">
         {highlight(text, spans)}
       </p>
     </section>

@@ -26,7 +26,7 @@ export default function LessonPage() {
   }
   if (!lesson.data || !me.data) {
     return (
-      <div className="flex flex-col gap-4 p-4" aria-busy="true" aria-label="Loading lesson">
+      <div className="flex flex-col gap-4 p-4 md:px-10" aria-busy="true" aria-label="Loading lesson">
         <div className="h-4 w-full animate-pulse rounded-full bg-muted" />
         <div className="mt-6 h-6 w-3/4 animate-pulse rounded bg-muted" />
         <div className="h-6 w-1/2 animate-pulse rounded bg-muted" />

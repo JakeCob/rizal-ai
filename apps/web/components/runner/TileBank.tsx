@@ -27,17 +27,17 @@ export function TileBank({
       <div
         role="group"
         aria-label="Your answer"
-        className="flex min-h-[3.5rem] flex-wrap gap-2 border-b-2 border-dashed border-border pb-2"
+        className="flex min-h-[3.5rem] flex-wrap gap-2 border-b-2 border-dashed border-border pb-2 md:min-h-16 md:gap-3"
       >
         {picked.map((bankIndex, pos) => (
           <Tile key={`${bankIndex}-${pos}`} label={bank[bankIndex]} onClick={() => unpick(pos)} disabled={disabled} />
         ))}
       </div>
-      <div role="group" aria-label="Word bank" className="flex flex-wrap gap-2">
+      <div role="group" aria-label="Word bank" className="flex flex-wrap gap-2 md:gap-3">
         {bank.map((word, i) => {
           const used = picked.includes(i);
           return used ? (
-            <span key={i} aria-hidden className="h-11 rounded-xl border-2 border-transparent bg-muted px-3 opacity-40">
+            <span key={i} aria-hidden className="h-11 rounded-xl border-2 border-transparent bg-muted px-3 opacity-40 md:h-12 md:px-4 lg:text-lg">
               <span className="invisible">{word}</span>
             </span>
           ) : (
@@ -45,6 +45,9 @@ export function TileBank({
           );
         })}
       </div>
+      {/* Keyboard hint from 1024px (plan 010). Plain text, not a live region;
+          the phone keeps it in the DOM but hidden. */}
+      <p className="hidden text-xs font-semibold text-muted-foreground lg:block">1 to 9 picks a word, Backspace removes, Enter checks</p>
     </div>
   );
 }
@@ -56,7 +59,7 @@ function Tile({ label, onClick, disabled }: { label: string; onClick: () => void
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "h-11 rounded-xl border-2 border-border bg-card px-3 text-base font-semibold",
+        "h-11 rounded-xl border-2 border-border bg-card px-3 text-base font-semibold md:h-12 md:px-4 lg:text-lg",
         "shadow-[0_3px_0_0_var(--border)] active:translate-y-[3px] active:shadow-none",
         "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/50",
         disabled && "opacity-70",

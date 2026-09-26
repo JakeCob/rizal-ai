@@ -1,6 +1,6 @@
 # RizalAI web
 
-Next.js 15 App Router, TypeScript, Tailwind v4, shadcn/ui (Base UI), TanStack Query. Mobile-first: the layout is a phone column at every width. Node 22 and pnpm 9.
+Next.js 15 App Router, TypeScript, Tailwind v4, shadcn/ui (Base UI), TanStack Query. Mobile-first: the layout is a phone layout below 768px, a wider reading column from 768px, and a three-column tree from 1024px (D38). Node 22 and pnpm 9.
 
 ## Run
 

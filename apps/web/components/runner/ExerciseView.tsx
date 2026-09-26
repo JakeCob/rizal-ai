@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import type { Exercise } from "@/lib/types.generated";
 import type { ExerciseResponse } from "@/lib/runner/grade";
 import { TileBank } from "./TileBank";
+import { useShortcuts } from "./useShortcuts";
 
 const INSTRUCTION: Record<Exercise["type"], string> = {
   sentence_assembly: "Build the Tagalog sentence",
@@ -40,7 +41,7 @@ export function ExerciseView({
   }, []);
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 md:my-auto md:gap-7">
       <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{INSTRUCTION[exercise.type]}</p>
       <Body exercise={exercise} disabled={disabled} onResponse={onResponse} />
     </div>
@@ -90,7 +91,7 @@ function Body({
 
 function Prompt({ text, lang }: { text: string; lang?: "tl" | "en" }) {
   return (
-    <p lang={lang} className="text-xl font-bold leading-snug">
+    <p lang={lang} className="text-xl font-bold leading-snug lg:text-2xl">
       {text}
     </p>
   );
@@ -106,7 +107,7 @@ function AudioButton({ url }: { url: string | null }) {
       disabled={!url}
       onClick={() => url && new Audio(url).play()}
       className={cn(
-        "flex h-20 w-20 items-center justify-center self-center rounded-3xl bg-primary text-primary-foreground",
+        "flex h-20 w-20 items-center justify-center self-center rounded-3xl bg-primary text-primary-foreground md:h-24 md:w-24",
         "shadow-[0_5px_0_0_var(--primary-lip)] active:translate-y-[5px] active:shadow-none disabled:opacity-40",
       )}
     >
@@ -129,6 +130,18 @@ function Tokens({
     setPicked(next);
     onResponse({ tokens: next.map((i) => bank[i]) });
   };
+  // Digit N picks the Nth bank tile by position (placeholders keep the slots,
+  // so numbers do not shift); Backspace removes the last picked tile.
+  useShortcuts({
+    onPick: (i) => {
+      if (disabled || i >= bank.length || picked.includes(i)) return;
+      change([...picked, i]);
+    },
+    onUnpick: () => {
+      if (disabled || picked.length === 0) return;
+      change(picked.slice(0, -1));
+    },
+  });
   return <TileBank bank={bank} picked={picked} onChange={change} disabled={disabled} />;
 }
 
@@ -143,6 +156,17 @@ function Options({
 }) {
   const [chosen, setChosen] = useState<number | null>(null);
   const items = useMemo(() => options.map((label, index) => ({ label, index })), [options]);
+  const choose = (index: number) => {
+    setChosen(index);
+    onResponse({ optionIndex: index });
+  };
+  // Digit N chooses option N; focus stays where it is.
+  useShortcuts({
+    onPick: (i) => {
+      if (disabled || i >= options.length) return;
+      choose(i);
+    },
+  });
   return (
     <div role="radiogroup" aria-label="Options" className="flex flex-col gap-3">
       {items.map(({ label, index }) => (
@@ -152,12 +176,9 @@ function Options({
           role="radio"
           aria-checked={chosen === index}
           disabled={disabled}
-          onClick={() => {
-            setChosen(index);
-            onResponse({ optionIndex: index });
-          }}
+          onClick={() => choose(index)}
           className={cn(
-            "min-h-12 rounded-xl border-2 border-border bg-card px-4 py-3 text-left text-base font-semibold",
+            "min-h-12 rounded-xl border-2 border-border bg-card px-4 py-3 text-left text-base font-semibold md:min-h-14 lg:text-lg",
             "shadow-[0_3px_0_0_var(--border)] active:translate-y-[3px] active:shadow-none",
             "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/50",
             chosen === index && "border-primary bg-primary/10 shadow-[0_3px_0_0_var(--primary-lip)]",

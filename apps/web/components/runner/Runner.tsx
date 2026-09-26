@@ -12,6 +12,7 @@ import { correctAnswerText, grade, isEmptyResponse, type ExerciseResponse } from
 import { initialState, progressFraction, reduce } from "@/lib/runner/reducer";
 import type { CompleteOut, LessonOut, ReflectionOut } from "@/lib/types.generated";
 import { ExerciseView, scrollWindowToTop } from "./ExerciseView";
+import { useShortcuts } from "./useShortcuts";
 import { VignettePlayer } from "./VignettePlayer";
 
 /**
@@ -88,6 +89,16 @@ export function Runner({
     dispatch({ type: "CHECK" });
   };
 
+  // Enter does what the footer button shows: Continue, Check, Continue.
+  // Digits and Backspace belong to the exercise (ExerciseView).
+  useShortcuts({
+    onEnter: () => {
+      if (state.phase === "vignette") dispatch({ type: "NEXT_BEAT" });
+      else if (state.phase === "exercise") check();
+      else if (state.phase === "feedback") dispatch({ type: "CONTINUE" });
+    },
+  });
+
   if (state.phase === "complete") {
     return (
       <EndScreen
@@ -118,7 +129,7 @@ export function Runner({
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <header className="flex h-14 items-center gap-3 px-4">
+      <header className="flex h-14 items-center gap-3 px-4 md:h-16 md:px-8">
         <Link href="/" aria-label="Close lesson" className="flex h-10 w-10 items-center justify-center rounded-xl text-muted-foreground">
           <X aria-hidden />
         </Link>
@@ -129,7 +140,7 @@ export function Runner({
         </span>
       </header>
 
-      <main className="flex-1 overflow-y-auto px-4 pb-40 pt-2">
+      <main className="flex-1 overflow-y-auto px-4 pb-40 pt-2 md:flex md:flex-col md:px-10 md:pt-6">
         {state.phase === "vignette" && (
           <VignettePlayer beats={lesson.vignette} revealed={state.beatIndex} vocab={lesson.target_vocab} />
         )}
@@ -139,21 +150,26 @@ export function Runner({
       </main>
 
       {/* From md up the column is a framed card that ends 2rem above the
-          viewport (app/layout.tsx), so the footer ends there too (plan 009). */}
-      <footer className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md md:bottom-8 md:overflow-hidden md:rounded-b-3xl">
+          viewport (app/layout.tsx), so the footer ends there too (plan 009).
+          Its width is the frame's own expression, --frame-w or the viewport less
+          the body's 3rem gutters (less any classic scrollbar, which 100%
+          already excludes), and it redraws the frame's border so the card
+          edge runs on beside it (plan 010). */}
+      <footer className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md md:bottom-8 md:max-w-[min(var(--frame-w),calc(100%-3rem))] md:overflow-hidden md:rounded-b-3xl md:border-x md:border-b md:border-border">
         {state.phase === "feedback" && current && state.lastResult && (
           <div
             role="status"
             data-result={state.lastResult.correct ? "correct" : "wrong"}
             className={cn(
               "animate-in slide-in-from-bottom-4 fade-in duration-300 rounded-t-3xl px-5 pt-5",
+              "md:flex md:items-center md:justify-between md:gap-6 md:px-10 md:pt-0",
               state.lastResult.correct ? "bg-success/15 text-success-foreground" : "bg-danger/15 text-danger-foreground",
             )}
           >
             {state.lastResult.correct ? (
-              <p className="text-lg font-extrabold">Tama! +{current.exercise.xp} XP</p>
+              <p className="text-lg font-extrabold md:py-5">Tama! +{current.exercise.xp} XP</p>
             ) : (
-              <>
+              <div className="md:py-5">
                 <p className="text-lg font-extrabold">Not quite</p>
                 <p className="mt-1 text-sm">
                   Correct answer: <span className="font-bold">{correctAnswerText(current.exercise)}</span>
@@ -161,9 +177,9 @@ export function Runner({
                 {current.exercise.type === "comprehension_mc" && current.exercise.explanation && (
                   <p className="mt-1 text-sm text-muted-foreground">{current.exercise.explanation}</p>
                 )}
-              </>
+              </div>
             )}
-            <div className="py-4">
+            <div className="py-4 md:shrink-0 md:py-5">
               <BigButton onClick={() => dispatch({ type: "CONTINUE" })} tone={state.lastResult.correct ? "success" : "danger"}>
                 Continue
               </BigButton>
@@ -171,12 +187,12 @@ export function Runner({
           </div>
         )}
         {state.phase === "vignette" && (
-          <div className="bg-background/95 px-5 py-4 backdrop-blur">
+          <div className="bg-background/95 px-5 py-4 backdrop-blur md:flex md:justify-end md:px-10 md:py-5">
             <BigButton onClick={() => dispatch({ type: "NEXT_BEAT" })}>Continue</BigButton>
           </div>
         )}
         {state.phase === "exercise" && (
-          <div className="bg-background/95 px-5 py-4 backdrop-blur">
+          <div className="bg-background/95 px-5 py-4 backdrop-blur md:flex md:justify-end md:px-10 md:py-5">
             <BigButton onClick={check} disabled={!canCheck}>
               Check
             </BigButton>
@@ -205,6 +221,7 @@ function BigButton({
       disabled={disabled}
       className={cn(
         "h-13 w-full rounded-2xl text-base font-extrabold uppercase tracking-wide transition-transform",
+        "md:w-auto md:min-w-56 md:px-10",
         "active:translate-y-1 active:shadow-none disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none",
         "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/50",
         tone === "primary" && "bg-primary text-primary-foreground shadow-[0_4px_0_0_var(--primary-lip)]",
@@ -242,10 +259,10 @@ function EndScreen({
   }, []);
 
   return (
-    <div className="flex min-h-dvh flex-col gap-6 px-5 pb-10 pt-10">
+    <div className="flex min-h-dvh flex-col gap-6 px-5 pb-10 pt-10 md:px-10 md:pt-14">
       <div className="flex flex-col items-center gap-3 text-center">
-        <h1 className="text-3xl font-extrabold">{title}</h1>
-        <p className="text-5xl font-extrabold text-accent-foreground">{xp} XP</p>
+        <h1 className="text-3xl font-extrabold lg:text-4xl">{title}</h1>
+        <p className="text-5xl font-extrabold text-accent-foreground lg:text-6xl">{xp} XP</p>
         <p className="text-muted-foreground">
           {correct} of {total} correct
         </p>
@@ -262,7 +279,7 @@ function EndScreen({
 
       <Link
         href={practice ? "/practice" : "/"}
-        className="flex h-13 w-full items-center justify-center rounded-2xl bg-primary text-base font-extrabold uppercase tracking-wide text-primary-foreground shadow-[0_4px_0_0_var(--primary-lip)] active:translate-y-1 active:shadow-none"
+        className="flex h-13 w-full items-center justify-center rounded-2xl bg-primary text-base font-extrabold uppercase tracking-wide text-primary-foreground shadow-[0_4px_0_0_var(--primary-lip)] active:translate-y-1 active:shadow-none md:mx-auto md:w-80"
       >
         {practice ? "Practice to refill" : "Back to the path"}
       </Link>

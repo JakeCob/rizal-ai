@@ -38,7 +38,7 @@ export function VignettePlayer({
 
   return (
     <>
-      <ol className="flex flex-col gap-5" aria-label="Story">
+      <ol className="flex flex-col gap-5 md:gap-7" aria-label="Story">
         {beats.slice(0, revealed + 1).map((beat, i) => {
           const dimmed = i < revealed;
           return (
@@ -47,10 +47,10 @@ export function VignettePlayer({
               ref={dimmed ? undefined : currentRef}
               data-dimmed={dimmed ? "true" : "false"}
               aria-current={dimmed ? undefined : "step"}
-              className={cn("flex scroll-mb-28 flex-col gap-1 transition-opacity duration-200", dimmed ? "opacity-45" : "opacity-100")}
+              className={cn("flex scroll-mb-28 flex-col gap-1 transition-opacity duration-200 md:scroll-mb-36", dimmed ? "opacity-45" : "opacity-100")}
             >
               {beat.speaker && (
-                <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{beat.speaker}</p>
+                <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground lg:text-sm">{beat.speaker}</p>
               )}
               <div className="flex items-start gap-3">
                 <button
@@ -58,15 +58,15 @@ export function VignettePlayer({
                   aria-label={`Play line ${i + 1}`}
                   disabled={!beat.audio_url}
                   onClick={() => beat.audio_url && new Audio(beat.audio_url).play()}
-                  className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary disabled:opacity-30"
+                  className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary disabled:opacity-30 md:h-11 md:w-11"
                 >
                   <Volume2 aria-hidden className="h-5 w-5" />
                 </button>
                 <div>
-                  <p lang="tl" className="text-lg font-bold leading-snug">
+                  <p lang="tl" className="text-lg font-bold leading-snug lg:text-2xl lg:leading-relaxed">
                     <Words text={beat.tl} glossary={glossary} onPick={setSelected} />
                   </p>
-                  <p lang="en" className="text-sm text-muted-foreground">
+                  <p lang="en" className="text-sm text-muted-foreground lg:text-base lg:leading-relaxed">
                     {beat.en}
                   </p>
                 </div>

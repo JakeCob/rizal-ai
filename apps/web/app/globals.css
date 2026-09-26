@@ -158,6 +158,10 @@
   /* The page around the phone column on desktop (plan 009): a shade deeper
      than the column's cream, so the framed card reads as the app. */
   --desk: oklch(0.935 0.018 85);
+  /* The reading frame's max width from md (plan 010, D38). The layout
+     wrapper, the fixed footers and the bottom sheet all read it, so the
+     footer matches the frame by construction. */
+  --frame-w: 45rem;
 }
 
 .dark {
@@ -195,9 +199,11 @@
   --color-desk: var(--desk);
 }
 
-/* On desktop the app stays a phone-width column (plan 009). Bottom sheets
-   (the word gloss) are fixed to the viewport, so cap them to the column too.
-   Unlayered, so it wins over the sheet's own utilities. */
+/* From md up the app is a framed reading column (plans 009 and 010). Bottom
+   sheets (the word gloss) are fixed to the viewport, so cap them to the
+   column's width too: --frame-w or the viewport less the body's 3rem gutters,
+   where 100% already excludes a classic scrollbar. Unlayered, so it wins over
+   the sheet's own utilities. */
 @media (min-width: 48rem) {
   /* Pages inside the column (runner, end screen, practice) ask for a full
      viewport height; inside the framed card that is the frame's height. */
@@ -205,7 +211,7 @@
     min-height: calc(100dvh - 4rem);
   }
   [data-slot="sheet-content"][data-side="bottom"] {
-    max-width: 28rem;
+    max-width: min(var(--frame-w), calc(100% - 3rem));
     margin-inline: auto;
     bottom: 2rem;
     border-bottom-left-radius: 1.5rem;
