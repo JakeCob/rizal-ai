@@ -1,7 +1,9 @@
 /**
  * Phone-width screenshots of the main screens, written to
  * playwright-report/screens/ for design review. Not an assertion suite; the
- * play-through in lesson.spec.ts is the behavioral check.
+ * play-through in lesson.spec.ts is the behavioral check. Animations are
+ * frozen at their end state so two runs give identical images, which lets a
+ * layout change be checked for side effects by comparing them.
  */
 import { test, type Page } from "@playwright/test";
 
@@ -16,20 +18,20 @@ test("capture tree, vignette, exercise, feedback, complete", async ({ page }) =>
   await page.goto("/");
   await page.getByRole("button", { name: /Placeholder: the dinner.*active/ }).click();
   await page.getByRole("dialog").waitFor();
-  await page.screenshot({ path: `${OUT}/01-tree.png` });
+  await page.screenshot({ path: `${OUT}/01-tree.png`, animations: "disabled" });
 
   await page.getByRole("link", { name: "Start" }).click();
   await page.getByRole("button", { name: "Continue" }).click();
-  await page.screenshot({ path: `${OUT}/02-vignette.png` });
+  await page.screenshot({ path: `${OUT}/02-vignette.png`, animations: "disabled" });
 
   await page.getByRole("button", { name: "Continue" }).click();
   await tap(page, ["Marami", "ang"]);
-  await page.screenshot({ path: `${OUT}/03-exercise.png` });
+  await page.screenshot({ path: `${OUT}/03-exercise.png`, animations: "disabled" });
 
   await tap(page, ["bisita", "ngayong", "gabi"]);
   await page.getByRole("button", { name: "Check" }).click();
   await page.getByRole("status").waitFor();
-  await page.screenshot({ path: `${OUT}/04-feedback.png` });
+  await page.screenshot({ path: `${OUT}/04-feedback.png`, animations: "disabled" });
 
   await page.getByRole("button", { name: "Continue" }).click();
   await page.getByRole("button", { name: "Continue" }).click();
@@ -37,7 +39,7 @@ test("capture tree, vignette, exercise, feedback, complete", async ({ page }) =>
   await tap(page, ["A", "young", "man", "arrived"]);
   await page.getByRole("button", { name: "Check" }).click();
   await page.getByRole("button", { name: "Continue" }).click();
-  await page.screenshot({ path: `${OUT}/05-listen-tap.png` });
+  await page.screenshot({ path: `${OUT}/05-listen-tap.png`, animations: "disabled" });
 
   await tap(page, ["Siya", "si", "Crisostomo", "Ibarra"]);
   await page.getByRole("button", { name: "Check" }).click();
@@ -53,5 +55,6 @@ test("capture tree, vignette, exercise, feedback, complete", async ({ page }) =>
   await page.getByRole("button", { name: "Continue" }).click();
   await page.getByRole("region", { name: "In Rizal's voice" }).waitFor();
   await page.getByRole("button", { name: /Spanish/ }).click();
-  await page.screenshot({ path: `${OUT}/06-complete-card.png`, fullPage: true });
+  await page.getByText(/day streak/).waitFor(); // the completion response has landed
+  await page.screenshot({ path: `${OUT}/06-complete-card.png`, fullPage: true, animations: "disabled" });
 });

@@ -138,7 +138,9 @@ export function Runner({
         )}
       </main>
 
-      <footer className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md">
+      {/* From md up the column is a framed card that ends 2rem above the
+          viewport (app/layout.tsx), so the footer ends there too (plan 009). */}
+      <footer className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md md:bottom-8 md:overflow-hidden md:rounded-b-3xl">
         {state.phase === "feedback" && current && state.lastResult && (
           <div
             role="status"

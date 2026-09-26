@@ -155,6 +155,9 @@
   --danger-lip: oklch(0.48 0.18 25);
   --danger-foreground: oklch(0.35 0.14 25);
   --radius: 0.75rem;
+  /* The page around the phone column on desktop (plan 009): a shade deeper
+     than the column's cream, so the framed card reads as the app. */
+  --desk: oklch(0.935 0.018 85);
 }
 
 .dark {
@@ -179,6 +182,7 @@
   --danger: oklch(0.7 0.18 25);
   --danger-lip: oklch(0.55 0.17 25);
   --danger-foreground: oklch(0.92 0.06 25);
+  --desk: oklch(0.12 0.02 275);
 }
 
 @theme inline {
@@ -188,6 +192,25 @@
   --color-danger-foreground: var(--danger-foreground);
   --font-serif: var(--font-serif);
   --spacing-13: 3.25rem;
+  --color-desk: var(--desk);
+}
+
+/* On desktop the app stays a phone-width column (plan 009). Bottom sheets
+   (the word gloss) are fixed to the viewport, so cap them to the column too.
+   Unlayered, so it wins over the sheet's own utilities. */
+@media (min-width: 48rem) {
+  /* Pages inside the column (runner, end screen, practice) ask for a full
+     viewport height; inside the framed card that is the frame's height. */
+  [data-app-column] .min-h-dvh {
+    min-height: calc(100dvh - 4rem);
+  }
+  [data-slot="sheet-content"][data-side="bottom"] {
+    max-width: 28rem;
+    margin-inline: auto;
+    bottom: 2rem;
+    border-bottom-left-radius: 1.5rem;
+    border-bottom-right-radius: 1.5rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

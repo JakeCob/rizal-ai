@@ -38,9 +38,16 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${nunito.variable} ${sourceSerif.variable}`}>
-      <body className="min-h-dvh bg-background text-foreground antialiased">
+      {/* Below md the classes are the phone layout, unchanged. From md up the
+          column becomes a framed card on the desk background (plan 009). */}
+      <body className="min-h-dvh bg-background text-foreground antialiased md:bg-desk md:py-8">
         <Providers>
-          <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col">{children}</div>
+          <div
+            data-app-column
+            className="mx-auto flex min-h-dvh w-full max-w-md flex-col md:min-h-[calc(100dvh-4rem)] md:rounded-3xl md:border md:border-border md:bg-background md:shadow-xl"
+          >
+            {children}
+          </div>
         </Providers>
         <RegisterServiceWorker />
       </body>
