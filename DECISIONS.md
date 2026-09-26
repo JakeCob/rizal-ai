@@ -349,3 +349,13 @@ Context: plan 003's deploy files were never built on Railway. Four readers found
 Decision: the API image is built from the repo root by apps/api/Dockerfile (multi-stage uv, content/ baked in, non-root, uvicorn alone as the start command); Railway runs `alembic upgrade head` as the pre-deploy command so a failed migration blocks the deploy; Postgres comes from the pgvector template; service settings live in the Railway dashboard. Railway and Vercel deploy from main automatically, Railway waiting for CI. Vercel previews run in mock mode; CORS_ORIGIN_REGEX stays empty until a preview needs the real API. The three Gutenberg texts are committed under apps/api/data/raw with a checksum test, and `rizalai bootstrap` ingests and seeds idempotently with count checks. render-audio runs locally once an engine exists and is never followed by a plain seed.
 
 Consequences: a deploy touching only apps/web or only apps/api still builds both unless the ignore rules skip it (Vercel ignore command, Railway watch paths). Production and dev passages are byte-identical. Audio ships only after the bake-off. Every learner on previews sees fixtures, not real lessons.
+
+## D38. Tablet and desktop layouts, phone unchanged
+
+Status: accepted, 2026-09-26, supersedes plan 009's column-only framing, amends D28
+
+Context: the app shipped as one phone-width column at every width (mobile-first, D28). The owner saw production on a desktop and wants a desktop version, not a framed phone.
+
+Decision: three breakpoints. Below 768px the phone layout stays byte-identical, checked by screenshot hashes. From 768px the frame widens: the tree shows a units nav beside the path, and the lesson runner, practice and end screens use one centered reading column up to 720px with the action bar inside it. From 1024px the tree adds a progress column (streak, XP, hearts, the next lesson) and the runner's type scale grows; keyboard shortcuts (1 to 9, Backspace, Enter) carry a visible hint. No new requests: the columns read the existing tree and learner queries. Dark mode stays as it is (class-based, dormant) until decided separately.
+
+Consequences: every screen has three Playwright projects (iPhone, tablet, desktop) and the 200ms and scroll checks stay on the iPhone project. The fixed footer must always match the frame width. New desktop DOM uses landmarks and a definition list rather than duplicated labels, so the phone test locators stay unique.
