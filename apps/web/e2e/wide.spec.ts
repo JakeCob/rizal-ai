@@ -49,6 +49,8 @@ test("the tree is full-bleed: no frame, sticky side columns, a fluid path column
   expect(frame.shadow).toBe("none");
   expect(frame.radius).toBe("0px");
   expect(frame.body).toBe(frame.background);
+  // No banig texture on the full-bleed layout (plan 012: the banig is the tablet and desktop card's surround only).
+  expect(await page.evaluate(() => getComputedStyle(document.body).backgroundImage)).toBe("none");
 
   const nav = page.getByRole("navigation", { name: "Units" });
   const main = page.getByRole("main");

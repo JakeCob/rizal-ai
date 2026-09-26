@@ -1,6 +1,6 @@
 # RizalAI web
 
-Next.js 15 App Router, TypeScript, Tailwind v4, shadcn/ui (Base UI), TanStack Query. Mobile-first: the layout is a phone layout below 768px, a wider reading column from 768px, and a three-column tree from 1024px (D38). Node 22 and pnpm 9.
+Next.js 15 App Router, TypeScript, Tailwind v4, shadcn/ui (Base UI), TanStack Query. Mobile-first: the layout is a phone layout below 768px, a wider reading column from 768px, and a three-column tree from 1024px (D38). Colors come from the tempered Philippine flag palette in app/globals.css; dark mode follows the system setting (D39), and a Vitest parses the tokens to keep every text pair at 4.5:1 and non-text pair at 3:1 in both schemes.. Node 22 and pnpm 9.
 
 ## Run
 

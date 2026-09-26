@@ -58,7 +58,7 @@ export function VignettePlayer({
                   aria-label={`Play line ${i + 1}`}
                   disabled={!beat.audio_url}
                   onClick={() => beat.audio_url && new Audio(beat.audio_url).play()}
-                  className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary disabled:opacity-30 md:h-11 md:w-11"
+                  className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary-tint text-primary-text disabled:opacity-50 md:h-11 md:w-11"
                 >
                   <Volume2 aria-hidden className="h-5 w-5" />
                 </button>
@@ -119,7 +119,7 @@ function Words({
             key={i}
             type="button"
             onClick={() => onPick(item)}
-            className="rounded-md underline decoration-primary/50 decoration-2 underline-offset-4 hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="rounded-md underline decoration-primary-text/50 decoration-2 underline-offset-4 hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {part}
           </button>

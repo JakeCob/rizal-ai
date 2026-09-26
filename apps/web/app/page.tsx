@@ -32,11 +32,11 @@ export default function TreePage() {
       <header className="flex h-14 items-center justify-between md:col-span-full xl:mb-6 xl:border-b xl:border-border">
         <h1 className="text-xl font-extrabold tracking-tight">RizalAI</h1>
         <div className="flex items-center gap-4 text-sm font-extrabold lg:hidden" aria-live="polite">
-          <span className="flex items-center gap-1 text-accent-foreground" aria-label="Streak">
+          <span className="flex items-center gap-1 text-gold" aria-label="Streak">
             <Flame aria-hidden className="h-5 w-5" />
             {me.data?.streak_count ?? "–"}
           </span>
-          <span className="flex items-center gap-1 text-accent-foreground" aria-label="Total XP">
+          <span className="flex items-center gap-1 text-gold" aria-label="Total XP">
             <Star aria-hidden className="h-5 w-5" />
             {me.data?.total_xp ?? "–"}
           </span>

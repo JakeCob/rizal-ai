@@ -80,6 +80,8 @@ async function expectCard(page: Page) {
   expect(style.border).toBe("1px");
   expect(style.shadow).not.toBe("none");
   expect(style.body).not.toBe(style.column);
+  // The banig texture surrounds the card (plan 012).
+  expect(await page.evaluate(() => getComputedStyle(document.body).backgroundImage)).toMatch(/^url\(/);
 }
 
 test("the tree and a lesson sit in the card at 768 (below xl)", async ({ page }) => {

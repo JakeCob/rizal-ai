@@ -18,7 +18,7 @@ export function NextLessonCard({ next }: { next: NextLesson | null }) {
   }
   const { unit, lesson } = next;
   return (
-    <section className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-4">
+    <section className="rounded-2xl border-2 border-primary/30 bg-primary-tint p-4">
       <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Up next</h2>
       <p className="mt-2 text-xs font-bold text-muted-foreground">{unit.title}</p>
       <p className="mt-1 text-base font-extrabold leading-snug">{lesson.title}</p>

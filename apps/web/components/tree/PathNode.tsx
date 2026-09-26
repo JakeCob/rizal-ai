@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Check, Lock, Star } from "lucide-react";
+import { Check, Lock } from "lucide-react";
+import { Sun } from "@/components/motif/Sun";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import type { TreeLesson } from "@/lib/types.generated";
@@ -31,9 +32,9 @@ export function PathNode({ lesson }: { lesson: TreeLesson }) {
         locked && "cursor-not-allowed bg-muted text-muted-foreground [--lip:var(--muted-lip)]",
       )}
     >
-      {lesson.status === "done" ? <Check aria-hidden /> : locked ? <Lock aria-hidden /> : <Star aria-hidden />}
+      {lesson.status === "done" ? <Check aria-hidden /> : locked ? <Lock aria-hidden /> : <Sun className="text-accent" />}
       {lesson.status === "active" && (
-        <span aria-hidden className="absolute -inset-2 -z-10 rounded-[2rem] border-4 border-primary/25 md:-inset-3" />
+        <span aria-hidden className="absolute -inset-2 -z-10 rounded-[2rem] border-4 border-primary/25 md:-inset-3 dark:border-accent/60" />
       )}
     </button>
   );

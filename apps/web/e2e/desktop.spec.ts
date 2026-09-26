@@ -114,6 +114,8 @@ test("at 1280 (xl) there is no frame: the tree sits on the app background", asyn
   expect(style.border).toBe("0px");
   expect(style.shadow).toBe("none");
   expect(style.page).toBe(style.column);
+  // No banig texture from xl (plan 012): no strips beside the tree or the runner column.
+  expect(await page.evaluate(() => getComputedStyle(document.body).backgroundImage)).toBe("none");
   await expectNoHorizontalOverflow(page);
 });
 

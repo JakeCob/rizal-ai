@@ -1,8 +1,9 @@
 /* App-shell service worker (DECISIONS.md D25). Caches the shell so the
    installed app opens instantly; lesson data and audio always go to the
    network. No offline lessons at MVP. */
-const CACHE = "rizalai-shell-v1";
-const SHELL = ["/", "/manifest.json", "/icon.svg"];
+// v2: the plan 012 palette and sun icons; activating it drops the v1 cache.
+const CACHE = "rizalai-shell-v2";
+const SHELL = ["/", "/manifest.json", "/icon.svg", "/icon-192.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));

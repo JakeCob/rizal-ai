@@ -102,8 +102,11 @@ export default function PracticePage() {
             className={cn(
               "rounded-t-3xl px-5 pt-5",
               "md:flex md:items-center md:justify-between md:gap-6 md:px-10 md:pt-0",
-              "xl:border-t xl:border-border xl:shadow-[0_-10px_24px_-18px_rgb(0_0_0/0.35)]",
-              result.correct ? "bg-success/15" : "bg-danger/15",
+              "xl:border-t xl:border-border xl:shadow-[0_-10px_24px_-18px_var(--bar-shadow)]",
+              // Tint over an opaque base, like the runner's sheet (plan 012).
+              result.correct
+                ? "bg-background bg-linear-to-b from-success/15 to-success/15"
+                : "bg-background bg-linear-to-b from-danger/15 to-danger/15",
             )}
           >
             <div className="md:py-5">
@@ -125,7 +128,7 @@ export default function PracticePage() {
             </div>
           </div>
         ) : (
-          <div className="bg-background/95 px-5 py-4 backdrop-blur md:flex md:justify-end md:px-10 md:py-5 xl:border-t xl:border-border xl:shadow-[0_-10px_24px_-18px_rgb(0_0_0/0.35)]">
+          <div className="bg-background/95 px-5 py-4 backdrop-blur md:flex md:justify-end md:px-10 md:py-5 xl:border-t xl:border-border xl:shadow-[0_-10px_24px_-18px_var(--bar-shadow)]">
             <button
               type="button"
               onClick={submit}

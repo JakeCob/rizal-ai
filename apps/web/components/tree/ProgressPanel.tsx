@@ -13,8 +13,8 @@ export function ProgressPanel({ user }: { user: UserOut | undefined }) {
     <section className="rounded-2xl border-2 border-border bg-card p-4">
       <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Your progress</h2>
       <dl aria-live="polite" className="mt-3 grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-3">
-        <Stat icon={<Flame aria-hidden className="h-5 w-5 text-accent-foreground" />} term="Streak" value={streak} />
-        <Stat icon={<Star aria-hidden className="h-5 w-5 text-accent-foreground" />} term="Total XP" value={user?.total_xp ?? "–"} />
+        <Stat icon={<Flame aria-hidden className="h-5 w-5 text-gold" />} term="Streak" value={streak} />
+        <Stat icon={<Star aria-hidden className="h-5 w-5 text-gold" />} term="Total XP" value={user?.total_xp ?? "–"} />
         <Stat icon={<Heart aria-hidden className="h-5 w-5 fill-current text-danger" />} term="Hearts" value={user?.hearts ?? "–"} />
       </dl>
     </section>

@@ -4,12 +4,13 @@
   "description": "Learn Tagalog through the world of Jose Rizal.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#faf7f0",
-  "theme_color": "#2f3a8f",
+  "background_color": "#fdfaf1",
+  "theme_color": "#03379a",
   "orientation": "portrait",
   "icons": [
     { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
     { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }

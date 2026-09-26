@@ -32,7 +32,14 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#2f3a8f",
+  // The browser chrome follows the system scheme (plan 012, D39): the flag
+  // blue in light, the navy page in dark. Hex, because the browser reads it
+  // before any CSS loads (allowlisted in lib/theme/no-hardcoded-colors.test.ts).
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#03379a" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b152a" },
+  ],
+  colorScheme: "light dark",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -46,7 +53,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           app background, the wrapper loses its border, corners and shadow,
           a wide page gets the full width (it caps itself), and every other
           page keeps the wrapper as its 720px reading column. */}
-      <body className="min-h-dvh bg-background text-foreground antialiased md:bg-desk md:px-6 md:py-8 xl:bg-background xl:py-0">
+      <body className="min-h-dvh bg-background text-foreground antialiased md:bg-desk md:bg-banig md:px-6 md:py-8 xl:bg-background xl:bg-none xl:py-0">
         <Providers>
           <div
             data-app-column

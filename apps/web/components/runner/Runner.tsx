@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { Flame, Heart, X } from "lucide-react";
 import { ReflectionCard } from "@/components/card/ReflectionCard";
+import { Sun } from "@/components/motif/Sun";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { getApiClient } from "@/lib/api";
@@ -163,8 +164,12 @@ export function Runner({
             className={cn(
               "animate-in slide-in-from-bottom-4 fade-in duration-300 rounded-t-3xl px-5 pt-5",
               "md:flex md:items-center md:justify-between md:gap-6 md:px-10 md:pt-0",
-              "xl:border-t xl:border-border xl:shadow-[0_-10px_24px_-18px_rgb(0_0_0/0.35)]",
-              state.lastResult.correct ? "bg-success/15 text-success-foreground" : "bg-danger/15 text-danger-foreground",
+              "xl:border-t xl:border-border xl:shadow-[0_-10px_24px_-18px_var(--bar-shadow)]",
+              // The tint is a gradient layer over an opaque page-colored base, so
+              // nothing scrolled under the fixed sheet shows through (plan 012).
+              state.lastResult.correct
+                ? "bg-background bg-linear-to-b from-success/15 to-success/15 text-success-foreground"
+                : "bg-background bg-linear-to-b from-danger/15 to-danger/15 text-danger-foreground",
             )}
           >
             {state.lastResult.correct ? (
@@ -188,12 +193,12 @@ export function Runner({
           </div>
         )}
         {state.phase === "vignette" && (
-          <div className="bg-background/95 px-5 py-4 backdrop-blur md:flex md:justify-end md:px-10 md:py-5 xl:border-t xl:border-border xl:shadow-[0_-10px_24px_-18px_rgb(0_0_0/0.35)]">
+          <div className="bg-background/95 px-5 py-4 backdrop-blur md:flex md:justify-end md:px-10 md:py-5 xl:border-t xl:border-border xl:shadow-[0_-10px_24px_-18px_var(--bar-shadow)]">
             <BigButton onClick={() => dispatch({ type: "NEXT_BEAT" })}>Continue</BigButton>
           </div>
         )}
         {state.phase === "exercise" && (
-          <div className="bg-background/95 px-5 py-4 backdrop-blur md:flex md:justify-end md:px-10 md:py-5 xl:border-t xl:border-border xl:shadow-[0_-10px_24px_-18px_rgb(0_0_0/0.35)]">
+          <div className="bg-background/95 px-5 py-4 backdrop-blur md:flex md:justify-end md:px-10 md:py-5 xl:border-t xl:border-border xl:shadow-[0_-10px_24px_-18px_var(--bar-shadow)]">
             <BigButton onClick={check} disabled={!canCheck}>
               Check
             </BigButton>
@@ -226,8 +231,8 @@ function BigButton({
         "active:translate-y-1 active:shadow-none disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none",
         "focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/50",
         tone === "primary" && "bg-primary text-primary-foreground shadow-[0_4px_0_0_var(--primary-lip)]",
-        tone === "success" && "bg-success text-white shadow-[0_4px_0_0_var(--success-lip)]",
-        tone === "danger" && "bg-danger text-white shadow-[0_4px_0_0_var(--danger-lip)]",
+        tone === "success" && "bg-success text-on-success shadow-[0_4px_0_0_var(--success-lip)]",
+        tone === "danger" && "bg-danger text-on-danger shadow-[0_4px_0_0_var(--danger-lip)]",
       )}
     >
       {children}
@@ -261,14 +266,24 @@ function EndScreen({
 
   return (
     <div className="flex min-h-dvh flex-col gap-6 px-5 pb-10 pt-10 md:px-10 md:pt-14">
-      <div className="flex flex-col items-center gap-3 text-center">
+      {/* isolate keeps the sun's -z-10 inside this group, so the column's own
+          background (the framed card from md) does not paint over it. */}
+      <div className="relative isolate flex flex-col items-center gap-3 text-center">
         <h1 className="text-3xl font-extrabold lg:text-4xl">{title}</h1>
-        <p className="text-5xl font-extrabold text-accent-foreground lg:text-6xl">{xp} XP</p>
+        <p className="relative text-5xl font-extrabold text-gold lg:text-6xl">
+          {/* Centered behind the score. Accent gold at 25% in light; in dark the
+              warm dark gold at 80%, since gold at a low opacity turns olive on
+              navy. Text over it stays at 4.5:1 (EndScreenSun.test.tsx). */}
+          {!practice && (
+            <Sun className="pointer-events-none absolute left-1/2 top-1/2 -z-10 size-40 -translate-x-1/2 -translate-y-1/2 text-accent opacity-25 dark:text-highlight dark:opacity-80" />
+          )}
+          {xp} XP
+        </p>
         <p className="text-muted-foreground">
           {correct} of {total} correct
         </p>
         {streak !== null && (
-          <p className="flex items-center gap-1 font-bold text-accent-foreground">
+          <p className="flex items-center gap-1 font-bold text-gold">
             <Flame aria-hidden className="h-5 w-5" />
             {streak} day streak
           </p>

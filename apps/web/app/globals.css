@@ -2,7 +2,8 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
+/* Dark mode follows the system setting (plan 012, D39). */
+@custom-variant dark (@media (prefers-color-scheme: dark));
 
 @theme inline {
   --color-background: var(--background);
@@ -10,35 +11,25 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
   --color-ring: var(--ring);
-  --color-input: var(--input);
   --color-border: var(--border);
-  --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary: var(--primary);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  /* The shadcn keys the stock components still name (button, badge) are
+     aliases of the RizalAI tokens, so they follow both schemes; the unused
+     sidebar and chart keys are gone (plan 012). */
+  --color-destructive: var(--danger);
+  --color-secondary: var(--muted);
+  --color-secondary-foreground: var(--foreground);
+  --color-input: var(--border);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -48,74 +39,6 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-:root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
 
 @layer base {
   * {
@@ -129,64 +52,105 @@
   }
 }
 
-/* RizalAI tokens (DECISIONS.md D28). Deep indigo primary, ochre accent,
-   paper cream card surface, semantic success and danger independent of the
-   brand hue. Each pressable color has a darker lip for the 3D button. */
+/* RizalAI tokens (D28, re-skinned by D39 in plan 012): a tempered Philippine
+   flag palette. Primary is the flag blue a shade darker than the old indigo,
+   accent the flag's golden yellow on fills (nodes, the sun, the highlight),
+   gold the darker page-text gold for XP and streak (the accent can never be
+   text on a light page), danger the flag red, success a leaf green that sits
+   with the yellow, on warm off-white pages. Each pressable color has a darker
+   lip for the 3D button. Every text pair reaches 4.5:1 and every non-text
+   pair 3:1 in both schemes, asserted by lib/theme/contrast.test.ts. */
 :root {
-  --primary: oklch(0.42 0.16 275);
-  --primary-lip: oklch(0.32 0.14 275);
-  --primary-foreground: oklch(0.99 0 0);
-  --accent: oklch(0.82 0.13 80);
-  --accent-lip: oklch(0.68 0.13 80);
-  --accent-foreground: oklch(0.36 0.09 70);
-  --card: oklch(0.985 0.012 85);
-  --card-foreground: oklch(0.2 0.02 275);
-  --background: oklch(0.995 0.006 85);
-  --foreground: oklch(0.2 0.02 275);
-  --muted: oklch(0.94 0.01 85);
-  --muted-lip: oklch(0.85 0.01 85);
-  --muted-foreground: oklch(0.5 0.02 275);
-  --border: oklch(0.88 0.015 85);
-  --ring: oklch(0.6 0.12 275);
-  --success: oklch(0.62 0.17 150);
-  --success-lip: oklch(0.5 0.15 150);
-  --success-foreground: oklch(0.3 0.1 150);
-  --danger: oklch(0.6 0.2 25);
-  --danger-lip: oklch(0.48 0.18 25);
-  --danger-foreground: oklch(0.35 0.14 25);
+  color-scheme: light dark;
+  --background: oklch(0.985 0.012 88);
+  --foreground: oklch(0.21 0.035 262);
+  --card: oklch(0.972 0.02 88);
+  --card-foreground: oklch(0.21 0.035 262);
+  --popover: oklch(0.995 0.006 88);
+  --popover-foreground: oklch(0.21 0.035 262);
+  --primary: oklch(0.38 0.17 262);
+  --primary-lip: oklch(0.28 0.13 262);
+  --primary-foreground: oklch(0.985 0.01 90);
+  --primary-text: oklch(0.38 0.17 262);
+  --accent: oklch(0.86 0.15 92);
+  --accent-lip: oklch(0.64 0.13 76);
+  --accent-foreground: oklch(0.36 0.07 70);
+  --gold: oklch(0.44 0.09 72);
+  --highlight: oklch(0.92 0.09 92);
+  --highlight-foreground: oklch(0.34 0.07 65);
+  --muted: oklch(0.945 0.014 88);
+  --muted-lip: oklch(0.86 0.016 88);
+  --muted-foreground: oklch(0.47 0.03 262);
+  --border: oklch(0.885 0.02 88);
+  --ring: oklch(0.55 0.15 262);
+  --success: oklch(0.5 0.13 142);
+  --success-lip: oklch(0.4 0.11 142);
+  --success-foreground: oklch(0.33 0.09 142);
+  --on-success: oklch(0.99 0.01 90);
+  --danger: oklch(0.53 0.2 26);
+  --danger-lip: oklch(0.42 0.17 26);
+  --danger-foreground: oklch(0.38 0.14 26);
+  --on-danger: oklch(0.99 0.01 90);
+  --progress: oklch(0.38 0.17 262);
+  /* A clean pale blue for the blue-tinted surfaces (the "Up next" and "In
+     Rizal's voice" cards, the current unit, the play tile): opaque, so it
+     reads as blue on the warm page rather than the grey a 5 to 10% blue
+     overlay gave (plan 012 review). */
+  --primary-tint: oklch(0.93 0.025 262);
+  --overlay: oklch(0.21 0.035 262 / 12%);
+  --bar-shadow: oklch(0.21 0.035 262 / 30%);
+  /* The page around the column on tablet and desktop (plan 009): a shade
+     deeper than the column's off-white, so the framed card reads as the app. */
+  --desk: oklch(0.935 0.022 88);
+  /* A fine banig (woven mat) tile for the desk, under 1.15:1 (Task C applies it). */
+  --banig: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpath d='M0 1.5h6M0 4.5h6M6 7.5h6M6 10.5h6M7.5 0v6M10.5 0v6M1.5 6v6M4.5 6v6' fill='none' stroke='%235a4520' stroke-opacity='.08'/%3E%3C/svg%3E");
   --radius: 0.75rem;
-  /* The page around the phone column on desktop (plan 009): a shade deeper
-     than the column's cream, so the framed card reads as the app. */
-  --desk: oklch(0.935 0.018 85);
   /* The reading frame's max width from md (plan 010, D38). The layout
      wrapper, the fixed footers and the bottom sheet all read it, so the
      footer matches the frame by construction. */
   --frame-w: 45rem;
 }
 
-.dark {
-  --primary: oklch(0.72 0.13 275);
-  --primary-lip: oklch(0.58 0.13 275);
-  --primary-foreground: oklch(0.15 0.03 275);
-  --accent: oklch(0.72 0.13 80);
-  --accent-lip: oklch(0.58 0.13 80);
-  --accent-foreground: oklch(0.95 0.05 85);
-  --card: oklch(0.22 0.02 275);
-  --card-foreground: oklch(0.96 0.01 85);
-  --background: oklch(0.17 0.02 275);
-  --foreground: oklch(0.96 0.01 85);
-  --muted: oklch(0.27 0.02 275);
-  --muted-lip: oklch(0.2 0.02 275);
-  --muted-foreground: oklch(0.72 0.02 275);
-  --border: oklch(0.32 0.02 275);
-  --ring: oklch(0.7 0.12 275);
-  --success: oklch(0.7 0.16 150);
-  --success-lip: oklch(0.55 0.15 150);
-  --success-foreground: oklch(0.92 0.08 150);
-  --danger: oklch(0.7 0.18 25);
-  --danger-lip: oklch(0.55 0.17 25);
-  --danger-foreground: oklch(0.92 0.06 25);
-  --desk: oklch(0.12 0.02 275);
+/* The dark set: navy pages, warm paper-white text, gold accents. Progress
+   fills use the gold because the blue falls under 3:1 on the navy track. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: oklch(0.2 0.045 264);
+    --foreground: oklch(0.95 0.015 90);
+    --card: oklch(0.265 0.05 264);
+    --card-foreground: oklch(0.95 0.015 90);
+    --popover: oklch(0.27 0.05 264);
+    --popover-foreground: oklch(0.95 0.015 90);
+    --primary: oklch(0.51 0.17 262);
+    --primary-lip: oklch(0.39 0.14 262);
+    --primary-foreground: oklch(0.99 0.005 90);
+    --primary-text: oklch(0.78 0.11 262);
+    --accent: oklch(0.83 0.14 88);
+    --accent-lip: oklch(0.66 0.13 78);
+    --accent-foreground: oklch(0.3 0.06 70);
+    --gold: oklch(0.85 0.13 88);
+    --highlight: oklch(0.42 0.08 80);
+    --highlight-foreground: oklch(0.96 0.04 90);
+    --muted: oklch(0.29 0.045 264);
+    --muted-lip: oklch(0.22 0.04 264);
+    --muted-foreground: oklch(0.76 0.03 264);
+    --border: oklch(0.36 0.045 264);
+    --ring: oklch(0.72 0.13 262);
+    --success: oklch(0.74 0.15 142);
+    --success-lip: oklch(0.58 0.14 142);
+    --success-foreground: oklch(0.9 0.08 142);
+    --on-success: oklch(0.2 0.045 264);
+    --danger: oklch(0.7 0.17 25);
+    --danger-lip: oklch(0.55 0.17 25);
+    --danger-foreground: oklch(0.9 0.05 25);
+    --on-danger: oklch(0.2 0.045 264);
+    --progress: oklch(0.83 0.14 88);
+    --primary-tint: oklch(0.27 0.06 262);
+    --overlay: oklch(0 0 0 / 45%);
+    --bar-shadow: oklch(0 0 0 / 60%);
+    --desk: oklch(0.16 0.04 264);
+    --banig: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpath d='M0 1.5h6M0 4.5h6M6 7.5h6M6 10.5h6M7.5 0v6M10.5 0v6M1.5 6v6M4.5 6v6' fill='none' stroke='%23edc14d' stroke-opacity='.06'/%3E%3C/svg%3E");
+  }
 }
 
 @theme inline {
@@ -197,6 +161,21 @@
   --font-serif: var(--font-serif);
   --spacing-13: 3.25rem;
   --color-desk: var(--desk);
+  --color-primary-text: var(--primary-text);
+  --color-gold: var(--gold);
+  --color-highlight: var(--highlight);
+  --color-highlight-foreground: var(--highlight-foreground);
+  --color-on-success: var(--on-success);
+  --color-on-danger: var(--on-danger);
+  --color-progress: var(--progress);
+  --color-primary-tint: var(--primary-tint);
+  --color-overlay: var(--overlay);
+}
+
+/* The banig texture as a utility (plan 012); Task C puts it on the body. */
+@utility bg-banig {
+  background-image: var(--banig);
+  background-size: 12px 12px;
 }
 
 /* From md up the app is a framed reading column (plans 009 and 010). Bottom

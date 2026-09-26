@@ -70,7 +70,7 @@ function Reflection({ tl, en, spans }: { tl: string; en: string; spans: QuotedSp
   const [lang, setLang] = useState<"tl" | "en">("tl");
   const text = lang === "tl" ? tl : en;
   return (
-    <section aria-label="In Rizal's voice" className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-4">
+    <section aria-label="In Rizal's voice" className="rounded-2xl border-2 border-primary/30 bg-primary-tint p-4">
       <div className="flex items-start justify-between gap-3">
         <div>
           <h2 className="text-base font-extrabold">In Rizal&apos;s voice</h2>
@@ -119,7 +119,7 @@ function highlight(text: string, spans: QuotedSpan[]): React.ReactNode[] {
         key={i}
         role="mark"
         data-passage-id={passageId}
-        className="rounded bg-accent/60 px-0.5 font-serif italic text-accent-foreground"
+        className="rounded bg-highlight px-0.5 font-serif italic text-highlight-foreground"
       >
         {part}
       </mark>

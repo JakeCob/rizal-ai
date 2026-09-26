@@ -14,7 +14,7 @@ export function SkillTree({ tree }: { tree: Tree }) {
       {tree.units.map((unit) => (
         <section key={unit.id} aria-labelledby={`unit-${unit.id}`}>
           <header className="sticky top-0 z-10 -mx-4 bg-primary px-5 py-3 text-primary-foreground shadow-sm md:mx-0 md:rounded-2xl">
-            <p className="text-xs font-bold uppercase tracking-wider opacity-80">Unit {unit.order_index}</p>
+            <p className="text-xs font-bold uppercase tracking-wider opacity-90">Unit {unit.order_index}</p>
             <h2 id={`unit-${unit.id}`} className="text-lg font-extrabold leading-tight md:scroll-mt-20">
               {unit.title}
             </h2>

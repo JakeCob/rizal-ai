@@ -34,11 +34,11 @@ export function UnitNav({ units }: { units: TreeUnit[] }) {
                 }}
                 className={cn(
                   "flex flex-col gap-1.5 rounded-xl px-2 py-2 hover:bg-muted focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/50",
-                  isCurrent && "bg-primary/10 hover:bg-primary/15",
+                  isCurrent && "bg-primary-tint hover:bg-primary-tint",
                 )}
               >
                 <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Unit {unit.order_index}</span>
-                <span className={cn("text-sm font-extrabold leading-snug", isCurrent && "text-primary")}>{unit.title}</span>
+                <span className={cn("text-sm font-extrabold leading-snug", isCurrent && "text-primary-text")}>{unit.title}</span>
                 <Progress
                   value={fraction * 100}
                   aria-label={`${unit.title} progress`}
