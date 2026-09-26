@@ -1,12 +1,14 @@
 import type { SVGProps } from "react";
 
 /**
- * One ray pointing up: a triangle from the top of the box to a 4-unit base
- * whose corners sit on the disc's edge (5.75 from the center). The other seven
- * are this one rotated about the center. Bold enough to fill the 24px icon
- * box like a stroked lucide icon, and to read as a sun in a 16px favicon.
+ * One ray pointing up: a triangle from the top of the box to a 4-unit base at
+ * y 5.65, 6.35 from the center, so it starts 0.6 units clear of the disc
+ * (radius 5.75). That ring of background between the disc and every ray makes
+ * the mark read as the flag's sun (a disc with separate rays) rather than an
+ * eight-pointed star. The other seven rays are this one rotated about the
+ * center. Bold enough to fill the 24px icon box like a stroked lucide icon.
  */
-const RAY = "M12 .75 14 6.61 10 6.61z";
+const RAY = "M12 .75 14 5.65 10 5.65z";
 const ANGLES = [0, 45, 90, 135, 180, 225, 270, 315];
 
 /**

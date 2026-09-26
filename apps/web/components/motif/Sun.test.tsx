@@ -2,8 +2,10 @@
  * Behaviors (plan 012, D39): the flag's eight-ray sun as an inline SVG.
  * - decorative: aria-hidden, and data-motif so the layout gate skips it
  * - one disc and eight ray paths, filled with currentColor so a text-*
- *   class colors it; the disc (radius 5.75) and the rays (a 4-unit base on
- *   the disc's edge) fill the 24px box like a lucide icon does
+ *   class colors it; the disc (radius 5.75) and the rays (a 4-unit base)
+ *   fill the 24px box like a lucide icon does
+ * - it reads as the flag's sun, a disc with separate rays: every ray starts
+ *   clear of the disc, leaving a ring of background between them
  * - 24x24 by default like a lucide icon, so it swaps in without moving
  *   anything; className passes through
  */
@@ -29,11 +31,12 @@ describe("Sun", () => {
     const angles = [...rays].map((r) => r.getAttribute("transform"));
     expect(new Set(angles).size).toBe(8);
     // The ray: a triangle from the top of the box (y 0.75) down to a 4-unit
-    // base whose corners sit on the disc's edge (distance 5.75 from center).
+    // base that stops short of the disc (radius 5.75) by more than half a unit.
     const [tip, right, left] = (rays[0].getAttribute("d") ?? "").match(/-?[\d.]+\s+-?[\d.]+/g)?.map((p) => p.split(/\s+/).map(Number)) ?? [];
     expect(tip).toEqual([12, 0.75]);
     expect(right[0] - left[0]).toBeCloseTo(4, 5);
-    expect(Math.hypot(right[0] - 12, right[1] - 12)).toBeCloseTo(5.75, 2);
+    expect(right[1]).toBe(left[1]);
+    expect(12 - right[1]).toBeGreaterThan(5.75 + 0.5);
     expect(svg?.querySelector("[id]")).toBeNull();
   });
 

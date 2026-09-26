@@ -63,6 +63,9 @@ describe("end screen sun", () => {
     expect(sun).not.toBeNull();
     expect(sun).toHaveAttribute("aria-hidden", "true");
     expect(sun).toHaveClass("-z-10", "pointer-events-none", "text-accent", "dark:text-highlight");
+    // A glow, not a stamp: a radial mask fades the sun toward its ray tips
+    // in both schemes, and dark paints the warm gold at 60% at most.
+    expect(sun).toHaveClass("mask-circle", "mask-radial-from-30%", "mask-radial-to-75%", "opacity-25", "dark:opacity-60");
     // Centered behind the score: the sun sits in the "N XP" line, inside the isolated title group.
     expect(sun?.parentElement).toHaveTextContent(/XP$/);
     expect(sun?.parentElement).toHaveClass("relative");
@@ -79,7 +82,7 @@ describe("end screen sun", () => {
 
   it.each([
     ["light", "accent", 0.25],
-    ["dark", "highlight", 0.8],
+    ["dark", "highlight", 0.6],
   ] as const)("keeps the text over it readable in %s (%s at %s)", (scheme, token, alpha) => {
     const t = parseTokens(readFileSync(path.resolve(__dirname, "../../app/globals.css"), "utf8"));
     const c = (n: string) => toRgba(resolveValue(t[scheme].get(n) as string, t[scheme]));

@@ -271,11 +271,13 @@ function EndScreen({
       <div className="relative isolate flex flex-col items-center gap-3 text-center">
         <h1 className="text-3xl font-extrabold lg:text-4xl">{title}</h1>
         <p className="relative text-5xl font-extrabold text-gold lg:text-6xl">
-          {/* Centered behind the score. Accent gold at 25% in light; in dark the
-              warm dark gold at 80%, since gold at a low opacity turns olive on
-              navy. Text over it stays at 4.5:1 (EndScreenSun.test.tsx). */}
+          {/* Centered behind the score, a glow rather than a stamp: a radial mask
+              (farthest-corner, so the ray tips keep about a fifth of the
+              opacity) fades it toward the rays. Accent gold at 25% in light; in dark
+              the warm dark gold at 60%, since gold at a low opacity turns olive
+              on navy. Text over it stays at 4.5:1 (EndScreenSun.test.tsx). */}
           {!practice && (
-            <Sun className="pointer-events-none absolute left-1/2 top-1/2 -z-10 size-40 -translate-x-1/2 -translate-y-1/2 text-accent opacity-25 dark:text-highlight dark:opacity-80" />
+            <Sun className="pointer-events-none absolute left-1/2 top-1/2 -z-10 size-40 -translate-x-1/2 -translate-y-1/2 text-accent opacity-25 mask-circle mask-radial-from-30% mask-radial-to-75% dark:text-highlight dark:opacity-60" />
           )}
           {xp} XP
         </p>
